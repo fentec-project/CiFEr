@@ -1,4 +1,4 @@
-# CiFEr - Functional Encryption library 
+# CiFEr - Functional Encryption library [![Build Status](https://travis-ci.org/fentec-project/CiFEr.svg?branch=master)](https://travis-ci.org/fentec-project/CiFEr)
 
 CiFEr (prounounced as _cipher_) is a cryptographic library offering different 
 state-of-the-art implementations of functional encryption schemes, specifically 

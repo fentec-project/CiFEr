@@ -9,6 +9,7 @@ compiler:
 
   # remove older version of CMake, install latest version with pip
 install:
+  - sudo apt update
   - sudo apt install -y build-essential libgmp-dev libsodium-dev
   - sudo rm -rf /usr/local/cmake*
   - sudo -H pip install cmake
