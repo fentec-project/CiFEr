@@ -1,0 +1,19 @@
+sudo: required
+dist: xenial
+language: c
+
+# test with both compilers
+compiler:
+  - clang
+  - gcc
+
+  # remove older version of CMake, install latest version with pip
+install:
+  - sudo apt install -y build-essential libgmp-dev libsodium-dev
+  - sudo rm -rf /usr/local/cmake*
+  - sudo -H pip install cmake
+
+script:
+  - cmake .
+  - make
+  - make test
