@@ -31,11 +31,12 @@
 
 #include "data/vec.h"
 #include "data/mat.h"
+#include "internal/common.h"
 
 // Initializes a vector.
 void cfe_vec_init(cfe_vec *v, size_t size) {
     v->size = size;
-    v->vec = (mpz_t *) malloc(size * sizeof(mpz_t));
+    v->vec = (mpz_t *) cfe_malloc(size * sizeof(mpz_t));
 
     for (size_t i = 0; i < size; i++) {
         mpz_init(v->vec[i]);

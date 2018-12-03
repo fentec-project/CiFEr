@@ -28,7 +28,9 @@
 #include <stdlib.h>
 #include <uthash.h>
 #include <gmp.h>
-#include <internal/errors.h>
+
+#include "internal/common.h"
+#include "internal/errors.h"
 #include "internal/dlog.h"
 
 typedef struct bigint_hash {
@@ -71,7 +73,7 @@ cfe_error cfe_baby_giant(mpz_t res, mpz_t h, mpz_t g, mpz_t p, mpz_t _order, mpz
         // store T[x] = i
         // create a struct t and store the key and value
         // the key is actually the internal contents of a mpz_t, the array and the minimal possible length
-        t = (bigint_hash *) malloc(sizeof(bigint_hash));
+        t = (bigint_hash *) cfe_malloc(sizeof(bigint_hash));
         mpz_init_set(t->key, x);
         mpz_init_set(t->val, i);
 

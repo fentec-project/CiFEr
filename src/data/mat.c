@@ -30,12 +30,13 @@
 #include <assert.h>
 
 #include "data/mat.h"
+#include "internal/common.h"
 
 // Initializes a matrix.
 void cfe_mat_init(cfe_mat *m, size_t rows, size_t cols) {
     m->rows = rows;
     m->cols = cols;
-    m->mat = (cfe_vec *) malloc(rows * sizeof(cfe_vec));
+    m->mat = (cfe_vec *) cfe_malloc(rows * sizeof(cfe_vec));
 
     for (size_t i = 0; i < rows; i++) {
         cfe_vec_init(&m->mat[i], cols);

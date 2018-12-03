@@ -45,4 +45,12 @@
  */
 cfe_error cfe_init(void);
 
+/**
+ * Malloc wrapper which aborts on failure (out-of-memory error).
+ *
+ * @param size Size of memory block
+ * @return Pointer to allocated memory
+ */
+void *cfe_malloc(size_t size);
+
 #endif

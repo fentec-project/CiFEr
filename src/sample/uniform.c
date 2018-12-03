@@ -27,6 +27,7 @@
 
 #include <sodium.h>
 
+#include "internal/common.h"
 #include "sample/uniform.h"
 
 bool cfe_bit_sample(void) {
@@ -37,7 +38,7 @@ void cfe_uniform_sample(mpz_t res, mpz_t upper) {
     // determine the size of buffer to read random bytes in and allocate it
     size_t n_bits = mpz_sizeinbase(upper, 2);
     size_t n_bytes = ((n_bits - 1) / 8) + 1;
-    uint8_t *rand_bytes = (uint8_t *) malloc(n_bytes * sizeof(uint8_t));
+    uint8_t *rand_bytes = (uint8_t *) cfe_malloc(n_bytes * sizeof(uint8_t));
 
     // calculate max unsigned number that we can represent with the given
     // number of bits
