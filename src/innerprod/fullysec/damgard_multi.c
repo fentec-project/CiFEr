@@ -26,8 +26,9 @@
  */
 
 #include <stdlib.h>
-#include "innerprod/fullysec/damgard_multi.h"
 
+#include "innerprod/fullysec/damgard_multi.h"
+#include "internal/common.h"
 #include "sample/uniform.h"
 
 cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound) {
@@ -77,7 +78,7 @@ void cfe_damgard_multi_fe_key_free(cfe_damgard_multi_fe_key *key) {
 }
 
 void cfe_damgard_multi_generate_master_keys(cfe_mat *mpk, cfe_damgard_multi_sec_key *msk, cfe_damgard_multi *m) {
-    msk->msk = malloc(sizeof(cfe_damgard_sec_key) * m->slots);
+    msk->msk = cfe_malloc(sizeof(cfe_damgard_sec_key) * m->slots);
     msk->num_keys = m->slots;
     cfe_mat_inits(m->slots, m->scheme.l, mpk, &msk->otp, NULL);
 

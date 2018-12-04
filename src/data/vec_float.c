@@ -27,12 +27,14 @@
 
 #include <stdlib.h>
 #include <assert.h>
+
 #include "data/vec_float.h"
+#include "internal/common.h"
 
 // Initializes a vector.
 void cfe_vec_float_init(cfe_vec_float *v, size_t size, size_t prec) {
     v->size = size;
-    v->vec = (mpf_t *) malloc(size * sizeof(mpf_t));
+    v->vec = (mpf_t *) cfe_malloc(size * sizeof(mpf_t));
 
     for (size_t i = 0; i < size; i++) {
         mpf_init2(v->vec[i], prec);

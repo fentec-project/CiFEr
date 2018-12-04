@@ -35,3 +35,14 @@ cfe_error cfe_init(void) {
     }
     return CFE_ERR_NONE;
 }
+
+void *cfe_malloc(size_t size) {
+    void *ptr = malloc(size);
+
+    if (size != 0 && ptr == NULL) {
+        perror("Failed to allocate memory");
+        abort();
+    }
+
+    return ptr;
+}

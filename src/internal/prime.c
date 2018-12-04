@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <sodium.h>
 
+#include "internal/common.h"
 #include "internal/prime.h"
 
 // Checks if p is a safe prime, e.g. if (p-1)/2 is also a prime.
@@ -69,7 +70,7 @@ cfe_error cfe_get_prime(mpz_t res, size_t bits, bool safe) {
     // the safe prime will have the correct amount of bits
     size_t n_bits = safe ? bits - 1 : bits;
     size_t n_bytes = (bits + 7) / 8;
-    uint8_t *bytes = (uint8_t *) malloc(n_bytes * sizeof(uint8_t));
+    uint8_t *bytes = (uint8_t *) cfe_malloc(n_bytes * sizeof(uint8_t));
 
     size_t b = n_bits % 8;
     if (b == 0) {
