@@ -58,6 +58,8 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a5f0f38a6cc7347a85261a841e8032e10"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a5f0f38a6cc7347a85261a841e8032e10">cfe_init</a> (void)</td></tr>
 <tr class="separator:a5f0f38a6cc7347a85261a841e8032e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9249710141c7f02735c93eeb40e14bf8"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a9249710141c7f02735c93eeb40e14bf8">cfe_malloc</a> (size_t size)</td></tr>
+<tr class="separator:a9249710141c7f02735c93eeb40e14bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Common library functionality. </p>
@@ -79,6 +81,32 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>This function initializes the library. It ensures that the system's random number generator has been properly seeded. This function must be called before any other functions from this library.</p>
 <dl class="section return"><dt>Returns</dt><dd>Error code </dd></dl>
+
+</div>
+</div>
+<a id="a9249710141c7f02735c93eeb40e14bf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9249710141c7f02735c93eeb40e14bf8">&#9670;&nbsp;</a></span>cfe_malloc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* cfe_malloc </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Malloc wrapper which aborts on failure (out-of-memory error).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of memory block </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to allocated memory </dd></dl>
 
 </div>
 </div>
