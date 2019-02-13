@@ -2,6 +2,10 @@ sudo: required
 dist: xenial
 language: c
 
+branches:
+  only:
+  -include_amcl
+
 # test with both compilers
 compiler:
   - clang
@@ -13,6 +17,9 @@ install:
   - sudo apt install -y build-essential libgmp-dev libsodium-dev
   - sudo rm -rf /usr/local/cmake*
   - sudo -H pip install cmake
+  - cd external/amcl
+  - ./setup_amcl.sh
+  - cd ../..
 
 script:
   - cmake .
