@@ -76,7 +76,7 @@ MunitResult test_amcl(const MunitParameter *params, void *data) {
     ECP_BN254_generator(&H_prime);
     BIG_256_56 zero;
     BIG_256_56_zero(zero);
-    ECP_BN254_mul(&H, CURVE_Order_BN254);
+    ECP_BN254_mul(&H, (int64_t*) CURVE_Order_BN254);
     ECP_BN254_mul(&H_prime, zero);
     check = ECP_BN254_equals(&H, &H_prime);
     munit_assert(check);
@@ -90,7 +90,7 @@ MunitResult test_amcl(const MunitParameter *params, void *data) {
     mpz_t four, four_inv, p;
     mpz_init_set_ui(four, 4);
     mpz_inits(four_inv, p, NULL);
-    mpz_from_BIG_256_56(p, CURVE_Order_BN254);
+    mpz_from_BIG_256_56(p, (int64_t*) CURVE_Order_BN254);
     mpz_invert(four_inv, four, p);
 
     BIG_256_56 four_big, four_inv_big;
