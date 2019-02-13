@@ -2,10 +2,6 @@ sudo: required
 dist: xenial
 language: c
 
-branches:
-  only:
-  -include_amcl
-
 # test with both compilers
 compiler:
   - clang
