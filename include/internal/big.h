@@ -25,28 +25,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CIFER_TEST_H
-#define CIFER_TEST_H
+#ifndef CIFER_BIG_H
+#define CIFER_BIG_H
 
-#include <munit.h>
 
-MunitSuite prime_suite;
-MunitSuite keygen_suite;
-MunitSuite matrix_suite;
-MunitSuite vector_suite;
-MunitSuite dlog_suite;
-MunitSuite big_suite;
-MunitSuite uniform_suite;
-MunitSuite normal_cumulative_suite;
-MunitSuite normal_negative_suite;
-MunitSuite normal_double_suite;
-MunitSuite ddh_suite;
-MunitSuite damgard_suite;
-MunitSuite ddh_multi_suite;
-MunitSuite damgard_multi_suite;
-MunitSuite lwe_suite;
-MunitSuite lwe_fully_secure_suite;
-MunitSuite ring_lwe_suite;
-MunitSuite paillier_suite;
+
+/**
+ * \file
+ * \ingroup internal
+ * \brief Functionalities for transformating mpz_t and
+ * BIG_256_56 integers.
+ */
+
+#include <gmp.h>
+#include <amcl/big_256_56.h>
+
+
+/**
+ * This function transforms an integer of type mpz_t to
+ * type BIG_256_56.
+ *
+ * @param a Integer will be saved here
+ * @param b Integer will be copied from
+ */
+void BIG_256_56_from_mpz(BIG_256_56 a, mpz_t b);
+
+/**
+ * This function transforms an integer of type BIG_256_56
+ * to type mpz_t.
+ *
+ * @param b Integer will be saved here
+ * @param a Integer will be copied from
+ */void mpz_from_BIG_256_56(mpz_t b, BIG_256_56 a);
 
 #endif

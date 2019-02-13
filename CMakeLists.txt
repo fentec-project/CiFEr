@@ -25,6 +25,8 @@ set(library_SOURCES
         src/data/mat.c
         src/data/vec.c
         src/data/vec_float.c
+        src/data/vec_curve.c
+        src/internal/big.c
         src/internal/common.c
         src/internal/dlog.c
         src/internal/keygen.c
@@ -47,7 +49,7 @@ set(library_SOURCES
 add_library(cifer SHARED ${library_SOURCES})
 
 # Link libraries that are used in our library
-target_link_libraries(cifer gmp sodium m)
+target_link_libraries(cifer gmp sodium m amcl)
 
 # Install library and copy header to install dir
 install(TARGETS cifer DESTINATION lib)
@@ -61,6 +63,7 @@ set(binary_SOURCES
         test/internal/dlog.c
         test/internal/keygen.c
         test/internal/prime.c
+        test/internal/big.c
         test/innerprod/simple/ddh.c
         test/innerprod/simple/ddh_multi.c
         test/innerprod/simple/lwe.c
