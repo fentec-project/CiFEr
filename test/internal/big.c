@@ -32,24 +32,19 @@
 #include <amcl/pair_BN254.h>
 #include "test.h"
 
-
 MunitResult test_amcl(const MunitParameter *params, void *data) {
-
     // check if e(g1 + g1, g2) = e(g1, g2 + g2)
     ECP_BN254 G1, G1sum;
     ECP_BN254_generator(&G1);
     ECP_BN254_generator(&G1sum);
     ECP_BN254_add(&G1sum, &G1);
 
-
     ECP2_BN254 G2, G2sum;
     ECP2_BN254_generator(&G2);
     ECP2_BN254_generator(&G2sum);
     ECP2_BN254_add(&G2sum, &G2);
 
-
     FP12_BN254 GTsum1, GTsum2;
-
     PAIR_BN254_ate(&GTsum1, &G2, &G1sum);
     PAIR_BN254_fexp(&GTsum1);
     PAIR_BN254_ate(&GTsum2, &G2sum, &G1);
@@ -57,7 +52,6 @@ MunitResult test_amcl(const MunitParameter *params, void *data) {
 
     int check = FP12_BN254_equals(&GTsum1, &GTsum2);
     munit_assert(check);
-
 
     // check if e(g1 + g1, g2) = e(g1, g2)^2
     FP12_BN254 GT_squared;
@@ -81,8 +75,6 @@ MunitResult test_amcl(const MunitParameter *params, void *data) {
     check = ECP_BN254_equals(&H, &H_prime);
     munit_assert(check);
 
-
-
     // check if e(g1*4, g2*4^-1) = e(g1, g2)
     FP12_BN254 GT, GT2;
     PAIR_BN254_ate(&GT, &G2, &G1);
@@ -101,16 +93,11 @@ MunitResult test_amcl(const MunitParameter *params, void *data) {
     ECP2_BN254_mul(&G2, four_inv_big);
     PAIR_BN254_ate(&GT2, &G2, &G1);
     PAIR_BN254_fexp(&GT2);
-
-
     check = FP12_BN254_equals(&GT, &GT2);
     munit_assert(check);
 
-
     return MUNIT_OK;
 }
-
-
 
 MunitTest big_tests[] = {
         {(char *) "/test-amcl",  test_amcl,            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},

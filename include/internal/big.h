@@ -28,8 +28,6 @@
 #ifndef CIFER_BIG_H
 #define CIFER_BIG_H
 
-
-
 /**
  * \file
  * \ingroup internal
@@ -39,7 +37,6 @@
 
 #include <gmp.h>
 #include <amcl/big_256_56.h>
-
 
 /**
  * This function transforms an integer of type mpz_t to
