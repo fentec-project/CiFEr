@@ -17,11 +17,11 @@ install:
   - sudo apt install -y build-essential libgmp-dev libsodium-dev
   - sudo rm -rf /usr/local/cmake*
   - sudo -H pip install cmake
-  - cd external/amcl
-  - ./setup_amcl.sh
-  - cd ../..
 
 script:
+  - cd external/amcl
+  - sudo ./setup_amcl.sh
+  - cd ../..
   - cmake .
   - make
   - make test
