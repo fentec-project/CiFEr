@@ -27,7 +27,6 @@
 
 #include "internal/big.h"
 
-
 void BIG_256_56_from_mpz(BIG_256_56 a, mpz_t b) {
     int i;
     BIG_256_56_zero(a);
@@ -50,40 +49,3 @@ void mpz_from_BIG_256_56(mpz_t b, BIG_256_56 a) {
     mpz_import(b, NLEN_256_56, -1, sizeof(a[0]), 0, (8 * sizeof(a[0])) - BASEBITS_256_56, a);
 }
 
-//void mpz_from_BIG_256_56_2(mpz_t c, BIG_256_56 a)
-//{
-//    BIG_256_56 b;
-//    int i,len;
-//    len=BIG_256_56_nbits(a);
-//    if (len%4==0) len/=4;
-//    else
-//    {
-//        len/=4;
-//        len++;
-//    }
-//    if (len<MODBYTES_256_56*2) len=MODBYTES_256_56*2;
-//
-//    unsigned int s[len];
-//    char s2[len];
-//
-//    for (i=len-1; i>=0; i--)
-//    {
-//        BIG_256_56_copy(b,a);
-//        BIG_256_56_shr(b,i*4);
-//        s[len-1-i] = (unsigned int) b[0]&15;
-////        char u = (char) s[i];
-////        printf("%d", s[len-1-i]);
-////        printf("%c", '0' + s[i]);
-//        sprintf(&s2[len-1-i], "%x", s[len-1-i]);
-////        s2[len-1-i] = '0' + s[len-1-i];
-//
-////        printf("%01x",(unsigned int) b[0]&15);
-//    }
-////    mpz_import(c, len, -1, sizeof(s[0]), 0, sizeof(s[0]) - 3, a);
-////    gmp_printf("\n%Zd \n", c);
-////    printf("\n%s", s2);
-////    mpz_import(c, len, 1, sizeof(s[0]), 0, sizeof(s[0]) - 4, s);
-//    mpz_set_str(c, s2, 16);
-////    gmp_printf("\nmpz %Zd \n", c);
-//
-//}

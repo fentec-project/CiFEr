@@ -1,3 +1,5 @@
+# Tis is a modified installation file for installing only
+# functions of BN254 curve from AMCL library.
 import os
 import sys
 
