@@ -253,6 +253,3 @@ os.system("gcc -O3 -fPIC -std=c99 -c newhope.c")
 os.system("ar rc amcl.a *.o")
 
 os.system(deltext+" *.o")
-
-
-

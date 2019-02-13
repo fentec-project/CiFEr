@@ -1,4 +1,4 @@
-# CiFEr - Functional Encryption library [![Build Status](https://travis-ci.org/tilenmarc/CiFEr.svg?branch=master)](https://travis-ci.org/tilenmarc/CiFEr)
+# CiFEr - Functional Encryption library [![Build Status](https://travis-ci.org/fentec-project/CiFEr.svg?branch=master)](https://travis-ci.org/fentec-project/CiFEr)
 
 CiFEr (prounounced as _cipher_) is a cryptographic library offering different 
 state-of-the-art implementations of functional encryption schemes, specifically 
@@ -44,9 +44,21 @@ the source code).
 - [CMake](https://cmake.org/download/) (version 3.11+)
 - [GMP](https://gmplib.org/)
 - [libsodium](https://download.libsodium.org/doc/)
+- [AMCL](https://github.com/miracl/amcl)
 
 CiFEr relies on GMP for all big integer arithmetic. We recommend familiarizing 
-yourself with it before using CiFEr.
+yourself with it before using CiFEr. For the use of pairings in elliptic curves
+CiFEr depends on AMCL and its implementation of BN254 curve. To be able to run
+cmake file described bellow, AMCL library must be compiled with BN254 curve. This
+can be done manually, but in addition we provide a bash script running a modified
+python code that installs minimal requirements of AMCL library in the standard
+directory `/usr/local/lib` and header files in `/usr/local/include`. For the
+latter run:
+````
+cd external/amcl
+sudo ./setup_amcl.sh
+cd ../..
+````
 
 ### Build and install
 To build and install, first download it, then run the following commands in the 
