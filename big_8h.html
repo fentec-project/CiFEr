@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>CiFEr: include/internal/common.h File Reference</title>
+<title>CiFEr: include/internal/big.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -49,64 +49,90 @@
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">common.h File Reference<div class="ingroups"><a class="el" href="group__internal.html">Internal functionality</a></div></div>  </div>
+<div class="title">big.h File Reference<div class="ingroups"><a class="el" href="group__internal.html">Internal functionality</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Common library functionality.  
+<p>Functionalities for transformating mpz_t and BIG_256_56 integers.  
 <a href="#details">More...</a></p>
 
-<p><a href="common_8h_source.html">Go to the source code of this file.</a></p>
+<p><a href="big_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5f0f38a6cc7347a85261a841e8032e10"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a5f0f38a6cc7347a85261a841e8032e10">cfe_init</a> (void)</td></tr>
-<tr class="separator:a5f0f38a6cc7347a85261a841e8032e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9249710141c7f02735c93eeb40e14bf8"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a9249710141c7f02735c93eeb40e14bf8">cfe_malloc</a> (size_t size)</td></tr>
-<tr class="separator:a9249710141c7f02735c93eeb40e14bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af009d6207a1948517f6e362d5235711b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="big_8h.html#af009d6207a1948517f6e362d5235711b">BIG_256_56_from_mpz</a> (BIG_256_56 dst, mpz_t src)</td></tr>
+<tr class="separator:af009d6207a1948517f6e362d5235711b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf050a802bbd0013a51ed366d98b992c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="big_8h.html#aaf050a802bbd0013a51ed366d98b992c">mpz_from_BIG_256_56</a> (mpz_t dst, BIG_256_56 src)</td></tr>
+<tr class="separator:aaf050a802bbd0013a51ed366d98b992c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Common library functionality. </p>
+<div class="textblock"><p>Functionalities for transformating mpz_t and BIG_256_56 integers. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a5f0f38a6cc7347a85261a841e8032e10"></a>
+<a class="anchor" id="af009d6207a1948517f6e362d5235711b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">cfe_error cfe_init </td>
+          <td class="memname">void BIG_256_56_from_mpz </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="paramtype">BIG_256_56&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
         </tr>
-      </table>
-</div><div class="memdoc">
-<p>This function initializes the library. It ensures that the system's random number generator has been properly seeded. This function must be called before any other functions from this library.</p>
-<dl class="section return"><dt>Returns</dt><dd>Error code </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a9249710141c7f02735c93eeb40e14bf8"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
         <tr>
-          <td class="memname">void* cfe_malloc </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Malloc wrapper which aborts on failure (out-of-memory error).</p>
+<p>This function transforms an integer of type mpz_t to type BIG_256_56.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">size</td><td>Size of memory block </td></tr>
+    <tr><td class="paramname">dst</td><td>Integer will be saved here </td></tr>
+    <tr><td class="paramname">src</td><td>Integer will be copied from </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to allocated memory </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aaf050a802bbd0013a51ed366d98b992c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mpz_from_BIG_256_56 </td>
+          <td>(</td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BIG_256_56&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function transforms an integer of type BIG_256_56 to type mpz_t.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dst</td><td>Integer will be saved here </td></tr>
+    <tr><td class="paramname">src</td><td>Integer will be copied from </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

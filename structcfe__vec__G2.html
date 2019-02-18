@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>CiFEr: cfe_ddh_multi_fe_key Struct Reference</title>
+<title>CiFEr: cfe_vec_G2 Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -46,23 +46,36 @@
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">cfe_ddh_multi_fe_key Struct Reference</div>  </div>
+<div class="title">cfe_vec_G2 Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a281256510b97d416c588d0980930112b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a281256510b97d416c588d0980930112b"></a>
-<a class="el" href="structcfe__vec.html">cfe_vec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>keys</b></td></tr>
-<tr class="separator:a281256510b97d416c588d0980930112b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18da4c4a14099fad93d7b0c439628ca6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a18da4c4a14099fad93d7b0c439628ca6"></a>
-mpz_t&#160;</td><td class="memItemRight" valign="bottom"><b>otp_key</b></td></tr>
-<tr class="separator:a18da4c4a14099fad93d7b0c439628ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d79595e4dd4536b07c860da31bd4fdc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7d79595e4dd4536b07c860da31bd4fdc"></a>
+ECP2_BN254 *&#160;</td><td class="memItemRight" valign="bottom"><b>vec</b></td></tr>
+<tr class="separator:a7d79595e4dd4536b07c860da31bd4fdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30904947d45cd14cecb37c6296fafc93"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcfe__vec__G2.html#a30904947d45cd14cecb37c6296fafc93">size</a></td></tr>
+<tr class="separator:a30904947d45cd14cecb37c6296fafc93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="structcfe__ddh__multi__fe__key.html">cfe_ddh_multi_fe_key</a> is a functional encryption key for DDH multi input scheme. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/innerprod/simple/<a class="el" href="ddh__multi_8h_source.html">ddh_multi.h</a></li>
+<div class="textblock"><p>Vector of ECP2_BN254 elements. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a30904947d45cd14cecb37c6296fafc93"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t cfe_vec_G2::size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A pointer to the first element </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/data/<a class="el" href="vec__curve_8h_source.html">vec_curve.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
