@@ -25,28 +25,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CIFER_TEST_H
-#define CIFER_TEST_H
+#include "internal/big.h"
 
-#include <munit.h>
+void BIG_256_56_from_mpz(BIG_256_56 dst, mpz_t src) {
+    BIG_256_56_zero(dst);
+    mpz_t x, y;
+    mpz_inits(x, y, NULL);
+    mpz_set(y, src);
+    size_t size = (MODBYTES_256_56 * 8) - ((MODBYTES_256_56 * 8) % BASEBITS_256_56);
+    for (int i = 0; i < ((MODBYTES_256_56 * 8) / BASEBITS_256_56) + 1; i++)
+    {
+        BIG_256_56_fshl(dst, BASEBITS_256_56);
+        mpz_fdiv_q_2exp(x, y, size);
+        mpz_fdiv_r_2exp(y, y, size);
+        dst[0]+= mpz_get_ui(x);
+        size = size - BASEBITS_256_56;
+    }
+    mpz_clears(x, y, NULL);
+}
 
-MunitSuite prime_suite;
-MunitSuite keygen_suite;
-MunitSuite matrix_suite;
-MunitSuite vector_suite;
-MunitSuite dlog_suite;
-MunitSuite big_suite;
-MunitSuite uniform_suite;
-MunitSuite normal_cumulative_suite;
-MunitSuite normal_negative_suite;
-MunitSuite normal_double_suite;
-MunitSuite ddh_suite;
-MunitSuite damgard_suite;
-MunitSuite ddh_multi_suite;
-MunitSuite damgard_multi_suite;
-MunitSuite lwe_suite;
-MunitSuite lwe_fully_secure_suite;
-MunitSuite ring_lwe_suite;
-MunitSuite paillier_suite;
+void mpz_from_BIG_256_56(mpz_t dst, BIG_256_56 src) {
+    mpz_import(dst, NLEN_256_56, -1, sizeof(src[0]), 0, (8 * sizeof(src[0])) - BASEBITS_256_56, src);
+}
 
-#endif

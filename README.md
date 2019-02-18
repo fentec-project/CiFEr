@@ -44,9 +44,20 @@ the source code).
 - [CMake](https://cmake.org/download/) (version 3.11+)
 - [GMP](https://gmplib.org/)
 - [libsodium](https://download.libsodium.org/doc/)
+- [AMCL](https://github.com/miracl/amcl)
 
 CiFEr relies on GMP for all big integer arithmetic. We recommend familiarizing 
-yourself with it before using CiFEr.
+yourself with it before using CiFEr. To be able to run CMake as described below,
+AMCL must be compiled with BN254 curve. This can be done manually, but for
+convenience, we provide a Bash script that runs a modified AMCL setup (a Python
+script) and installs a minimal version of AMCL in the standard directory
+`/usr/local/lib` and header files in `/usr/local/include`. These default values
+can be changed in `external/amcl/setup_amcl.sh`. To use the script, run:
+````
+cd external/amcl
+sudo ./setup_amcl.sh
+cd ../..
+````
 
 ### Build and install
 To build and install, first download it, then run the following commands in the 

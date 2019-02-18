@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
             prime_suite,
             vector_suite,
             dlog_suite,
+            big_suite,
             ddh_suite,
             ddh_multi_suite,
             lwe_suite,
