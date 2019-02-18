@@ -27,25 +27,24 @@
 
 #include "internal/big.h"
 
-void BIG_256_56_from_mpz(BIG_256_56 a, mpz_t b) {
-    int i;
-    BIG_256_56_zero(a);
+void BIG_256_56_from_mpz(BIG_256_56 dst, mpz_t src) {
+    BIG_256_56_zero(dst);
     mpz_t x, y;
     mpz_inits(x, y, NULL);
-    mpz_set(y, b);
+    mpz_set(y, src);
     size_t size = (MODBYTES_256_56 * 8) - ((MODBYTES_256_56 * 8) % BASEBITS_256_56);
-    for (i=0; i<((MODBYTES_256_56 * 8) / BASEBITS_256_56) + 1; i++)
+    for (int i = 0; i < ((MODBYTES_256_56 * 8) / BASEBITS_256_56) + 1; i++)
     {
-        BIG_256_56_fshl(a, BASEBITS_256_56);
+        BIG_256_56_fshl(dst, BASEBITS_256_56);
         mpz_fdiv_q_2exp(x, y, size);
         mpz_fdiv_r_2exp(y, y, size);
-        a[0]+= mpz_get_ui(x);
+        dst[0]+= mpz_get_ui(x);
         size = size - BASEBITS_256_56;
     }
     mpz_clears(x, y, NULL);
 }
 
-void mpz_from_BIG_256_56(mpz_t b, BIG_256_56 a) {
-    mpz_import(b, NLEN_256_56, -1, sizeof(a[0]), 0, (8 * sizeof(a[0])) - BASEBITS_256_56, a);
+void mpz_from_BIG_256_56(mpz_t dst, BIG_256_56 src) {
+    mpz_import(dst, NLEN_256_56, -1, sizeof(src[0]), 0, (8 * sizeof(src[0])) - BASEBITS_256_56, src);
 }
 

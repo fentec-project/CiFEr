@@ -26,13 +26,13 @@
  */
 
 #include <gmp.h>
-#include <internal/big.h>
 #include <amcl/ecp_BN254.h>
 #include <amcl/ecp2_BN254.h>
 #include <amcl/pair_BN254.h>
+#include "internal/big.h"
 #include "test.h"
 
-MunitResult test_amcl(const MunitParameter *params, void *data) {
+MunitResult test_big(const MunitParameter *params, void *data) {
     // check if e(g1 + g1, g2) = e(g1, g2 + g2)
     ECP_BN254 G1, G1sum;
     ECP_BN254_generator(&G1);
@@ -100,10 +100,10 @@ MunitResult test_amcl(const MunitParameter *params, void *data) {
 }
 
 MunitTest big_tests[] = {
-        {(char *) "/test-amcl",  test_amcl,            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-big",  test_big,            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 MunitSuite big_suite = {
-        (char *) "/abe/big", big_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE
+        (char *) "/big", big_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE
 };

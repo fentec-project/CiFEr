@@ -42,17 +42,17 @@
  * This function transforms an integer of type mpz_t to
  * type BIG_256_56.
  *
- * @param a Integer will be saved here
- * @param b Integer will be copied from
+ * @param dst Integer will be saved here
+ * @param src Integer will be copied from
  */
-void BIG_256_56_from_mpz(BIG_256_56 a, mpz_t b);
+void BIG_256_56_from_mpz(BIG_256_56 dst, mpz_t src);
 
 /**
  * This function transforms an integer of type BIG_256_56
  * to type mpz_t.
  *
- * @param b Integer will be saved here
- * @param a Integer will be copied from
- */void mpz_from_BIG_256_56(mpz_t b, BIG_256_56 a);
+ * @param dst Integer will be saved here
+ * @param src Integer will be copied from
+ */void mpz_from_BIG_256_56(mpz_t dst, BIG_256_56 src);
 
 #endif

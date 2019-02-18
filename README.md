@@ -47,13 +47,12 @@ the source code).
 - [AMCL](https://github.com/miracl/amcl)
 
 CiFEr relies on GMP for all big integer arithmetic. We recommend familiarizing 
-yourself with it before using CiFEr. For the use of pairings in elliptic curves
-CiFEr depends on AMCL and its implementation of BN254 curve. To be able to run
-cmake file described bellow, AMCL library must be compiled with BN254 curve. This
-can be done manually, but in addition we provide a bash script running a modified
-python code that installs minimal requirements of AMCL library in the standard
-directory `/usr/local/lib` and header files in `/usr/local/include`. For the
-latter run:
+yourself with it before using CiFEr. To be able to run CMake as described below,
+AMCL must be compiled with BN254 curve. This can be done manually, but for
+convenience, we provide a Bash script that runs a modified AMCL setup (a Python
+script) and installs a minimal version of AMCL in the standard directory
+`/usr/local/lib` and header files in `/usr/local/include`. These default values
+can be changed in `external/amcl/setup_amcl.sh`. To use the script, run:
 ````
 cd external/amcl
 sudo ./setup_amcl.sh
