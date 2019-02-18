@@ -44,6 +44,8 @@ set(library_SOURCES
         src/sample/normal_double.c
         src/sample/normal_negative.c
         src/sample/uniform.c
+        src/abe/policy.c
+        src/abe/gpsw.c
         )
 
 add_library(cifer SHARED ${library_SOURCES})
@@ -76,6 +78,8 @@ set(binary_SOURCES
         test/sample/normal_double.c
         test/sample/normal_negative.c
         test/sample/uniform.c
+        test/abe/policy.c
+        test/abe/gpsw.c
         external/munit/munit.c
         )
 

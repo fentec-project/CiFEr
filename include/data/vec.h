@@ -69,6 +69,25 @@ void cfe_vec_init(cfe_vec *v, size_t size);
 void cfe_vec_inits(size_t size, cfe_vec *v, ...);
 
 /**
+ * Initializes a vector with all the values set to
+ * equal a constant.
+ *
+ * @param vec A pointer to an uninitialized vector
+ * @param size The size of the vector
+ * @param c The constant that the entries equal to
+ */
+void cfe_vec_const(cfe_vec *vec, size_t size, mpz_t c);
+
+/**
+ * Initializes a vector with all the values set to
+ * equal the values of another vector.
+ *
+ * @param res A pointer to an uninitialized vector
+ * @param v A pointer to the vector that will be copied
+ */
+void cfe_vec_copy(cfe_vec *res, cfe_vec *v);
+
+/**
  * Frees the memory occupied by the contents of the vector.
  */
 void cfe_vec_free(cfe_vec *v);
