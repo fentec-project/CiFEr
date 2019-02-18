@@ -37,7 +37,6 @@
 #include "sample/uniform.h"
 
 MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
-
     cfe_gpsw gpsw;
     cfe_gpsw_init(&gpsw, 10);
 
@@ -48,23 +47,13 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     FP12_BN254 msg;
     FP12_BN254_one(&msg);
 
-    int *gamma= (int *) cfe_malloc(7 * sizeof(int));
-    gamma[0] = 1;
-    gamma[1] = 2;
-    gamma[2] = 3;
-    gamma[3] = 4;
-    gamma[4] = 5;
-    gamma[5] = 6;
-    gamma[6] = 7;
-//    int *gamma= (int *) cfe_malloc(1 * sizeof(int));
-//    gamma[0] = 1;
+    int gamma[] = {1, 2, 3, 4, 5, 6, 7};
 
     cfe_gpsw_cipher cipher;
     gpsw_encrypt(&cipher, &gpsw, &msg, gamma, 7, &pk);
 
     // define a boolean expression and make a corresponding msp structure
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
-//    char bool_exp[] = "1";
     cfe_msp msp;
     boolean_to_msp(&msp, bool_exp, true);
 
@@ -72,25 +61,20 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     cfe_vec_G1 policy_keys;
     generate_policy_keys(&policy_keys, &gpsw, &msp, &sk);
 
-    int *owned_atrib= (int *) cfe_malloc(3 * sizeof(int));
-    owned_atrib[0] = 1;
-    owned_atrib[1] = 3;
-    owned_atrib[2] = 6;
-//    int *owned_atrib= (int *) cfe_malloc(1 * sizeof(int));
-//    owned_atrib[0] = 1;
+    int owned_attrib[] = {1, 3, 6};
 
     cfe_gpsw_keys keys;
-    delegate_keys(&keys, &policy_keys, &msp, owned_atrib, 3);
-
-
+    delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
 
     FP12_BN254 decryption;
-
     int check = gpsw_decrypt(&decryption, &cipher, &keys, &gpsw);
     munit_assert(check == 0);
 
     munit_assert(FP12_BN254_equals(&msg, &decryption) == 1);
-// TODO check negative in FP12
+    // TODO check negative in FP12
+
+    cfe_gpsw_clear(&gpsw);
+
     return MUNIT_OK;
 
 }

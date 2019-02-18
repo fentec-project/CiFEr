@@ -38,12 +38,10 @@
 #include "abe/gpsw.h"
 #include "data/vec_curve.h"
 
-
-
 void cfe_gpsw_init(cfe_gpsw *gpsw, size_t l) {
     gpsw->l = l;
     mpz_init(gpsw->p);
-    mpz_from_BIG_256_56(gpsw->p, CURVE_Order_BN254);
+    mpz_from_BIG_256_56(gpsw->p, (int64_t *) CURVE_Order_BN254);
 }
 
 void generate_master_keys(cfe_gpsw *gpsw, cfe_gpsw_pub_key *pk, cfe_vec *sk) {
@@ -253,8 +251,9 @@ int gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_keys 
     return 0;
 }
 
-
-
+void cfe_gpsw_clear(cfe_gpsw *gpsw) {
+    mpz_clear(gpsw->p);
+}
 
 
 

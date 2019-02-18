@@ -112,4 +112,6 @@ void delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
 
 int gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_keys *keys, cfe_gpsw *gpsw);
 
+void cfe_gpsw_clear(cfe_gpsw *gpsw);
+
 #endif
