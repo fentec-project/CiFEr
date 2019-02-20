@@ -68,3 +68,11 @@ void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u) {
         ECP2_BN254_mul(&(v->vec[i]), x);
     }
 }
+
+void cfe_vec_G1_free(cfe_vec_G1 *v) {
+    free(v->vec);
+}
+
+void cfe_vec_G2_free(cfe_vec_G2 *v) {
+    free(v->vec);
+}

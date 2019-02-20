@@ -62,8 +62,8 @@ typedef struct cfe_gpsw {
  * cfe_gpsw_pub_key represents the public key for the GPSW scheme.
  */
 typedef struct cfe_gpsw_pub_key {
-    cfe_vec_G2 *t;
-    FP12_BN254 *y;
+    cfe_vec_G2 t;
+    FP12_BN254 y;
 } cfe_gpsw_pub_key;
 
 /**
@@ -97,21 +97,103 @@ void cfe_gpsw_init(cfe_gpsw *gpsw, size_t l);
  * Generates master secret and public key.
  *
  * @param gpsw A pointer to an initialized struct representing the scheme
- * @param pk A pointer to an uninitialized struct representing the public key
- * @param sk A pointer to an uninitialized vector representing the secret key
+ * @param pk A pointer to an uninitialized struct, the public key will be save here
+ * @param sk A pointer to an uninitialized vector, the secret key will be saved here
  */
-void generate_master_keys(cfe_gpsw *gpsw, cfe_gpsw_pub_key *pk, cfe_vec *sk);
+void cfe_gpsw_generate_master_keys(cfe_gpsw *gpsw, cfe_gpsw_pub_key *pk, cfe_vec *sk);
 
-void gpsw_encrypt(cfe_gpsw_cipher *cipher, cfe_gpsw *gpsw, FP12_BN254 *msg,
+// TODO: change message to be a string when mapping is defined
+/**
+ * The function takes as an input a message given as a string, gamma a set of
+ * attributes that can be latter used in a decryption policy, and a public
+ * key. It creates an encryption of the message.
+ *
+ * @param cipher A pointer to an uninitialized struct, the encryption will be saved here
+ * @param gpsw A pointer to an initialized struct representing the scheme
+ * @param msg A pointer to an array of characters representing the message
+ * @param gamma A pointer to an array of integers defining witch attributes can be
+ * used for the decryption policy
+ * @param num_attrib Length of gamma
+ * @param pk A pointer to an initialized struct representing the public key
+ */
+void cfe_gpsw_encrypt(cfe_gpsw_cipher *cipher, cfe_gpsw *gpsw, FP12_BN254 *msg,
         int *gamma, size_t num_attrib, cfe_gpsw_pub_key *pk);
 
-void generate_policy_keys(cfe_vec_G1 *key, cfe_gpsw *gpsw, cfe_msp *msp, cfe_vec *sk);
+/**
+ * The function given a monotone span program (MSP) and the vector of secret
+ * keys produces a vector of keys needed for the decryption. In particular,
+ * for each row of the MSP matrix it creates a corresponding key. Since
+ * each row of the matrix has a corresponding key, this keys can be latter delegated
+ * to entities with corresponding attributes.
+ *
+ * @param key A pointer to an uninitialized vector of elements of the elliptic curve,
+ * the keys will be saved here
+ * @param gpsw A pointer to an initialized struct representing the scheme
+ * @param msp A pointer to an initialized struct representing the MSP policy
+ * @param sk A pointer to an initialized struct representing the secret key
+ */
+void cfe_gpsw_generate_policy_keys(cfe_vec_G1 *key, cfe_gpsw *gpsw, cfe_msp *msp, cfe_vec *sk);
 
-void delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
-                   cfe_msp *msp, int *atrib, size_t num_attrib);
+/**
+ * A helping function used in generate_policy_keys.
+ */
+void cfe_gpsw_get_sum(cfe_vec *v, mpz_t y, mpz_t p, size_t d);
 
-int gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_keys *keys, cfe_gpsw *gpsw);
+/**
+ * The function given the set of all keys produced from the MSP struct takes
+ * those that are specified and creates keys for the decryption.
+ *
+ * @param keys A pointer to an uninitialized struct, the keys for the decryption
+ * will be saved here
+ * @param policy_keys A pointer to an initialized struct representing the keys of
+ * all the attributes
+ * @param msp A pointer to an initialized struct representing the MSP policy
+ * @param attrib A pointer to an array of integers defining which attributes are owned
+ * to join corresponding keys to the final key for the decryption
+ * @param num_attrib The length of attrib
+ */
+void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
+                   cfe_msp *msp, int *attrib, size_t num_attrib);
 
+// TODO: change decription to be a string when mapping is defined
+/**
+ * The function takes as an input a cipher and keys and tries to decrypt
+ * the cipher. If the keys were properly generated, this is possible if and only
+ * if the rows of the matrix in the key span the vector [1, 1,..., 1]. If this
+ * is not possible, i.e. keys are insufficient, the function returns 1 else 0.
+ *
+ * @param decryption A pointer to array of characters, the decryption will be here
+ * @param cipher A pointer to an initialized struct representing the ciphertext
+ * @param keys A pointer to an initialized struct representing the keys for the decryption
+ * @param gpsw A pointer to an initialized struct representing the scheme
+ */
+int cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_keys *keys, cfe_gpsw *gpsw);
+
+/**
+ * Frees the memory occupied by the struct members. It does not free
+ * memory occupied by the struct itself.
+ *
+ * @param gpsw A pointer to an instance of the scheme (*initialized* cfe_gpsw
+ * struct)
+ */
 void cfe_gpsw_clear(cfe_gpsw *gpsw);
+
+/**
+ * Frees the memory occupied by the struct members. It does not free
+ * memory occupied by the struct itself.
+ *
+ * @param cipher A pointer to an instance of the scheme (*initialized*
+ * cfe_gpsw_cipher struct)
+ */
+void cfe_gpsw_cipher_clear(cfe_gpsw_cipher *cipher);
+
+/**
+ * Frees the memory occupied by the struct members. It does not free
+ * memory occupied by the struct itself.
+ *
+ * @param keys A pointer to an instance of the scheme (*initialized*
+ * cfe_gpsw_keys struct)
+ */
+void cfe_gpsw_keys_clear(cfe_gpsw_keys *keys);
 
 #endif

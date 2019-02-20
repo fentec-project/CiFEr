@@ -87,7 +87,7 @@ void cfe_mat_const(cfe_mat *m, size_t rows, size_t cols, mpz_t c);
  * equal the values of another matrix.
  *
  * @param res A pointer to an uninitialized matrix
- * @param v A pointer to the matrix that will be copied
+ * @param m A pointer to the matrix that will be copied
  */
 void cfe_mat_copy(cfe_mat *res, cfe_mat *m);
 

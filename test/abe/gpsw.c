@@ -37,49 +37,62 @@
 #include "sample/uniform.h"
 
 MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
+    // create a new GPSW struct with the universe of l possible
+    // attributes (attributes are denoted by the integers in [0, l)
     cfe_gpsw gpsw;
     cfe_gpsw_init(&gpsw, 10);
 
+    // generate a public key and a secret key for the scheme
     cfe_gpsw_pub_key pk;
     cfe_vec sk;
-    generate_master_keys(&gpsw, &pk, &sk);
+    cfe_gpsw_generate_master_keys(&gpsw, &pk, &sk);
 
+    // create a message to be encrypted
     FP12_BN254 msg;
     FP12_BN254_one(&msg);
 
-    int gamma[] = {1, 2, 3, 4, 5, 6, 7};
+    // define a set of attributes (a subset of the universe of attributes)
+    // that will later be used in the decryption policy of the message
+    int gamma[] = {2, 1, 3, 4, 5, 6, 7};
 
+    // encrypt the message
     cfe_gpsw_cipher cipher;
-    gpsw_encrypt(&cipher, &gpsw, &msg, gamma, 7, &pk);
+    cfe_gpsw_encrypt(&cipher, &gpsw, &msg, gamma, 7, &pk);
 
-    // define a boolean expression and make a corresponding msp structure
+    // create a msp struct out of a boolean expression  representing the
+    // policy specifying which attributes are needed to decrypt the ciphertext
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
     boolean_to_msp(&msp, bool_exp, true);
 
-
+    // generate keys for decryption that correspond to provided msp struct,
+    // i.e. a vector of keys, for each row in the msp matrix one key, having
+    // the property that a subset of keys can decrypt a message iff the
+    // corresponding rows span the vector of ones (which is equivalent to
+    // corresponding attributes satisfy the boolean expression)
     cfe_vec_G1 policy_keys;
-    generate_policy_keys(&policy_keys, &gpsw, &msp, &sk);
+    cfe_gpsw_generate_policy_keys(&policy_keys, &gpsw, &msp, &sk);
 
+    // produce a set of keys that are given to an entity with a set
+    // of attributes in ownedAttrib
     int owned_attrib[] = {1, 3, 6};
-
     cfe_gpsw_keys keys;
-    delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
+    cfe_gpsw_delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
 
     FP12_BN254 decryption;
-    int check = gpsw_decrypt(&decryption, &cipher, &keys, &gpsw);
+    int check = cfe_gpsw_decrypt(&decryption, &cipher, &keys, &gpsw);
     munit_assert(check == 0);
 
+    // check if the decryption equals the starting message
     munit_assert(FP12_BN254_equals(&msg, &decryption) == 1);
-    // TODO check negative in FP12
 
+    // clear up
     cfe_gpsw_clear(&gpsw);
+    cfe_gpsw_cipher_clear(&cipher);
+    cfe_gpsw_keys_clear(&keys);
 
     return MUNIT_OK;
-
 }
-
-
 
 MunitTest gpsw_tests[] = {
         {(char *) "/end-to-end", test_gpsw_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},

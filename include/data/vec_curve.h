@@ -88,4 +88,8 @@ void cfe_vec_G2_init(cfe_vec_G2 *v, size_t size);
  */
 void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u);
 
+void cfe_vec_G1_free(cfe_vec_G1 *v);
+
+void cfe_vec_G2_free(cfe_vec_G2 *v);
+
 #endif
