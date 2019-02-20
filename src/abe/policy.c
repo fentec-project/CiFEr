@@ -34,7 +34,7 @@
 #include "abe/policy.h"
 
 
-void boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
+int boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
     char *bool_exp_trimmed = remove_spaces(bool_exp);
     cfe_vec vec;
     cfe_vec_init(&vec, 1);
@@ -43,8 +43,10 @@ void boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
     mpz_init_set_ui(one, 1);
 
     cfe_vec_set(&vec, one, 0);
-    boolean_to_msp_iterative(msp, bool_exp_trimmed, &vec, 1);
-
+    int err = boolean_to_msp_iterative(msp, bool_exp_trimmed, &vec, 1);
+    if (err == -1) {
+        goto clearup;
+    }
     if (convert_to_ones) {
         cfe_mat inv_mat, msp_mat;
         cfe_mat_const(&inv_mat, msp->mat->cols, msp->mat->cols, zero);
@@ -58,15 +60,21 @@ void boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
         cfe_mat_mul(msp->mat, &msp_mat, &inv_mat);
         cfe_mat_frees(&msp_mat, &inv_mat, NULL);
     }
-
+    clearup:
     cfe_vec_free(&vec);
     mpz_clear(one);
+    if (err == -1) {
+        return 1;
+    } else {
+        return 0;
+    }
+
 }
 
-size_t boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c) {
+int boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c) {
     size_t num_brc = 0;
     char *bool_exp1, *bool_exp2;
-    size_t c1, c_out;
+    int c1, c_out;
     cfe_msp msp1, msp2;
     bool found = false;
 
@@ -85,9 +93,15 @@ size_t boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size
             bool_exp2 = substring(bool_exp, i + 3, strlen(bool_exp));
 
             cfe_vec vec1, vec2;
-            make_and_vecs(&vec1, &vec2, vec, c);
+            make_and_vecs(&vec1, &vec2, vec, (size_t) c);
             c1 = boolean_to_msp_iterative(&msp1, bool_exp1, &vec1, c + 1);
-            c_out = boolean_to_msp_iterative(&msp2, bool_exp2, &vec2, c1);
+            if (c1 == -1) {
+                return -1;
+            }
+            c_out = boolean_to_msp_iterative(&msp2, bool_exp2, &vec2, (size_t) c1);
+            if (c_out == -1) {
+                return -1;
+            }
             found = true;
             break;
         }
@@ -96,7 +110,13 @@ size_t boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size
             bool_exp1 = substring(bool_exp, 0, i);
             bool_exp2 = substring(bool_exp, i + 2, strlen(bool_exp));
             c1 = boolean_to_msp_iterative(&msp1, bool_exp1, vec, c);
-            c_out = boolean_to_msp_iterative(&msp2, bool_exp2, vec, c1);
+            if (c1 == -1) {
+                return -1;
+            }
+            c_out = boolean_to_msp_iterative(&msp2, bool_exp2, vec, (size_t) c1);
+            if (c_out == -1) {
+                return -1;
+            }
             found = true;
             break;
         }
@@ -108,13 +128,16 @@ size_t boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size
             return boolean_to_msp_iterative(msp, bool_exp, vec, c);
         }
 
-        int attrib = atoi(bool_exp); // todo: error handling change to strtol
+        int attrib = str_to_int(bool_exp);
+        if (attrib == -1) {
+            return -1;
+        }
 
         msp->mat = (cfe_mat*) cfe_malloc(sizeof(cfe_mat));
-        cfe_mat_init(msp->mat, 1, c);
+        cfe_mat_init(msp->mat, 1, (size_t) c);
         mpz_t zero;
         mpz_init_set_ui(zero, 0);
-        for (size_t i = 0; i< c; i++) {
+        for (size_t i = 0; i < c; i++) {
             if (i < vec->size) {
                 cfe_mat_set(msp->mat, vec->vec[i], 0, i);
             } else {
@@ -124,11 +147,11 @@ size_t boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size
 
         msp->row_to_attrib = (int*) cfe_malloc(sizeof(int) * 1);
         msp->row_to_attrib[0] = attrib;
-        return c;
+        return (int) c;
     } else {
         msp->mat = (cfe_mat*) cfe_malloc(sizeof(cfe_mat));
         msp->row_to_attrib = (int*) cfe_malloc(sizeof(int) * (msp1.mat->rows + msp2.mat->rows));
-        cfe_mat_init(msp->mat, msp1.mat->rows + msp2.mat->rows, c_out);
+        cfe_mat_init(msp->mat, msp1.mat->rows + msp2.mat->rows, (size_t) c_out);
         mpz_t tmp;
         mpz_init(tmp);
         for (size_t i = 0; i < msp1.mat->rows; i++) {
@@ -137,13 +160,13 @@ size_t boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size
                 cfe_mat_set(msp->mat, tmp, i, j);
             }
             mpz_set_ui(tmp, 0);
-            for (size_t j = msp->mat->cols; j < c_out; j++) {
+            for (size_t j = msp->mat->cols; j < (size_t) c_out; j++) {
                 cfe_mat_set(msp->mat, tmp, i, j);
             }
             msp->row_to_attrib[i] = msp1.row_to_attrib[i];
         }
         for (size_t i = 0; i < msp2.mat->rows; i++) {
-            for (size_t j = 0; j < c_out; j++) {
+            for (size_t j = 0; j < (size_t) c_out; j++) {
                 cfe_mat_get(tmp, msp2.mat, i, j);
                 cfe_mat_set(msp->mat, tmp, i + msp1.mat->rows, j);
             }
@@ -166,6 +189,17 @@ void make_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c) {
     mpz_clear(zero);
 }
 
+int str_to_int(char *str) {
+    int result = 0;
+    for (size_t i = 0; i < strlen(str); i++) {
+        if ((str[i] < '0') || (str[i] > '9')) {
+            return -1;
+        } else {
+            result = (result * 10) + ((str[i]) - '0');
+        }
+    }
+    return result;
+}
 
 char *substring(char *s, size_t start, size_t stop) {
     char *sub = (char*) cfe_malloc(sizeof(char)*(stop - start + 1));
@@ -205,7 +239,7 @@ void cfe_msp_free(cfe_msp *msp) {
 
 int gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p) {
     int ret_error = 0;
-    // copy mat and vec in m and v (mod p)
+
     cfe_mat m;
     cfe_vec v, vec_tmp;
     cfe_vec_init(&v, vec->size);

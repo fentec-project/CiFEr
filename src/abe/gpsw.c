@@ -111,13 +111,12 @@ void cfe_gpsw_generate_policy_keys(cfe_vec_G1 *policy_keys, cfe_gpsw *gpsw, cfe_
     cfe_vec_G1_init(policy_keys, msp->mat->rows);
     for (size_t i = 0; i < msp->mat->rows; i++) {
         mpz_invert(t_map_i_inv, sk->vec[msp->row_to_attrib[i]], gpsw->p);
-
         cfe_vec_dot(mat_times_u, &(msp->mat->mat[i]), &u);
         mpz_mul(pow, t_map_i_inv, mat_times_u);
         mpz_mod(pow, pow, gpsw->p);
+        BIG_256_56_from_mpz(pow_big, pow);
 
         ECP_BN254_generator(&(policy_keys->vec[i]));
-        BIG_256_56_from_mpz(pow_big, pow);
         ECP_BN254_mul(&(policy_keys->vec[i]), pow_big);
     }
 

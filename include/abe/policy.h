@@ -44,7 +44,7 @@
 /**
  * cfe_msp represents a monotone span program (MSP) describing a policy defining which
  * attributes are needed to decrypt the ciphertext. It includes a matrix
- * and a mapping from the rows of the matarix to attributes. A MSP policy
+ * and a mapping from the rows of the matrix to attributes. A MSP policy
  * allows decryption of an entity with a set of attributes A if an only if all the
  * rows of the matrix mapped to an element of A span the vector [1, 0,..., 0] (or
  * vector [1, 1,..., 1] depending on the use case).
@@ -62,26 +62,34 @@ typedef struct cfe_msp {
  * corresponding rows span a vector [1, 1,..., 1] or vector [1, 0,..., 0]
  * depending if parameter convert_to_ones is set to true or false. Additionally a
  * vector is produced whose i-th entry indicates to which attribute the i-th row
- * corresponds.
+ * corresponds. The boolean expression is a string where attributes are written as
+ * integers (hence they must not be greater than what int can hold) separated
+ * with AND and OR gates, with brackets defining the order of the gates.
  *
  * @param msp A pointer to an uninitialized cfe_msp struct representing the
- * MSP structure. The result will be saved here.
- * @param bool_exp A string with the boolean expression.
+ * MSP structure; the result will be saved here
+ * @param bool_exp A string with the boolean expression
  * @param convert_to_ones A boolean value defining which vector must the MSP matrix
- * span, a vector [1, 1,..., 1] of set to true or vector [1, 0,..., 0] if set to false.
+ * span, a vector [1, 1,..., 1] if set to true or vector [1, 0,..., 0] if set to false
+ * @return Returns 1 if the boolean expression is not in the proper form and cannot
+ * be transformed, else 0
  */
-void boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones);
+int boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones);
 
 /**
  * A helping function used in boolean_to_msp.
  */
-size_t boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c);
+int boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
 void make_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
 
+/**
+ * A helping function used in boolean_to_msp_iterative.
+ */
+int str_to_int(char *str);
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
@@ -108,11 +116,11 @@ void cfe_msp_free(cfe_msp *msp);
  * then the function returns an 1, else 0.
  *
  * @param res A pointer to an uninitialized cfe_res struct being the the vector
- * where the result will be saved.
- * @param mat A pointer to the matrix for the equation.
- * @param vec A pointer to the right-hand side vector in the equation.
- * @param p Modulus for the computations.
- * @return Returns 1 if no solution exists else 0.
+ * where the result will be saved
+ * @param mat A pointer to the matrix for the equation
+ * @param vec A pointer to the right-hand side vector in the equation
+ * @param p Modulus for the computations
+ * @return Returns 1 if no solution exists else 0
  */
 int gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p);
 

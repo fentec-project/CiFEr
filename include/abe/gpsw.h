@@ -82,7 +82,7 @@ typedef struct cfe_gpsw_cipher {
 typedef struct cfe_gpsw_keys {
     cfe_mat mat;
     cfe_vec_G1 d;
-    int * row_to_attrib;
+    int *row_to_attrib;
 } cfe_gpsw_keys;
 
 /**
@@ -110,8 +110,8 @@ void cfe_gpsw_generate_master_keys(cfe_gpsw *gpsw, cfe_gpsw_pub_key *pk, cfe_vec
  *
  * @param cipher A pointer to an uninitialized struct, the encryption will be saved here
  * @param gpsw A pointer to an initialized struct representing the scheme
- * @param msg A pointer to an array of characters representing the message
- * @param gamma A pointer to an array of integers defining witch attributes can be
+ * @param msg An element of FP12_BN254 representing the message
+ * @param gamma A pointer to an array of integers defining which attributes can be
  * used for the decryption policy
  * @param num_attrib Length of gamma
  * @param pk A pointer to an initialized struct representing the public key
@@ -155,17 +155,18 @@ void cfe_gpsw_get_sum(cfe_vec *v, mpz_t y, mpz_t p, size_t d);
 void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
                    cfe_msp *msp, int *attrib, size_t num_attrib);
 
-// TODO: change decription to be a string when mapping is defined
+// TODO: change decryption to be a string when mapping is defined
 /**
  * The function takes as an input a cipher and keys and tries to decrypt
  * the cipher. If the keys were properly generated, this is possible if and only
  * if the rows of the matrix in the key span the vector [1, 1,..., 1]. If this
  * is not possible, i.e. keys are insufficient, the function returns 1 else 0.
  *
- * @param decryption A pointer to array of characters, the decryption will be here
+ * @param decryption An element of FP12_BN254, the decryption will be saved here
  * @param cipher A pointer to an initialized struct representing the ciphertext
  * @param keys A pointer to an initialized struct representing the keys for the decryption
  * @param gpsw A pointer to an initialized struct representing the scheme
+ * @return Error code
  */
 int cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_keys *keys, cfe_gpsw *gpsw);
 

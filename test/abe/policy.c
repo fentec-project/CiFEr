@@ -37,7 +37,8 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     // define a boolean expression and make a corresponding msp structure
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
-    boolean_to_msp(&msp, bool_exp, true);
+    int check = boolean_to_msp(&msp, bool_exp, true);
+    munit_assert(check == 0);
 
     // create parameters to test msp
     cfe_mat sub_mat, sub_mat_transpose;
@@ -59,10 +60,13 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     cfe_vec_const(&one_vec, sub_mat.cols, one);
 
     mpz_init_set_ui(p, 17);
-    int check = gaussian_elimination(&x, &sub_mat_transpose, &one_vec, p);
-
-
+    check = gaussian_elimination(&x, &sub_mat_transpose, &one_vec, p);
     munit_assert(check == 0);
+
+    // define a faulty boolean expression and check for error
+    char bool_exp_faulty[] = "(5 OR a3) AND ((2 OR 4) OR (1 AND 6))";
+    check = boolean_to_msp(&msp, bool_exp_faulty, true);
+    munit_assert(check == 1);
 
     // clearup
     cfe_msp_free(&msp);
@@ -103,10 +107,6 @@ MunitResult test_gaussian_elimination(const MunitParameter params[], void *data)
     cfe_mat_free(&mat);
     return MUNIT_OK;
 }
-
-
-
-
 
 MunitTest policy_tests[] = {
         {(char *) "/test-boolean_to_msp",       test_boolean_to_msp,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
