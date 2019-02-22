@@ -40,7 +40,7 @@
  * As in GMP library, all functions except initialization functions presume that
  * all of the parameters are properly initialized.
  *
- * All functions (unless othewise specified) store their results (either a GMP
+ * All functions (unless otherwise specified) store their results (either a GMP
  * integer, a vector or a matrix) to a parameter and do not modify the
  * original matrix.
  * Thus, the "result" passed as a parameter must also be properly initialized.

@@ -29,9 +29,9 @@
 #define CIFER_GPSW_H
 
 #include <gmp.h>
-#include <data/vec_curve.h>
 #include <amcl/fp12_BN254.h>
 
+#include "data/vec_curve.h"
 #include "data/vec.h"
 #include "policy.h"
 

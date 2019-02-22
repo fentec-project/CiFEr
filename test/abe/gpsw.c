@@ -26,12 +26,12 @@
  */
 
 #include <gmp.h>
-#include <internal/big.h>
 #include <amcl/ecp_BN254.h>
 #include <amcl/pair_BN254.h>
-#include <internal/common.h>
-#include "test.h"
 
+#include "internal/big.h"
+#include "internal/common.h"
+#include "test.h"
 #include "abe/gpsw.h"
 #include "abe/policy.h"
 #include "sample/uniform.h"

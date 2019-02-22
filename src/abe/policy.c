@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <amcl/big_256_56.h>
+
 #include "internal/common.h"
 #include "abe/policy.h"
 

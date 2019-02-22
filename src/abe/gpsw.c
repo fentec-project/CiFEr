@@ -27,11 +27,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <internal/common.h>
-#include <internal/big.h>
 #include <amcl/big_256_56.h>
 #include <amcl/pair_BN254.h>
 
+#include "internal/common.h"
+#include "internal/big.h"
 #include "sample/uniform.h"
 #include "abe/policy.h"
 #include "abe/gpsw.h"

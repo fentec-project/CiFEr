@@ -28,8 +28,8 @@
 #include "munit.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include <sample/uniform.h>
 
+#include "sample/uniform.h"
 #include "abe/policy.h"
 
 
