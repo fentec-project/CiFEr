@@ -160,7 +160,7 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_
     cfe_mat mat_transpose;
     cfe_mat_init(&mat_transpose, keys->mat.cols, keys->mat.rows);
     cfe_mat_transpose(&mat_transpose, &(keys->mat));
-    int check = gaussian_elimination(&alpha, &mat_transpose, &one_vec, gpsw->p);
+    cfe_error check = gaussian_elimination(&alpha, &mat_transpose, &one_vec, gpsw->p);
     cfe_mat_free(&mat_transpose);
     cfe_vec_free(&one_vec);
     mpz_clear(one);

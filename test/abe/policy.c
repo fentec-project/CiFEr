@@ -31,7 +31,6 @@
 
 #include "sample/uniform.h"
 #include "abe/policy.h"
-#include <errno.h>
 
 
 MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
@@ -125,8 +124,8 @@ MunitResult test_str_to_int(const MunitParameter params[], void *data) {
 
 MunitTest policy_tests[] = {
         {(char *) "/test-boolean_to_msp",       test_boolean_to_msp,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-//        {(char *) "/test-gaussian-elimination", test_gaussian_elimination, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-//        {(char *) "/test-str-to-int",           test_str_to_int,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-gaussian-elimination", test_gaussian_elimination, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-str-to-int",           test_str_to_int,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL,                                  NULL,                      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
