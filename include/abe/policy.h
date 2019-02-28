@@ -33,6 +33,7 @@
 
 #include "data/mat.h"
 #include "data/vec.h"
+#include "internal/errors.h"
 
 /**
  * \file
@@ -50,7 +51,7 @@
  * vector [1, 1,..., 1] depending on the use case).
  */
 typedef struct cfe_msp {
-    cfe_mat *mat; /** A pointer to a matrix */
+    cfe_mat mat; /** A pointer to a matrix */
     int *row_to_attrib; /** Mapping from the rows of the matrix to attributes */
 } cfe_msp;
 
@@ -71,20 +72,20 @@ typedef struct cfe_msp {
  * @param bool_exp A string with the boolean expression
  * @param convert_to_ones A boolean value defining which vector must the MSP matrix
  * span, a vector [1, 1,..., 1] if set to true or vector [1, 0,..., 0] if set to false
- * @return Returns 1 if the boolean expression is not in the proper form and cannot
- * be transformed, else 0
+ * @return Returns an error if the boolean expression is not in the proper form and
+ * cannot be transformed.
  */
-int boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones);
+cfe_error boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones);
 
 /**
  * A helping function used in boolean_to_msp.
  */
-int boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c);
+cfe_error boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-void make_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
+void init_set_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
@@ -104,7 +105,7 @@ char *remove_spaces(char* source);
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.
  *
- * @param msp A pointer to an instance of the scheme (*initialized* cfe_msp
+ * @param msp A pointer to a MSP (*initialized* cfe_msp
  * struct)
  */
 void cfe_msp_free(cfe_msp *msp);
@@ -120,8 +121,9 @@ void cfe_msp_free(cfe_msp *msp);
  * @param mat A pointer to the matrix for the equation
  * @param vec A pointer to the right-hand side vector in the equation
  * @param p Modulus for the computations
- * @return Returns 1 if no solution exists else 0
+ * @return Returns CFE_ERR_NO_SOLUTION_EXISTS error if the solution does not
+ * exist, else CFE_ERR_NONE for no error
  */
-int gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p);
+cfe_error gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p);
 
 #endif

@@ -56,20 +56,17 @@ void cfe_vec_inits(size_t size, cfe_vec *v, ...) {
     va_end (ap);
 }
 
-void cfe_vec_const(cfe_vec *vec, size_t size, mpz_t c) {
-    cfe_vec_init(vec, size);
-    for (size_t i = 0; i < size; i++) {
+void cfe_vec_set_const(cfe_vec *vec, mpz_t c) {
+    for (size_t i = 0; i < vec->size; i++) {
         cfe_vec_set(vec, c, i);
     }
 }
 
 // Copies a vector.
 void cfe_vec_copy(cfe_vec *res, cfe_vec *v) {
-    res->size = v->size;
-    res->vec = (mpz_t *) cfe_malloc(res->size * sizeof(mpz_t));
-
+    assert(v->size == res->size);
     for (size_t i = 0; i < res->size; i++) {
-        mpz_init_set(res->vec[i], v->vec[i]);
+        mpz_set(res->vec[i], v->vec[i]);
     }
 }
 

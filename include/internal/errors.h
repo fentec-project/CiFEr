@@ -32,6 +32,7 @@
  * \file    
  * \ingroup internal
  * \brief Error definitions
+
  */
 
 
@@ -55,6 +56,9 @@ typedef enum cfe_error {
 
     CFE_ERR_PRECONDITION_FAILED,
 
+    CFE_ERR_INSUFFICIENT_KEYS,
+    CFE_ERR_CORRUPTED_BOOL_EXPRESSION,
+    CFE_ERR_NO_SOLUTION_EXISTS,
 } cfe_error;
 
 #endif

@@ -73,20 +73,19 @@ void cfe_mat_init(cfe_mat *m, size_t rows, size_t cols);
 void cfe_mat_inits(size_t rows, size_t cols, cfe_mat *m, ...);
 
 /**
- * Creates a matrix with all its entries equal to a given constant.
+ * Sets all the entries of a matrix to equal the given constant.
  *
- * @param m A pointer to the uninitialized matrix
- * @param rows The number of rows
- * @param cols The number of columns
+ * @param m A pointer to an initialized matrix
  * @param c The constant that the entries equal to
  */
-void cfe_mat_const(cfe_mat *m, size_t rows, size_t cols, mpz_t c);
+void cfe_mat_set_const(cfe_mat *m, mpz_t c);
 
 /**
- * Initializes a matrix with all the values set to
- * equal the values of another matrix.
+ * Copies all the entries of a matrix to another matrix. The
+ * matrices must have equal dimensions.
  *
- * @param res A pointer to an uninitialized matrix
+ * @param res A pointer to an initialized matrix, matrix will be
+ * copied here
  * @param m A pointer to the matrix that will be copied
  */
 void cfe_mat_copy(cfe_mat *res, cfe_mat *m);

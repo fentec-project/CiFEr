@@ -45,7 +45,7 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // generate a public key and a secret key for the scheme
     cfe_gpsw_pub_key pk;
     cfe_vec sk;
-    cfe_gpsw_generate_master_keys(&gpsw, &pk, &sk);
+    cfe_gpsw_generate_master_keys(&pk, &sk, &gpsw);
 
     // create a message to be encrypted
     FP12_BN254 msg;
@@ -63,7 +63,8 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // policy specifying which attributes are needed to decrypt the ciphertext
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
-    boolean_to_msp(&msp, bool_exp, true);
+    cfe_error err = boolean_to_msp(&msp, bool_exp, true);
+    munit_assert(err == CFE_ERR_NONE);
 
     // generate keys for decryption that correspond to provided msp struct,
     // i.e. a vector of keys, for each row in the msp matrix one key, having
@@ -74,22 +75,37 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     cfe_gpsw_generate_policy_keys(&policy_keys, &gpsw, &msp, &sk);
 
     // produce a set of keys that are given to an entity with a set
-    // of attributes in ownedAttrib
+    // of attributes in owned_attrib
     int owned_attrib[] = {1, 3, 6};
     cfe_gpsw_keys keys;
     cfe_gpsw_delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
 
     FP12_BN254 decryption;
-    int check = cfe_gpsw_decrypt(&decryption, &cipher, &keys, &gpsw);
-    munit_assert(check == 0);
+    cfe_error check = cfe_gpsw_decrypt(&decryption, &cipher, &keys, &gpsw);
+    munit_assert(check == CFE_ERR_NONE);
 
     // check if the decryption equals the starting message
     munit_assert(FP12_BN254_equals(&msg, &decryption) == 1);
 
+    // produce a insufficient set of keys that are given to an entity with
+    // a set of attributes in insuff_attrib
+    int insuff_attrib[] = {1, 2, 6};
+    cfe_gpsw_keys insuff_keys;
+    cfe_gpsw_delegate_keys(&insuff_keys, &policy_keys, &msp, insuff_attrib, 3);
+
+    // check if the decryption is denied
+    check = cfe_gpsw_decrypt(&decryption, &cipher, &insuff_keys, &gpsw);
+    munit_assert(check == CFE_ERR_INSUFFICIENT_KEYS);
+
     // clear up
     cfe_gpsw_clear(&gpsw);
+    cfe_vec_free(&sk);
+    cfe_gpsw_pub_key_clear(&pk);
     cfe_gpsw_cipher_clear(&cipher);
+    cfe_vec_G1_free(&policy_keys);
     cfe_gpsw_keys_clear(&keys);
+    cfe_gpsw_keys_clear(&insuff_keys);
+    cfe_msp_free(&msp);
 
     return MUNIT_OK;
 }

@@ -43,13 +43,14 @@ void cfe_gpsw_init(cfe_gpsw *gpsw, size_t l) {
     mpz_from_BIG_256_56(gpsw->p, (int64_t *) CURVE_Order_BN254);
 }
 
-void cfe_gpsw_generate_master_keys(cfe_gpsw *gpsw, cfe_gpsw_pub_key *pk, cfe_vec *sk) {
+void cfe_gpsw_generate_master_keys(cfe_gpsw_pub_key *pk, cfe_vec *sk, cfe_gpsw *gpsw) {
     cfe_vec_init(sk, gpsw->l + 1);
     cfe_uniform_sample_vec(sk, gpsw->p);
 
     cfe_vec sub_sk;
     cfe_vec_init(&sub_sk, gpsw->l);
     cfe_vec_extract(&sub_sk, sk, 0, gpsw->l);
+    cfe_vec_G2_init(&(pk->t), sub_sk.size);
     cfe_vec_mul_G2(&(pk->t), &sub_sk);
 
     ECP_BN254 g1;
@@ -87,31 +88,31 @@ void cfe_gpsw_encrypt(cfe_gpsw_cipher *cipher, cfe_gpsw *gpsw, FP12_BN254 *msg,
     mpz_clear(s);
 }
 
-void cfe_gpsw_get_sum(cfe_vec *v, mpz_t y, mpz_t p, size_t d) {
-    cfe_vec_init(v, d);
+void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p) {
     cfe_uniform_sample_vec(v, p);
     mpz_t sum;
     mpz_init_set_ui(sum, 0);
-    for (size_t i = 0; i < d - 1; i++) {
+    for (size_t i = 0; i < v->size - 1; i++) {
         mpz_add(sum, sum, v->vec[i]);
     }
-    mpz_sub(v->vec[d-1], y, sum);
-    mpz_mod(v->vec[d-1], v->vec[d-1], p);
+    mpz_sub(v->vec[v->size - 1], y, sum);
+    mpz_mod(v->vec[v->size - 1], v->vec[v->size - 1], p);
     mpz_clear(sum);
 }
 
 
 void cfe_gpsw_generate_policy_keys(cfe_vec_G1 *policy_keys, cfe_gpsw *gpsw, cfe_msp *msp, cfe_vec *sk) {
     cfe_vec u;
-    cfe_gpsw_get_sum(&u, sk->vec[gpsw->l], gpsw->p, msp->mat->cols);
+    cfe_vec_init(&u, msp->mat.cols);
+    cfe_gpsw_rand_vec_const_sum(&u, sk->vec[gpsw->l], gpsw->p);
 
     mpz_t t_map_i_inv, mat_times_u, pow;
     mpz_inits(t_map_i_inv,mat_times_u, pow, NULL);
     BIG_256_56 pow_big;
-    cfe_vec_G1_init(policy_keys, msp->mat->rows);
-    for (size_t i = 0; i < msp->mat->rows; i++) {
+    cfe_vec_G1_init(policy_keys, msp->mat.rows);
+    for (size_t i = 0; i < msp->mat.rows; i++) {
         mpz_invert(t_map_i_inv, sk->vec[msp->row_to_attrib[i]], gpsw->p);
-        cfe_vec_dot(mat_times_u, &(msp->mat->mat[i]), &u);
+        cfe_vec_dot(mat_times_u, &(msp->mat.mat[i]), &u);
         mpz_mul(pow, t_map_i_inv, mat_times_u);
         mpz_mod(pow, pow, gpsw->p);
         BIG_256_56_from_mpz(pow_big, pow);
@@ -128,7 +129,7 @@ void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
         cfe_msp *msp, int *attrib, size_t num_attrib) {
     size_t count_attrib = 0;
     size_t positions[num_attrib];
-    for (size_t i = 0; i < msp->mat->rows; i++) {
+    for (size_t i = 0; i < msp->mat.rows; i++) {
         for (size_t j = 0; j < num_attrib; j++) {
             if (msp->row_to_attrib[i] == attrib[j]) {
                 positions[count_attrib] = i;
@@ -138,29 +139,33 @@ void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
         }
     }
 
-    cfe_mat_init(&(keys->mat), num_attrib, msp->mat->cols);
+    cfe_mat_init(&(keys->mat), num_attrib, msp->mat.cols);
     cfe_vec_G1_init(&(keys->d), num_attrib);
     keys->row_to_attrib = (int *) cfe_malloc(sizeof(int) * count_attrib);
 
     for (size_t i = 0; i < count_attrib; i++) {
-        cfe_mat_set_vec(&(keys->mat), &(msp->mat->mat[positions[i]]), i);
+        cfe_mat_set_vec(&(keys->mat), &(msp->mat.mat[positions[i]]), i);
         ECP_BN254_copy(&(keys->d.vec[i]), &(policy_keys->vec[positions[i]]));
         keys->row_to_attrib[i] = msp->row_to_attrib[positions[i]];
     }
 }
 
 
-int cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_keys *keys, cfe_gpsw *gpsw) {
+cfe_error cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_keys *keys, cfe_gpsw *gpsw) {
     cfe_vec one_vec, alpha;
     mpz_t one;
     mpz_init_set_ui(one, 1);
-    cfe_vec_const(&one_vec, keys->mat.cols, one);
+    cfe_vec_init(&one_vec, keys->mat.cols);
+    cfe_vec_set_const(&one_vec, one);
     cfe_mat mat_transpose;
     cfe_mat_init(&mat_transpose, keys->mat.cols, keys->mat.rows);
     cfe_mat_transpose(&mat_transpose, &(keys->mat));
     int check = gaussian_elimination(&alpha, &mat_transpose, &one_vec, gpsw->p);
+    cfe_mat_free(&mat_transpose);
+    cfe_vec_free(&one_vec);
+    mpz_clear(one);
     if (check) {
-        return check;
+        return CFE_ERR_INSUFFICIENT_KEYS;
     }
 
     size_t positions[keys->mat.rows];
@@ -189,13 +194,17 @@ int cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_gpsw_k
         FP12_BN254_mul(decryption, &pair_pow_inv);
     }
 
-    cfe_vec_frees(&alpha, &one_vec, NULL);
+    cfe_vec_free(&alpha);
 
-    return 0;
+    return CFE_ERR_NONE;
 }
 
 void cfe_gpsw_clear(cfe_gpsw *gpsw) {
     mpz_clear(gpsw->p);
+}
+
+void cfe_gpsw_pub_key_clear(cfe_gpsw_pub_key *pk) {
+    cfe_vec_G2_free(&(pk->t));
 }
 
 void cfe_gpsw_cipher_clear(cfe_gpsw_cipher *cipher) {
