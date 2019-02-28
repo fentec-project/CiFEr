@@ -94,7 +94,7 @@ void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u);
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.
  *
- * @param keys A pointer to a vector (*initialized*
+ * @param v A pointer to a vector (*initialized*
  * cfe_vec_G1 struct)
  */
 void cfe_vec_G1_free(cfe_vec_G1 *v);
@@ -103,7 +103,7 @@ void cfe_vec_G1_free(cfe_vec_G1 *v);
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.
  *
- * @param keys A pointer to a vector (*initialized*
+ * @param v A pointer to a vector (*initialized*
  * cfe_vec_G2 struct)
  */
 void cfe_vec_G2_free(cfe_vec_G2 *v);

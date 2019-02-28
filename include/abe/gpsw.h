@@ -185,7 +185,7 @@ void cfe_gpsw_clear(cfe_gpsw *gpsw);
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.
  *
- * @param keys A pointer to an instance of the public key (*initialized*
+ * @param pk A pointer to an instance of the public key (*initialized*
  * cfe_gpsw_pub_key struct)
  */
 void cfe_gpsw_pub_key_clear(cfe_gpsw_pub_key *pk);
