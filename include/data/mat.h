@@ -40,7 +40,7 @@
  * As in GMP library, all functions except initialization functions presume that
  * all of the parameters are properly initialized.
  *
- * All functions (unless othewise specified) store their results (either a GMP
+ * All functions (unless otherwise specified) store their results (either a GMP
  * integer, a vector or a matrix) to a parameter and do not modify the
  * original matrix.
  * Thus, the "result" passed as a parameter must also be properly initialized.
@@ -71,6 +71,24 @@ void cfe_mat_init(cfe_mat *m, size_t rows, size_t cols);
  * Initializes a NULL-terminated list of matrices.
  */
 void cfe_mat_inits(size_t rows, size_t cols, cfe_mat *m, ...);
+
+/**
+ * Sets all the entries of a matrix to equal the given constant.
+ *
+ * @param m A pointer to an initialized matrix
+ * @param c The constant that the entries equal to
+ */
+void cfe_mat_set_const(cfe_mat *m, mpz_t c);
+
+/**
+ * Copies all the entries of a matrix to another matrix. The
+ * matrices must have equal dimensions.
+ *
+ * @param res A pointer to an initialized matrix, matrix will be
+ * copied here
+ * @param m A pointer to the matrix that will be copied
+ */
+void cfe_mat_copy(cfe_mat *res, cfe_mat *m);
 
 /**
  * Frees the memory occupied by the contents of the matrix.

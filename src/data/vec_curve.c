@@ -41,10 +41,9 @@ void cfe_vec_G1_init(cfe_vec_G1 *v, size_t size) {
 }
 
 void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u) {
-    v->size = u->size;
-    v->vec = (ECP_BN254 *) cfe_malloc(u->size * sizeof(ECP_BN254));
-    BIG_256_56 x;
+    assert(v->size == u->size);
 
+    BIG_256_56 x;
     for (size_t i = 0; i < u->size; i++) {
         ECP_BN254_generator(&(v->vec[i]));
         BIG_256_56_from_mpz(x, u->vec[i]);
@@ -58,8 +57,7 @@ void cfe_vec_G2_init(cfe_vec_G2 *v, size_t size) {
 }
 
 void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u) {
-    v->size = u->size;
-    v->vec = (ECP2_BN254 *) cfe_malloc(u->size * sizeof(ECP2_BN254));
+    assert(v->size == u->size);
     BIG_256_56 x;
 
     for (size_t i = 0; i < u->size; i++) {
@@ -67,4 +65,12 @@ void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u) {
         BIG_256_56_from_mpz(x, u->vec[i]);
         ECP2_BN254_mul(&(v->vec[i]), x);
     }
+}
+
+void cfe_vec_G1_free(cfe_vec_G1 *v) {
+    free(v->vec);
+}
+
+void cfe_vec_G2_free(cfe_vec_G2 *v) {
+    free(v->vec);
 }

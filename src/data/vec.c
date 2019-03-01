@@ -56,6 +56,20 @@ void cfe_vec_inits(size_t size, cfe_vec *v, ...) {
     va_end (ap);
 }
 
+void cfe_vec_set_const(cfe_vec *vec, mpz_t c) {
+    for (size_t i = 0; i < vec->size; i++) {
+        cfe_vec_set(vec, c, i);
+    }
+}
+
+// Copies a vector.
+void cfe_vec_copy(cfe_vec *res, cfe_vec *v) {
+    assert(v->size == res->size);
+    for (size_t i = 0; i < res->size; i++) {
+        mpz_set(res->vec[i], v->vec[i]);
+    }
+}
+
 // Coordinate-wise addition.
 void cfe_vec_add(cfe_vec *res, cfe_vec *v1, cfe_vec *v2) {
     assert(v1->size == v2->size);

@@ -63,10 +63,11 @@ typedef struct cfe_vec_G2 {
 void cfe_vec_G1_init(cfe_vec_G1 *v, size_t size);
 
 /**
- * Initializes a vector whose i-th element equals u[i] * g,
- * where g is the generator of ECP2_BN254.
+ * Creates a vector whose i-th element equals u[i] * g,
+ * where g is the generator of ECP2_BN254. The sizes of
+ * v and u must match.
  *
- * @param v A pointer to an uninitialized cfe_vec_G2 vector
+ * @param v A pointer to an initialized cfe_vec_G2 vector
  * @param u A pointer to vector of integers.
  */
 void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u);
@@ -80,12 +81,31 @@ void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u);
 void cfe_vec_G2_init(cfe_vec_G2 *v, size_t size);
 
 /**
- * Initializes a vector whose i-th element equals u[i] * g,
- * where g is the generator of ECP2_BN254.
+ * Creates a vector whose i-th element equals u[i] * g,
+ * where g is the generator of ECP2_BN254. The sizes of
+ * v and u must match.
  *
- * @param v A pointer to an uninitialized cfe_vec_G2 vector
+ * @param v A pointer to an initialized cfe_vec_G2 vector
  * @param u A pointer to vector of integers.
  */
 void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u);
+
+/**
+ * Frees the memory occupied by the struct members. It does not free
+ * memory occupied by the struct itself.
+ *
+ * @param v A pointer to a vector (*initialized*
+ * cfe_vec_G1 struct)
+ */
+void cfe_vec_G1_free(cfe_vec_G1 *v);
+
+/**
+ * Frees the memory occupied by the struct members. It does not free
+ * memory occupied by the struct itself.
+ *
+ * @param v A pointer to a vector (*initialized*
+ * cfe_vec_G2 struct)
+ */
+void cfe_vec_G2_free(cfe_vec_G2 *v);
 
 #endif

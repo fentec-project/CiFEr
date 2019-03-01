@@ -48,5 +48,7 @@ MunitSuite lwe_suite;
 MunitSuite lwe_fully_secure_suite;
 MunitSuite ring_lwe_suite;
 MunitSuite paillier_suite;
+MunitSuite policy_suite;
+MunitSuite gpsw_suite;
 
 #endif

@@ -57,6 +57,21 @@ void cfe_mat_inits(size_t rows, size_t cols, cfe_mat *m, ...) {
     va_end (ap);
 }
 
+// Set values of a matrix to a constant.
+void cfe_mat_set_const(cfe_mat *m, mpz_t c) {
+    for (size_t i = 0; i < m->rows; i++) {
+        cfe_vec_set_const(&m->mat[i], c);
+    }
+}
+
+// Copy of a matrix
+void cfe_mat_copy(cfe_mat *res, cfe_mat *m) {
+    assert(m->rows == res->rows && m->cols == res->cols);
+    for (size_t i = 0; i < res->rows; i++) {
+        cfe_vec_copy(&res->mat[i], &m->mat[i]);
+    }
+}
+
 // Coordinate-wise addition.
 void cfe_mat_add(cfe_mat *res, cfe_mat *m1, cfe_mat *m2) {
     assert(m1->rows == m2->rows);
