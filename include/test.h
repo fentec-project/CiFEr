@@ -50,5 +50,5 @@ MunitSuite ring_lwe_suite;
 MunitSuite paillier_suite;
 MunitSuite policy_suite;
 MunitSuite gpsw_suite;
-
+MunitSuite fame_suite;
 #endif
