@@ -44,28 +44,45 @@ MunitResult test_fame_end_to_end(const MunitParameter *params, void *data) {
     cfe_fame_sec_key_init(&sk);
     cfe_fame_generate_master_keys(&pk, &sk, &fame);
 
-    char src[] = "2";
-    octet dst;
-//    dst.val = cfe_malloc(5 * sizeof(char));
-    dst.val = "1999999999199999999919999999991";
-    dst.max = 10;
-    dst.len = 7;
-//    OCT_fromHex(&dst, src);
-    printf("%s\n", dst.val);
-    OCT_output(&dst);
-    ECP2_BN254 test;
-    ECP2_BN254_mapit(&test, &dst);
-    ECP2_BN254_output(&test);
+    // create a message to be encrypted
+    FP12_BN254 msg;
+    FP12_BN254_one(&msg);
 
-    char *test1 = strings_concat("aa", "bbb", NULL);
-    printf("%s\n", test1);
+    // create a msp struct out of a boolean expression  representing the
+    // policy specifying which attributes are needed to decrypt the ciphertext
+    char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
+    cfe_msp msp;
+    cfe_error err = boolean_to_msp(&msp, bool_exp, true);
+    munit_assert(err == CFE_ERR_NONE);
 
-    char *test2 = int_to_str(984524);
-    printf("%s\n", test2);
+    cfe_fame_cipher cipher;
+    cfe_fame_cipher_init(&cipher, &msp);
+    cfe_fame_encrypt(&cipher, &msg, &msp, &pk, &fame);
 
-    ECP_BN254 test3;
-    hash_G1(&test3, "123");
-    ECP_BN254_output(&test3);
+
+
+//    char src[] = "2";
+//    octet dst;
+////    dst.val = cfe_malloc(5 * sizeof(char));
+//    dst.val = "1999999999199999999919999999991";
+//    dst.max = 10;
+//    dst.len = 7;
+////    OCT_fromHex(&dst, src);
+//    printf("%s\n", dst.val);
+//    OCT_output(&dst);
+//    ECP2_BN254 test;
+//    ECP2_BN254_mapit(&test, &dst);
+//    ECP2_BN254_output(&test);
+//
+//    char *test1 = strings_concat("aa", "bbb", NULL);
+//    printf("%s\n", test1);
+//
+//    char *test2 = int_to_str(0);
+//    printf("%s\n", test2);
+//
+//    ECP_BN254 test3;
+//    hash_G1(&test3, "123");
+//    ECP_BN254_output(&test3);
     return MUNIT_OK;
 }
 

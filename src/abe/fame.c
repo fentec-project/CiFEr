@@ -95,38 +95,88 @@ void cfe_fame_generate_master_keys(cfe_fame_pub_key *pk, cfe_fame_sec_key *sk, c
 }
 
 void cfe_fame_cipher_init(cfe_fame_cipher *cipher, cfe_msp *msp) {
-    cipher->c = cfe_malloc(msp->mat.rows * 3 *sizeof(ECP_BN254));
+    cipher->ct = cfe_malloc(msp->mat.rows * 3 *sizeof(ECP_BN254));
     cfe_mat_init(&(cipher->msp.mat), msp->mat.rows, msp->mat.cols);
     cipher->msp.row_to_attrib = cfe_malloc(msp->mat.rows * (sizeof(int)));
 }
 
-void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp msp, cfe_fame_pub_key pk, cfe_fame *fame) {
+void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cfe_fame_pub_key *pk, cfe_fame *fame) {
     cfe_vec s;
     cfe_vec_init(&s, 2);
     cfe_uniform_sample_vec(&s, fame->p);
-    BIG_256_56 tmp_big;
+    BIG_256_56 s_big[2];
+    for (size_t i = 0; i < 2; i++) {
+        BIG_256_56_from_mpz(s_big[i], s.vec[i]);
+    }
+
     mpz_t tmp;
     mpz_init(tmp);
+    BIG_256_56 tmp_big;
     ECP2_BN254 gen2;
     ECP2_BN254_generator(&gen2);
 
     for (size_t i = 0; i < 2; i++) {
-        ECP2_BN254_copy(&(cipher->ct0[i]), &(pk.part_G2[i]));
-        BIG_256_56_from_mpz(tmp_big, s.vec[i]);
-        ECP2_BN254_mul(&(cipher->ct0[i]), tmp_big);
+        ECP2_BN254_copy(&(cipher->ct0[i]), &(pk->part_G2[i]));
+        ECP2_BN254_mul(&(cipher->ct0[i]), s_big[i]);
     }
     mpz_add(tmp, s.vec[0], s.vec[1]);
     BIG_256_56_from_mpz(tmp_big, tmp);
     ECP2_BN254_generator(&(cipher->ct0[2]));
     ECP2_BN254_mul(&(cipher->ct0[2]), tmp_big);
 
-    ECP_BN254 hs1, hs2;
-    for (size_t i = 0; i < msp.mat.rows; i++) {
-        for (size_t j = 0; j < 2; j++) {
+    char *for_hash, *str_attrib, *str_l, *str_k, *str_j;
+    ECP_BN254 hs[2];
+    ECP_BN254 hs_to_m;
+    for (size_t i = 0; i < msp->mat.rows; i++) {
+        str_attrib = int_to_str(msp->row_to_attrib[i]);
+        for (int l = 0; l < 3; l++) {
+            str_l = int_to_str(l);
+            for (int k = 0; k < 2; k++) {
+                str_k = int_to_str(k);
+                for_hash = strings_concat(str_attrib, " ", str_l, str_k, NULL);
+                hash_G1(&(hs[k]), for_hash);
+                ECP_BN254_mul(&(hs[k]), s_big[k]);
+                free(str_k);
+                free(for_hash);
+            }
 
+            ECP_BN254_copy(&(cipher->ct[i][l]), &(hs[0]));
+            ECP_BN254_add(&(cipher->ct[i][l]), &(hs[1]));
+
+            for (int j = 0; j < (int) msp->mat.cols; j++) {
+                str_j = int_to_str(j);
+                for (int k = 0; k < 2; k++) {
+                    str_k = int_to_str(k);
+                    for_hash = strings_concat((char *) "0", str_j, " ", str_l, str_k, NULL);
+                    hash_G1(&(hs[k]), for_hash);
+                    ECP_BN254_mul(&(hs[k]), s_big[k]);
+                    free(str_k);
+                    free(for_hash);
+                }
+                free(str_j);
+
+                ECP_BN254_copy(&hs_to_m, &(hs[0]));
+                if (mpz_sgn(msp->mat.mat[i].vec[j]) == -1) {
+                    mpz_neg(tmp, msp->mat.mat[i].vec[j]);
+                    BIG_256_56_from_mpz(tmp_big, tmp);
+                    ECP_BN254_mul(&hs_to_m, tmp_big);
+                    ECP_BN254_neg(&hs_to_m);
+                } else {
+                    BIG_256_56_from_mpz(tmp_big, msp->mat.mat[i].vec[j]);
+                    ECP_BN254_mul(&hs_to_m, tmp_big);
+                }
+            }
+            free(str_l);
         }
+        free(str_attrib);
     }
+    FP12_BN254 tmp_GT;
+    FP12_BN254_pow(&(cipher->ct_prime), &(pk->part_GT[0]), s_big[0]);
+    FP12_BN254_pow(&tmp_GT, &(pk->part_GT[1]), s_big[1]);
+    FP12_BN254_mul(&(cipher->ct_prime), &tmp_GT);
+    FP12_BN254_mul(&(cipher->ct_prime), msg);
 
+    mpz_clear(tmp);
 }
 
 void hash_G1(ECP_BN254 *g, char *str) {
@@ -165,7 +215,12 @@ char *strings_concat(char *start, ...) {
 }
 
 char *int_to_str(int i) {
-    int len = (int) log10(i) + 1;
+    int len;
+    if (i == 0) {
+        len = 1;
+    } else {
+        len = (int) log10(i) + 1;
+    }
     char *result = cfe_malloc((len + 1) * sizeof(char));
 
     for (int j = 0; j < len; j++) {
@@ -177,3 +232,98 @@ char *int_to_str(int i) {
 
     return result;
 }
+
+void cfe_fame_attrib_keys_init(cfe_fame_attrib_keys *keys, size_t num_attrib) {
+    keys->k = cfe_malloc(num_attrib * 3 * sizeof(ECP_BN254));
+    keys->row_to_attrib = cfe_malloc(num_attrib * sizeof(int));
+}
+
+void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma, size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame) {
+    cfe_vec r, sigma;
+    cfe_vec_init(&r, 2);
+    cfe_vec_init(&sigma, num_attrib);
+    cfe_uniform_sample_vec(&r, fame->p);
+    cfe_uniform_sample_vec(&sigma, fame->p);
+
+    BIG_256_56 tmp_big, a_inv_big[2];
+    mpz_t pow[3], a_inv[2];
+    mpz_inits(pow[0], pow[1], pow[2], a_inv[0], a_inv[1], NULL);
+    for (size_t j = 0; j < 2; j++) {
+        mpz_mul(pow[j], sk->part_int[2 + j], r.vec[j]);
+        mpz_mod(pow[j], pow[j], fame->p);
+        mpz_invert(a_inv[j], sk->part_int[j], fame->p);
+        BIG_256_56_from_mpz(a_inv_big[j], a_inv[j]);
+    }
+    mpz_add(pow[2], r.vec[0], r.vec[1]);
+    mpz_mod(pow[2], pow[2], fame->p);
+
+    for (size_t j = 0; j < 3; j++) {
+        BIG_256_56_from_mpz(tmp_big, pow[j]);
+        ECP2_BN254_generator(&(keys->k0[j]));
+        ECP2_BN254_mul(&(keys->k0[j]), tmp_big);
+    }
+
+    ECP_BN254 g_sigma, hs;
+    char *str_attrib, *str_t, *str_j, *for_hash;
+    for (size_t i = 0; i < num_attrib; i++) {
+        ECP_BN254_generator(&g_sigma);
+        BIG_256_56_from_mpz(tmp_big, sigma.vec[i]);
+        ECP_BN254_mul(&g_sigma, tmp_big);
+
+        str_attrib = int_to_str(gamma[i]);
+
+        for (int t = 0; t < 2; t++) {
+            str_t = int_to_str(t);
+
+            ECP_BN254_copy(&(keys->k[i][t]), &g_sigma);
+            for (int j = 0; j < 3; j++) {
+                str_j = int_to_str(j);
+
+                for_hash = strings_concat(str_attrib, " ", str_j, " ", str_t, NULL);
+                hash_G1(&hs, for_hash);
+                ECP_BN254_add(&(keys->k[i][t]), &hs);
+            }
+
+            ECP_BN254_mul(&(keys->k[i][t]), a_inv_big[t]);
+        }
+
+        ECP_BN254_copy(&(keys->k[i][2]), &g_sigma);
+        ECP_BN254_neg(&(keys->k[i][2]));
+
+        keys->row_to_attrib[i] = gamma[i];
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
