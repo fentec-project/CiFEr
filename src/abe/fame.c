@@ -64,14 +64,14 @@ void cfe_fame_generate_master_keys(cfe_fame_pub_key *pk, cfe_fame_sec_key *sk, c
     }
 
     for (size_t i = 0; i < 3; i++) {
-        ECP_BN254_generator(&(sk->part_G1[i]));
         BIG_256_56_from_mpz(tmp_big, val.vec[i + 4]);
+        ECP_BN254_generator(&(sk->part_G1[i]));
         ECP_BN254_mul(&(sk->part_G1[i]), tmp_big);
     }
 
     for (size_t i = 0; i < 2; i++) {
-        ECP2_BN254_generator(&(pk->part_G2[i]));
         BIG_256_56_from_mpz(tmp_big, val.vec[i]);
+        ECP2_BN254_generator(&(pk->part_G2[i]));
         ECP2_BN254_mul(&(pk->part_G2[i]), tmp_big);
     }
 
@@ -95,9 +95,9 @@ void cfe_fame_generate_master_keys(cfe_fame_pub_key *pk, cfe_fame_sec_key *sk, c
 }
 
 void cfe_fame_cipher_init(cfe_fame_cipher *cipher, cfe_msp *msp) {
-    cipher->ct = cfe_malloc(msp->mat.rows * 3 *sizeof(ECP_BN254));
+    cipher->ct = (ECP_BN254 (*)[3]) cfe_malloc(msp->mat.rows * 3 *sizeof(ECP_BN254));
     cfe_mat_init(&(cipher->msp.mat), msp->mat.rows, msp->mat.cols);
-    cipher->msp.row_to_attrib = cfe_malloc(msp->mat.rows * (sizeof(int)));
+    cipher->msp.row_to_attrib = (int *) cfe_malloc(msp->mat.rows * (sizeof(int)));
 }
 
 void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cfe_fame_pub_key *pk, cfe_fame *fame) {
@@ -127,13 +127,19 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
     char *for_hash, *str_attrib, *str_l, *str_k, *str_j;
     ECP_BN254 hs[2];
     ECP_BN254 hs_to_m;
+    cfe_vec msp_row;
+    cfe_vec_init(&msp_row, msp->mat.cols);
     for (size_t i = 0; i < msp->mat.rows; i++) {
+        cipher->msp.row_to_attrib[i] = msp->row_to_attrib[i];
+        cfe_mat_get_row(&msp_row, &(msp->mat), i);
+        cfe_mat_set_vec(&(cipher->msp.mat), &msp_row, i);
+
         str_attrib = int_to_str(msp->row_to_attrib[i]);
         for (int l = 0; l < 3; l++) {
             str_l = int_to_str(l);
             for (int k = 0; k < 2; k++) {
                 str_k = int_to_str(k);
-                for_hash = strings_concat(str_attrib, " ", str_l, str_k, NULL);
+                for_hash = strings_concat_for_hash(str_attrib, " ", str_l, " ", str_k, NULL);
                 hash_G1(&(hs[k]), for_hash);
                 ECP_BN254_mul(&(hs[k]), s_big[k]);
                 free(str_k);
@@ -147,7 +153,7 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
                 str_j = int_to_str(j);
                 for (int k = 0; k < 2; k++) {
                     str_k = int_to_str(k);
-                    for_hash = strings_concat((char *) "0", str_j, " ", str_l, str_k, NULL);
+                    for_hash = strings_concat_for_hash((char *) "0 ", str_j, " ", str_l, " ", str_k, NULL);
                     hash_G1(&(hs[k]), for_hash);
                     ECP_BN254_mul(&(hs[k]), s_big[k]);
                     free(str_k);
@@ -156,6 +162,7 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
                 free(str_j);
 
                 ECP_BN254_copy(&hs_to_m, &(hs[0]));
+                ECP_BN254_add(&hs_to_m, &(hs[1]));
                 if (mpz_sgn(msp->mat.mat[i].vec[j]) == -1) {
                     mpz_neg(tmp, msp->mat.mat[i].vec[j]);
                     BIG_256_56_from_mpz(tmp_big, tmp);
@@ -165,6 +172,7 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
                     BIG_256_56_from_mpz(tmp_big, msp->mat.mat[i].vec[j]);
                     ECP_BN254_mul(&hs_to_m, tmp_big);
                 }
+                ECP_BN254_add(&(cipher->ct[i][l]), &hs_to_m);
             }
             free(str_l);
         }
@@ -185,7 +193,7 @@ void hash_G1(ECP_BN254 *g, char *str) {
     ECP_BN254_mapit(g, &tmp);
 }
 
-char *strings_concat(char *start, ...) {
+char *strings_concat_for_hash(char *start, ...) {
     // sum the length of all the strings
     va_list ap;
     size_t len = 0;
@@ -196,7 +204,7 @@ char *strings_concat(char *start, ...) {
         str = va_arg(ap, char*);
     }
     va_end(ap);
-    char *res = cfe_malloc((len + 1) * sizeof(char));
+    char *res = (char *) cfe_malloc((MODBYTES_256_56 + 1) * sizeof(char));
 
     // set the string
     va_start(ap, start);
@@ -209,8 +217,12 @@ char *strings_concat(char *start, ...) {
         }
         str = va_arg(ap, char*);
     }
-    res[j] = '\0';
+    for (size_t i = j; i < MODBYTES_256_56 + 1; i++) {
+        res[i] = '\0';
+    }
+
     va_end(ap);
+
     return res;
 }
 
@@ -221,7 +233,7 @@ char *int_to_str(int i) {
     } else {
         len = (int) log10(i) + 1;
     }
-    char *result = cfe_malloc((len + 1) * sizeof(char));
+    char *result = (char *) cfe_malloc((len + 1) * sizeof(char));
 
     for (int j = 0; j < len; j++) {
         result[len - j - 1] = '0' + (i % 10);
@@ -234,11 +246,13 @@ char *int_to_str(int i) {
 }
 
 void cfe_fame_attrib_keys_init(cfe_fame_attrib_keys *keys, size_t num_attrib) {
-    keys->k = cfe_malloc(num_attrib * 3 * sizeof(ECP_BN254));
-    keys->row_to_attrib = cfe_malloc(num_attrib * sizeof(int));
+    keys->k = (ECP_BN254 (*)[3]) cfe_malloc(num_attrib * 3 * sizeof(ECP_BN254));
+    keys->row_to_attrib = (int *) cfe_malloc(num_attrib * sizeof(int));
+    keys->num_attrib = num_attrib;
 }
 
-void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma, size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame) {
+void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
+        size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame) {
     cfe_vec r, sigma;
     cfe_vec_init(&r, 2);
     cfe_vec_init(&sigma, num_attrib);
@@ -246,8 +260,8 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma, size_
     cfe_uniform_sample_vec(&sigma, fame->p);
 
     BIG_256_56 tmp_big, a_inv_big[2];
-    mpz_t pow[3], a_inv[2];
-    mpz_inits(pow[0], pow[1], pow[2], a_inv[0], a_inv[1], NULL);
+    mpz_t pow[3], a_inv[2], sigma_prime;
+    mpz_inits(pow[0], pow[1], pow[2], a_inv[0], a_inv[1], sigma_prime, NULL);
     for (size_t j = 0; j < 2; j++) {
         mpz_mul(pow[j], sk->part_int[2 + j], r.vec[j]);
         mpz_mod(pow[j], pow[j], fame->p);
@@ -263,7 +277,7 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma, size_
         ECP2_BN254_mul(&(keys->k0[j]), tmp_big);
     }
 
-    ECP_BN254 g_sigma, hs;
+    ECP_BN254 g_sigma, hs, g_sigma_prime;
     char *str_attrib, *str_t, *str_j, *for_hash;
     for (size_t i = 0; i < num_attrib; i++) {
         ECP_BN254_generator(&g_sigma);
@@ -279,8 +293,11 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma, size_
             for (int j = 0; j < 3; j++) {
                 str_j = int_to_str(j);
 
-                for_hash = strings_concat(str_attrib, " ", str_j, " ", str_t, NULL);
+                for_hash = strings_concat_for_hash(str_attrib, " ", str_j, " ", str_t, NULL);
                 hash_G1(&hs, for_hash);
+
+                BIG_256_56_from_mpz(tmp_big, pow[j]);
+                ECP_BN254_mul(&hs, tmp_big);
                 ECP_BN254_add(&(keys->k[i][t]), &hs);
             }
 
@@ -293,37 +310,105 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma, size_
         keys->row_to_attrib[i] = gamma[i];
     }
 
+    cfe_uniform_sample(sigma_prime, fame->p);
+    BIG_256_56_from_mpz(tmp_big, sigma_prime);
+    ECP_BN254_generator(&g_sigma_prime);
+    ECP_BN254_mul(&g_sigma_prime, tmp_big);
 
+    for (int t = 0; t < 2; t++) {
+        ECP_BN254_copy(&(keys->k_prime[t]), &g_sigma_prime);
+        str_t = int_to_str(t);
+        for (int j = 0; j < 3; j++) {
+            str_j = int_to_str(j);
+            for_hash = strings_concat_for_hash((char *) "0 0 ", str_j, " ", str_t, NULL);
+            hash_G1(&hs, for_hash);
 
+            BIG_256_56_from_mpz(tmp_big, pow[j]);
+            ECP_BN254_mul(&hs, tmp_big);
+            ECP_BN254_add(&(keys->k_prime[t]), &hs);
+        }
+        ECP_BN254_mul(&(keys->k_prime[t]), a_inv_big[t]);
+        ECP_BN254_add(&(keys->k_prime[t]), &(sk->part_G1[t]));
+    }
+    ECP_BN254_copy(&(keys->k_prime[2]), &g_sigma_prime);
+    ECP_BN254_neg(&(keys->k_prime[2]));
+    ECP_BN254_add(&(keys->k_prime[2]), &(sk->part_G1[2]));
 }
 
+cfe_error cfe_fame_decrypt(FP12_BN254 *res, cfe_fame_cipher *cipher,
+        cfe_fame_attrib_keys *keys, cfe_fame *fame) {
+
+    size_t count_attrib = 0;
+    size_t positions_keys[keys->num_attrib];
+    size_t positions_msp[keys->num_attrib];
+    for (size_t i = 0; i < keys->num_attrib; i++) {
+        for (size_t j = 0; j < cipher->msp.mat.rows; j++) {
+            if (keys->row_to_attrib[i] == cipher->msp.row_to_attrib[j]) {
+                positions_keys[count_attrib] = i;
+                positions_msp[count_attrib] = j;
+                count_attrib++;
+                break;
+            }
+        }
+    }
+
+    cfe_mat mat_for_keys, mat_for_keys_trans;
+    cfe_mat_init(&mat_for_keys, count_attrib, cipher->msp.mat.cols);
+    cfe_mat_init(&mat_for_keys_trans, cipher->msp.mat.cols, count_attrib);
+    cfe_vec tmp;
+    cfe_vec_init(&tmp, cipher->msp.mat.cols);
+    for (size_t i = 0; i < count_attrib; i++) {
+        cfe_mat_get_row(&tmp, &(cipher->msp.mat), positions_msp[i]);
+        cfe_mat_set_vec(&mat_for_keys, &tmp, i);
+    }
+    cfe_mat_transpose(&mat_for_keys_trans, &mat_for_keys);
+
+    cfe_vec one_vec, alpha;
+    mpz_t zero;
+    mpz_init_set_si(zero, 0);
+    cfe_vec_init(&one_vec, cipher->msp.mat.cols);
+    cfe_vec_set_const(&one_vec, zero);
+    mpz_set_ui(one_vec.vec[0], 1);
 
 
+    cfe_error check = gaussian_elimination(&alpha, &mat_for_keys_trans, &one_vec, fame->p);
+    cfe_mat_free(&mat_for_keys_trans);
+    cfe_vec_free(&one_vec);
+    mpz_clear(zero);
+    if (check) {
+        return CFE_ERR_INSUFFICIENT_KEYS;
+    }
 
+    FP12_BN254_copy(res, &(cipher->ct_prime));
 
+    ECP_BN254 ct_prod[3], key_prod[3], x_pow_alpha;
+    BIG_256_56 alpha_big;
+    FP12_BN254 ct_pairing, key_pairing, key_pairing_inv;
+    for (size_t j = 0; j < 3; j++) {
+        ECP_BN254_inf(&(ct_prod[j]));
+        ECP_BN254_inf(&(key_prod[j])); //check inf
+        for (size_t i = 0; i < count_attrib; i++) {
+            BIG_256_56_from_mpz(alpha_big, alpha.vec[i]);
 
+            ECP_BN254_copy(&x_pow_alpha, &(cipher->ct[positions_msp[i]][j]));
+            ECP_BN254_mul(&x_pow_alpha, alpha_big);
+            ECP_BN254_add(&(ct_prod[j]), &(x_pow_alpha));
 
+            ECP_BN254_copy(&x_pow_alpha, &(keys->k[positions_keys[i]][j]));
+            ECP_BN254_mul(&x_pow_alpha, alpha_big);
+            ECP_BN254_add(&(key_prod[j]), &(x_pow_alpha));
+        }
 
+        ECP_BN254_add(&(key_prod[j]), &(keys->k_prime[j]));
+        PAIR_BN254_ate(&ct_pairing, &(keys->k0[j]), &(ct_prod[j]));
+        PAIR_BN254_fexp(&ct_pairing);
+        PAIR_BN254_ate(&key_pairing, &(cipher->ct0[j]), &(key_prod[j]));
+        PAIR_BN254_fexp(&key_pairing);
 
+        FP12_BN254_inv(&key_pairing_inv, &key_pairing);
+        FP12_BN254_mul(res, &ct_pairing);
+        FP12_BN254_mul(res, &key_pairing_inv);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return CFE_ERR_NONE;
+}

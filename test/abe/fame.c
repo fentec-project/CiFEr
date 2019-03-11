@@ -52,37 +52,27 @@ MunitResult test_fame_end_to_end(const MunitParameter *params, void *data) {
     // policy specifying which attributes are needed to decrypt the ciphertext
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
-    cfe_error err = boolean_to_msp(&msp, bool_exp, true);
+    cfe_error err = boolean_to_msp(&msp, bool_exp, false);
     munit_assert(err == CFE_ERR_NONE);
 
     cfe_fame_cipher cipher;
     cfe_fame_cipher_init(&cipher, &msp);
     cfe_fame_encrypt(&cipher, &msg, &msp, &pk, &fame);
 
+    int owned_attrib[] = {1, 3, 6};
+    cfe_fame_attrib_keys keys;
 
+    cfe_fame_attrib_keys_init(&keys, 3);
+    cfe_fame_generate_attrib_keys(&keys, owned_attrib, 3, &sk, &fame);
 
-//    char src[] = "2";
-//    octet dst;
-////    dst.val = cfe_malloc(5 * sizeof(char));
-//    dst.val = "1999999999199999999919999999991";
-//    dst.max = 10;
-//    dst.len = 7;
-////    OCT_fromHex(&dst, src);
-//    printf("%s\n", dst.val);
-//    OCT_output(&dst);
-//    ECP2_BN254 test;
-//    ECP2_BN254_mapit(&test, &dst);
-//    ECP2_BN254_output(&test);
-//
-//    char *test1 = strings_concat("aa", "bbb", NULL);
-//    printf("%s\n", test1);
-//
-//    char *test2 = int_to_str(0);
-//    printf("%s\n", test2);
-//
-//    ECP_BN254 test3;
-//    hash_G1(&test3, "123");
-//    ECP_BN254_output(&test3);
+    FP12_BN254 decryption;
+    err = cfe_fame_decrypt(&decryption, &cipher, &keys, &fame);
+
+    munit_assert(err == CFE_ERR_NONE);
+
+    // check if the decryption equals the starting message
+    munit_assert(FP12_BN254_equals(&msg, &decryption) == 1);
+
     return MUNIT_OK;
 }
 
