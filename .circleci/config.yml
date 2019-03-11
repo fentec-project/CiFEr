@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: python  # Has git, python, pip already installed, useful for CMake and AMCL
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install compilers and libraries
+          command: apt update && apt install -y build-essential libgmp-dev libsodium-dev clang
+
+      - run:
+          name: Install CMake
+          command: pip install cmake
+
+      - run:
+          name: Install AMCL
+          command: cd external/amcl && ./setup_amcl.sh
+
+      - run:
+          name: Build and test with gcc
+          command: cmake -DCMAKE_C_COMPILER=gcc . && make && make test
+
+      - run:
+          name: Build and test with Clang
+          command: cmake -DCMAKE_C_COMPILER=clang . && make && make test
+
