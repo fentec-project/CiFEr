@@ -92,6 +92,7 @@ typedef struct cfe_fame_attrib_keys {
     ECP_BN254 (*k)[3];
     ECP_BN254 k_prime[3];
     int *row_to_attrib;
+    size_t num_attrib;
 } cfe_fame_attrib_keys;
 
 void cfe_fame_init(cfe_fame *fame);
@@ -111,7 +112,10 @@ void cfe_fame_attrib_keys_init(cfe_fame_attrib_keys *keys, size_t num_attrib);
 void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
         size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame);
 
-char *strings_concat(char *str, ...);
+cfe_error cfe_fame_decrypt(FP12_BN254 *res, cfe_fame_cipher *cipher,
+                           cfe_fame_attrib_keys *keys, cfe_fame *fame);
+
+char *strings_concat_for_hash(char *str, ...);
 
 char *int_to_str(int i);
 
