@@ -28,6 +28,8 @@
 #ifndef CIFER_COMMON_H
 #define CIFER_COMMON_H
 
+#include <stddef.h>
+
 #include "internal/errors.h"
 
 /**

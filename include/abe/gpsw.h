@@ -179,7 +179,7 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_ke
  * @param gpsw A pointer to an instance of the scheme (*initialized* cfe_gpsw
  * struct)
  */
-void cfe_gpsw_clear(cfe_gpsw *gpsw);
+void cfe_gpsw_free(cfe_gpsw *gpsw);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -188,7 +188,7 @@ void cfe_gpsw_clear(cfe_gpsw *gpsw);
  * @param pk A pointer to an instance of the public key (*initialized*
  * cfe_gpsw_pub_key struct)
  */
-void cfe_gpsw_pub_key_clear(cfe_gpsw_pub_key *pk);
+void cfe_gpsw_pub_key_free(cfe_gpsw_pub_key *pk);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -197,7 +197,7 @@ void cfe_gpsw_pub_key_clear(cfe_gpsw_pub_key *pk);
  * @param cipher A pointer to an instance of the ciphertext (*initialized*
  * cfe_gpsw_cipher struct)
  */
-void cfe_gpsw_cipher_clear(cfe_gpsw_cipher *cipher);
+void cfe_gpsw_cipher_free(cfe_gpsw_cipher *cipher);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -206,6 +206,6 @@ void cfe_gpsw_cipher_clear(cfe_gpsw_cipher *cipher);
  * @param keys A pointer to an instance of the decryption keys (*initialized*
  * cfe_gpsw_keys struct)
  */
-void cfe_gpsw_keys_clear(cfe_gpsw_keys *keys);
+void cfe_gpsw_keys_free(cfe_gpsw_keys *keys);
 
 #endif

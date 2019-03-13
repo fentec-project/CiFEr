@@ -199,20 +199,20 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_
     return CFE_ERR_NONE;
 }
 
-void cfe_gpsw_clear(cfe_gpsw *gpsw) {
+void cfe_gpsw_free(cfe_gpsw *gpsw) {
     mpz_clear(gpsw->p);
 }
 
-void cfe_gpsw_pub_key_clear(cfe_gpsw_pub_key *pk) {
+void cfe_gpsw_pub_key_free(cfe_gpsw_pub_key *pk) {
     cfe_vec_G2_free(&(pk->t));
 }
 
-void cfe_gpsw_cipher_clear(cfe_gpsw_cipher *cipher) {
+void cfe_gpsw_cipher_free(cfe_gpsw_cipher *cipher) {
     cfe_vec_G2_free(&(cipher->e));
     free(cipher->gamma);
 }
 
-void cfe_gpsw_keys_clear(cfe_gpsw_keys *keys) {
+void cfe_gpsw_keys_free(cfe_gpsw_keys *keys) {
     cfe_mat_free(&(keys->mat));
     cfe_vec_G1_free(&(keys->d));
     free(keys->row_to_attrib);
