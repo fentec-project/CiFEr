@@ -34,8 +34,8 @@
 #include "abe/policy.h"
 
 
-cfe_error boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
-    char *bool_exp_trimmed = remove_spaces(bool_exp);
+cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
+    char *bool_exp_trimmed = cfe_remove_spaces(bool_exp);
     cfe_vec vec;
     cfe_vec_init(&vec, 1);
     mpz_t zero, one;
@@ -43,7 +43,7 @@ cfe_error boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
     mpz_init_set_ui(one, 1);
 
     cfe_vec_set(&vec, one, 0);
-    cfe_error err = boolean_to_msp_iterative(msp, bool_exp_trimmed, &vec, 1);
+    cfe_error err = cfe_boolean_to_msp_iterative(msp, bool_exp_trimmed, &vec, 1);
     free(bool_exp_trimmed);
     if (err) {
         goto clearup;
@@ -69,7 +69,7 @@ cfe_error boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
 
 }
 
-cfe_error boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c) {
+cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c) {
     size_t num_brc = 0;
     char *bool_exp1, *bool_exp2;
     cfe_error err;
@@ -88,18 +88,18 @@ cfe_error boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, s
         }
         if (num_brc == 0 && i < strlen(bool_exp) - 3 && bool_exp[i] == 'A' &&
                 bool_exp[i+1] == 'N' && bool_exp[i+2] == 'D') {
-            bool_exp1 = substring(bool_exp, 0, i);
-            init_set_and_vecs(&vec1, &vec2, vec, c);
+            bool_exp1 = cfe_substring(bool_exp, 0, i);
+            cfe_init_set_and_vecs(&vec1, &vec2, vec, c);
 
-            err = boolean_to_msp_iterative(&msp1, bool_exp1, &vec1, c + 1);
+            err = cfe_boolean_to_msp_iterative(&msp1, bool_exp1, &vec1, c + 1);
             free(bool_exp1);
             cfe_vec_free(&vec1);
             if (err) {
                 cfe_vec_free(&vec2);
                 return err;
             }
-            bool_exp2 = substring(bool_exp, i + 3, strlen(bool_exp));
-            err = boolean_to_msp_iterative(&msp2, bool_exp2, &vec2, msp1.mat.cols);
+            bool_exp2 = cfe_substring(bool_exp, i + 3, strlen(bool_exp));
+            err = cfe_boolean_to_msp_iterative(&msp2, bool_exp2, &vec2, msp1.mat.cols);
             free(bool_exp2);
             cfe_vec_free(&vec2);
             if (err) {
@@ -111,14 +111,14 @@ cfe_error boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, s
         }
         if (num_brc == 0 && i < strlen(bool_exp) - 2 && bool_exp[i] == 'O' &&
                 bool_exp[i+1] == 'R') {
-            bool_exp1 = substring(bool_exp, 0, i);
-            err = boolean_to_msp_iterative(&msp1, bool_exp1, vec, c);
+            bool_exp1 = cfe_substring(bool_exp, 0, i);
+            err = cfe_boolean_to_msp_iterative(&msp1, bool_exp1, vec, c);
             free(bool_exp1);
             if (err) {
                 return err;
             }
-            bool_exp2 = substring(bool_exp, i + 2, strlen(bool_exp));
-            err = boolean_to_msp_iterative(&msp2, bool_exp2, vec, msp1.mat.cols);
+            bool_exp2 = cfe_substring(bool_exp, i + 2, strlen(bool_exp));
+            err = cfe_boolean_to_msp_iterative(&msp2, bool_exp2, vec, msp1.mat.cols);
             free(bool_exp2);
             if (err) {
                 cfe_msp_free(&msp1);
@@ -131,13 +131,13 @@ cfe_error boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, s
     }
     if (found == false) {
         if (bool_exp[0] == '(' && bool_exp[strlen(bool_exp) - 1] == ')') {
-            bool_exp1 = substring(bool_exp, 1, strlen(bool_exp) - 1);
-            err = boolean_to_msp_iterative(msp, bool_exp1, vec, c);
+            bool_exp1 = cfe_substring(bool_exp, 1, strlen(bool_exp) - 1);
+            err = cfe_boolean_to_msp_iterative(msp, bool_exp1, vec, c);
             free(bool_exp1);
             return err;
         }
 
-        int attrib = str_to_int(bool_exp);
+        int attrib = cfe_str_to_int(bool_exp);
         if (attrib == -1) {
             return CFE_ERR_CORRUPTED_BOOL_EXPRESSION;
         }
@@ -190,7 +190,7 @@ cfe_error boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, s
 // init_set_and_vecs is a helping function that given a vector and a counter
 // creates two new vectors used whenever an AND gate is found in an iterative
 // step of boolean_to_msp
-void init_set_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c) {
+void cfe_init_set_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c) {
     mpz_t zero;
     mpz_init_set_ui(zero, 0);
     cfe_vec_inits(c + 1, vec1, vec2, NULL);
@@ -204,7 +204,7 @@ void init_set_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c) {
     mpz_clear(zero);
 }
 
-int str_to_int(char *str) {
+int cfe_str_to_int(char *str) {
     int result = 0;
     for (size_t i = 0; i < strlen(str); i++) {
         if ((str[i] < '0') || (str[i] > '9')) {
@@ -216,7 +216,7 @@ int str_to_int(char *str) {
     return result;
 }
 
-char *substring(char *s, size_t start, size_t stop) {
+char *cfe_substring(char *s, size_t start, size_t stop) {
     char *sub = (char*) cfe_malloc(sizeof(char)*(stop - start + 1));
     for (size_t i = start; i < stop; i++) {
         sub[i - start] = s[i];
@@ -226,7 +226,7 @@ char *substring(char *s, size_t start, size_t stop) {
     return sub;
 }
 
-char *remove_spaces(char* source) {
+char *cfe_remove_spaces(char* source) {
     size_t count = 0;
     for (size_t i = 0; i < strlen(source); i++) {
         if(source[i] != ' '){
@@ -252,7 +252,7 @@ void cfe_msp_free(cfe_msp *msp) {
     free(msp->row_to_attrib);
 }
 
-cfe_error gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p) {
+cfe_error cfe_gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p) {
     cfe_error ret_error = CFE_ERR_NONE;
 
     cfe_mat m;

@@ -63,7 +63,7 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // policy specifying which attributes are needed to decrypt the ciphertext
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
-    cfe_error err = boolean_to_msp(&msp, bool_exp, true);
+    cfe_error err = cfe_boolean_to_msp(&msp, bool_exp, true);
     munit_assert(err == CFE_ERR_NONE);
 
     // generate keys for decryption that correspond to provided msp struct,
