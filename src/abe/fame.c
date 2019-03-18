@@ -117,8 +117,7 @@ void cfe_fame_cipher_init(cfe_fame_cipher *cipher, cfe_msp *msp) {
 
 void cfe_fame_cipher_free(cfe_fame_cipher *cipher) {
     free(cipher->ct);
-    cfe_mat_free(&(cipher->msp.mat));
-    free(cipher->msp.row_to_attrib);
+    cfe_msp_free(&(cipher->msp));
 }
 
 void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cfe_fame_pub_key *pk, cfe_fame *fame) {
@@ -413,21 +412,13 @@ void cfe_hash_G1(ECP_BN254 *g, char *str) {
 // cfe_strings_concat_for_hash joins the given strings to create
 // a string of length MODBYTES_256_56 needed for the hashing function.
 char *cfe_strings_concat_for_hash(char *start, ...) {
-    // sum the length of all the strings
-    va_list ap;
-    size_t len = 0;
-    va_start(ap, start);
-    char *str = start;
-    while (str != NULL) {
-        len += strlen(str);
-        str = va_arg(ap, char*);
-    }
-    va_end(ap);
+    // allocate memory for the result
     char *res = (char *) cfe_malloc((MODBYTES_256_56 + 1) * sizeof(char));
 
     // set the string
+    va_list ap;
+    char *str = start;
     va_start(ap, start);
-    str = start;
     size_t j = 0;
     while (str != NULL) {
         for (size_t i = 0; i < strlen(str); i++) {
@@ -436,6 +427,8 @@ char *cfe_strings_concat_for_hash(char *start, ...) {
         }
         str = va_arg(ap, char*);
     }
+
+    // pad the string
     for (size_t i = j; i < MODBYTES_256_56 + 1; i++) {
         res[i] = '\0';
     }
@@ -455,11 +448,7 @@ char *cfe_int_to_str(int i) {
     }
     char *result = (char *) cfe_malloc((len + 1) * sizeof(char));
 
-    for (int j = 0; j < len; j++) {
-        result[len - j - 1] = '0' + (i % 10);
-        i = i / 10;
-    }
-    result[len] = '\0';
+    sprintf(result, "%d", i);
 
     return result;
 }

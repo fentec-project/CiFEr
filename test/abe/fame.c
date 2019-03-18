@@ -29,7 +29,7 @@
 #include "abe/fame.h"
 
 MunitResult test_fame_end_to_end(const MunitParameter *params, void *data) {
-    // create a new GPSW struct
+    // create a new FAME struct
     cfe_fame fame;
     cfe_fame_init(&fame);
 

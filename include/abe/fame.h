@@ -60,6 +60,7 @@ typedef struct cfe_fame {
 
 /**
  * cfe_fame_pub_key represents the public key for the FAME scheme.
+ * It does not need to be called by an initialization function.
  */
 typedef struct cfe_fame_pub_key {
     ECP2_BN254 part_G2[2];
@@ -131,7 +132,8 @@ void cfe_fame_sec_key_free(cfe_fame_sec_key *sk);
 /**
  * Generates a master secret key and a public key.
  *
- * @param pk A pointer to an initialized cfe_fame_pub_key struct, the public key will be saved here
+ * @param pk A pointer to a cfe_fame_pub_key struct, the public key will be saved here;
+ * pk does not need to be called by any initialization function
  * @param sk A pointer to an initialized cfe_fame_sec_key struct, the secret key will be saved here
  * @param fame A pointer to an initialized struct representing the scheme
  */
