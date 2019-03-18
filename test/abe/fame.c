@@ -43,7 +43,7 @@ MunitResult test_fame_end_to_end(const MunitParameter *params, void *data) {
     FP12_BN254 msg;
     FP12_BN254_one(&msg);
 
-    // create a msp struct out of a boolean expression representing the
+    // create a msp structure out of a boolean expression representing the
     // policy specifying which attributes are needed to decrypt the ciphertext
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
