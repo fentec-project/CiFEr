@@ -37,7 +37,7 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     // define a boolean expression and make a corresponding msp structure
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
-    cfe_error check = boolean_to_msp(&msp, bool_exp, true);
+    cfe_error check = cfe_boolean_to_msp(&msp, bool_exp, true);
     munit_assert(check == CFE_ERR_NONE);
 
     // create parameters to test msp
@@ -60,12 +60,12 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     cfe_vec_set_const(&one_vec, one);
 
     mpz_init_set_ui(p, 17);
-    check = gaussian_elimination(&x, &sub_mat_transpose, &one_vec, p);
+    check = cfe_gaussian_elimination(&x, &sub_mat_transpose, &one_vec, p);
     munit_assert(check == CFE_ERR_NONE);
 
     // define a faulty boolean expression and check for error
     char bool_exp_faulty[] = "(5 OR a3) AND ((2 OR 4) OR (1 AND 6))";
-    check = boolean_to_msp(&msp, bool_exp_faulty, true);
+    check = cfe_boolean_to_msp(&msp, bool_exp_faulty, true);
     munit_assert(check == CFE_ERR_CORRUPTED_BOOL_EXPRESSION);
 
     // clearup
@@ -94,7 +94,7 @@ MunitResult test_gaussian_elimination(const MunitParameter params[], void *data)
     cfe_vec_mod(&vec, &vec, p);
 
     // use gaussian elimination to get x solving the equation vec = mat * x
-    gaussian_elimination(&x, &mat, &vec, p);
+    cfe_gaussian_elimination(&x, &mat, &vec, p);
 
     // check if the result is correct, i.e. x_test = x
     for (size_t i = 0; i < x.size; i++) {
@@ -111,12 +111,12 @@ MunitResult test_gaussian_elimination(const MunitParameter params[], void *data)
 MunitResult test_str_to_int(const MunitParameter params[], void *data) {
     // test conversion from string to int
     char test_str[] = "15";
-    int i = str_to_int(test_str);
+    int i = cfe_str_to_int(test_str);
     munit_assert(i == 15);
 
     // return an error (-1) if string is corrupted
     char test_faulty_str[] = "124h234";
-    i = str_to_int(test_faulty_str);
+    i = cfe_str_to_int(test_faulty_str);
     munit_assert(i == -1);
 
     return MUNIT_OK;

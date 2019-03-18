@@ -56,7 +56,7 @@ typedef struct cfe_msp {
 } cfe_msp;
 
 /**
- * boolean_to_msp takes as an input a boolean expression (without a NOT gate) and
+ * cfe_boolean_to_msp takes as an input a boolean expression (without a NOT gate) and
  * outputs a msp structure representing the expression, i.e. a matrix whose rows
  * correspond to attributes used in the expression and with the property that a
  * boolean expression assigning 1 to some attributes is satisfied iff the
@@ -75,31 +75,31 @@ typedef struct cfe_msp {
  * @return Returns an error if the boolean expression is not in the proper form and
  * cannot be transformed.
  */
-cfe_error boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones);
+cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones);
 
 /**
  * A helping function used in boolean_to_msp.
  */
-cfe_error boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c);
+cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-void init_set_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
+void cfe_init_set_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-int str_to_int(char *str);
+int cfe_str_to_int(char *str);
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-char *substring(char *s, size_t start, size_t stop);
+char *cfe_substring(char *s, size_t start, size_t stop);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-char *remove_spaces(char* source);
+char *cfe_remove_spaces(char* source);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -111,7 +111,7 @@ char *remove_spaces(char* source);
 void cfe_msp_free(cfe_msp *msp);
 
 /**
- * gaussian_elimination solves a matrix vector equation mat * x = v and finds
+ * cfe_gaussian_elimination solves a matrix vector equation mat * x = v and finds
  * vector x, using Gaussian elimination. Arithmetic operations are considered
  * to be over Z_p, where p should be a prime number. If such x does not exist,
  * then the function returns an 1, else 0.
@@ -124,6 +124,6 @@ void cfe_msp_free(cfe_msp *msp);
  * @return Returns CFE_ERR_NO_SOLUTION_EXISTS error if the solution does not
  * exist, else CFE_ERR_NONE for no error
  */
-cfe_error gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p);
+cfe_error cfe_gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p);
 
 #endif

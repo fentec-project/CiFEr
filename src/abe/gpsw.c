@@ -139,8 +139,8 @@ void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
         }
     }
 
-    cfe_mat_init(&(keys->mat), num_attrib, msp->mat.cols);
-    cfe_vec_G1_init(&(keys->d), num_attrib);
+    cfe_mat_init(&(keys->mat), count_attrib, msp->mat.cols);
+    cfe_vec_G1_init(&(keys->d), count_attrib);
     keys->row_to_attrib = (int *) cfe_malloc(sizeof(int) * count_attrib);
 
     for (size_t i = 0; i < count_attrib; i++) {
@@ -160,7 +160,7 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_
     cfe_mat mat_transpose;
     cfe_mat_init(&mat_transpose, keys->mat.cols, keys->mat.rows);
     cfe_mat_transpose(&mat_transpose, &(keys->mat));
-    cfe_error check = gaussian_elimination(&alpha, &mat_transpose, &one_vec, gpsw->p);
+    cfe_error check = cfe_gaussian_elimination(&alpha, &mat_transpose, &one_vec, gpsw->p);
     cfe_mat_free(&mat_transpose);
     cfe_vec_free(&one_vec);
     mpz_clear(one);
@@ -199,20 +199,20 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *decryption, cfe_gpsw_cipher *cipher, cfe_
     return CFE_ERR_NONE;
 }
 
-void cfe_gpsw_clear(cfe_gpsw *gpsw) {
+void cfe_gpsw_free(cfe_gpsw *gpsw) {
     mpz_clear(gpsw->p);
 }
 
-void cfe_gpsw_pub_key_clear(cfe_gpsw_pub_key *pk) {
+void cfe_gpsw_pub_key_free(cfe_gpsw_pub_key *pk) {
     cfe_vec_G2_free(&(pk->t));
 }
 
-void cfe_gpsw_cipher_clear(cfe_gpsw_cipher *cipher) {
+void cfe_gpsw_cipher_free(cfe_gpsw_cipher *cipher) {
     cfe_vec_G2_free(&(cipher->e));
     free(cipher->gamma);
 }
 
-void cfe_gpsw_keys_clear(cfe_gpsw_keys *keys) {
+void cfe_gpsw_keys_free(cfe_gpsw_keys *keys) {
     cfe_mat_free(&(keys->mat));
     cfe_vec_G1_free(&(keys->d));
     free(keys->row_to_attrib);

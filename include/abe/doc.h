@@ -25,34 +25,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CIFER_COMMON_H
-#define CIFER_COMMON_H
-
-#include <stddef.h>
-
-#include "internal/errors.h"
-
 /**
- * \file
- * \ingroup internal
- * \brief Common library functionality
- */
-
-/**
- * This function initializes the library. It ensures that the system's random
- * number generator has been properly seeded.
- * This function must be called before any other functions from this library.
+ * \defgroup abe ABE schemes
+ * Attribute based encryption
  *
- * @return Error code
- */
-cfe_error cfe_init(void);
-
-/**
- * Malloc wrapper which aborts on failure (out-of-memory error).
+ * This package includes schemes for key policy (KP) and ciphertext policy
+ * (CP) ABE schemes. The KP-ABE scheme GPSW is based on the paper by Goyal,
+ * Pandey, Sahai, Waters: "Attribute-Based Encryption for Fine-Grained Access
+ * Control of Encrypted Data".
  *
- * @param size Size of memory block
- * @return Pointer to allocated memory
+ * The CP-ABE scheme FAME is based on the paper by Shashank Agrawal and
+ * Melissa Chase: "FAME: Fast Attribute-based Message Encryption".
+ *
  */
-void *cfe_malloc(size_t size);
-
-#endif

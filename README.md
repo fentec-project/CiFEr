@@ -130,6 +130,25 @@ security) by
     ([paper](https://eprint.iacr.org/2017/972.pdf)) and instantiated from the 
     scheme in the first point (`cfe_damgard_multi`).
 
+#### Attribute based encryption (ABE) schemes
+You will need to include headers from `abe` directory. There are two implemented
+schemes:
+* A ciphertext policy (CP) ABE scheme named FAME by _Agrawal and Chase_
+([paper](https://eprint.iacr.org/2017/807.pdf)) allowing encrypting a
+message based on a boolean expression defining a policy which attributes
+are needed for the decryption. The functions needed in this scheme have prefix
+`cfe_fame`.
+
+* A key policy (KP) ABE scheme by _Goyal, Pandey, Sahai, and Waters_
+([paper](https://eprint.iacr.org/2006/309.pdf)) allowing a distribution of keys
+following a boolean expression defining a policy which attributes are needed for
+the decryption. The functions needed in this scheme have prefix `cfe_gpsw`.
+
+These schemes allow to specify a decryption policy defining which attributes are
+needed to be able to decrypt. For the latter we implemented a policy converter
+which accepts a boolean expression defining the policy and outputs a monotone
+span program (MSP) which can be used as an input for the ABE schemes.
+
 ### Configure selected scheme
 All CiFEr schemes are implemented as C structs + functions which operate on 
 them with (at least logically) similar APIs. So the first thing we need to do 

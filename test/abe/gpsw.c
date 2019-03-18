@@ -63,7 +63,7 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // policy specifying which attributes are needed to decrypt the ciphertext
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
     cfe_msp msp;
-    cfe_error err = boolean_to_msp(&msp, bool_exp, true);
+    cfe_error err = cfe_boolean_to_msp(&msp, bool_exp, true);
     munit_assert(err == CFE_ERR_NONE);
 
     // generate keys for decryption that correspond to provided msp struct,
@@ -80,6 +80,7 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     cfe_gpsw_keys keys;
     cfe_gpsw_delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
 
+    // decrypt the message with owned keys
     FP12_BN254 decryption;
     cfe_error check = cfe_gpsw_decrypt(&decryption, &cipher, &keys, &gpsw);
     munit_assert(check == CFE_ERR_NONE);
@@ -98,13 +99,13 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     munit_assert(check == CFE_ERR_INSUFFICIENT_KEYS);
 
     // clear up
-    cfe_gpsw_clear(&gpsw);
+    cfe_gpsw_free(&gpsw);
     cfe_vec_free(&sk);
-    cfe_gpsw_pub_key_clear(&pk);
-    cfe_gpsw_cipher_clear(&cipher);
+    cfe_gpsw_pub_key_free(&pk);
+    cfe_gpsw_cipher_free(&cipher);
     cfe_vec_G1_free(&policy_keys);
-    cfe_gpsw_keys_clear(&keys);
-    cfe_gpsw_keys_clear(&insuff_keys);
+    cfe_gpsw_keys_free(&keys);
+    cfe_gpsw_keys_free(&insuff_keys);
     cfe_msp_free(&msp);
 
     return MUNIT_OK;

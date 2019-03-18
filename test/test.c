@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
             paillier_suite,
             policy_suite,
             gpsw_suite,
+            fame_suite,
             uniform_suite,
             normal_cumulative_suite,
             normal_negative_suite,
