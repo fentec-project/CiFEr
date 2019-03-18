@@ -139,8 +139,8 @@ void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
         }
     }
 
-    cfe_mat_init(&(keys->mat), num_attrib, msp->mat.cols);
-    cfe_vec_G1_init(&(keys->d), num_attrib);
+    cfe_mat_init(&(keys->mat), count_attrib, msp->mat.cols);
+    cfe_vec_G1_init(&(keys->d), count_attrib);
     keys->row_to_attrib = (int *) cfe_malloc(sizeof(int) * count_attrib);
 
     for (size_t i = 0; i < count_attrib; i++) {
