@@ -29,10 +29,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <amcl/big_256_56.h>
-#include <amcl/fp12_BN254.h>
-#include <amcl/ecp_BN254.h>
-#include <amcl/pair_BN254.h>
 
 #include "internal/common.h"
 #include "abe/policy.h"
