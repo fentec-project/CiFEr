@@ -44,10 +44,6 @@ jobs:
     steps:
       - checkout
 
-      - add_ssh_keys:  # Add SSH deploy key (registered on GitHub) which can push to the gh-pages branch
-          fingerprints:
-            - "8f:96:26:52:7f:12:d1:86:ee:bf:1d:f9:2d:37:81:55"
-
       - run:
           name: Install Doxygen and git
           command: |
@@ -55,8 +51,18 @@ jobs:
             apt install -y doxygen git
 
       - run:
+          name: Add GitHub hostname to known hosts
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+      - run:
           name: Checkout gh-pages branch into docs directory
           command: git clone -b gh-pages --single-branch $CIRCLE_REPOSITORY_URL docs
+
+      - add_ssh_keys:  # Add SSH deploy key (registered on GitHub) which can push to the gh-pages branch
+          fingerprints:
+            - "8f:96:26:52:7f:12:d1:86:ee:bf:1d:f9:2d:37:81:55"
 
       - run:
           name: Generate documentation
