@@ -78,7 +78,7 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // of attributes in owned_attrib
     int owned_attrib[] = {1, 3, 6};
     cfe_gpsw_keys keys;
-    cfe_gpsw_keys_init(&keys, &msp, 3);
+    cfe_gpsw_keys_init(&keys, &msp, owned_attrib, 3);
     cfe_gpsw_delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
 
     // decrypt the message with owned keys
@@ -93,7 +93,7 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // a set of attributes in insuff_attrib
     int insuff_attrib[] = {1, 2, 6};
     cfe_gpsw_keys insuff_keys;
-    cfe_gpsw_keys_init(&insuff_keys, &msp, 3);
+    cfe_gpsw_keys_init(&insuff_keys, &msp, insuff_attrib, 3);
     cfe_gpsw_delegate_keys(&insuff_keys, &policy_keys, &msp, insuff_attrib, 3);
 
     // check if the decryption is denied

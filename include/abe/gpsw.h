@@ -175,9 +175,11 @@ void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p);
  *
  * @param keys A pointer to an uninitialized cfe_gpsw_keys struct
  * @param msp A pointer to an initialized struct representing the MSP policy
- * @param num_attrib Number of owned attributes
+ * @param attrib A pointer to an array of integers defining which attributes are
+ * owned to join corresponding keys to the final key for the decryption
+ * @param num_attrib The length of attrib
  */
-void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, size_t num_attrib);
+void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, int* attrib, size_t num_attrib);
 
 /**
  * The function given the set of all keys produced from the MSP struct takes
@@ -188,8 +190,8 @@ void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, size_t num_attrib);
  * @param policy_keys A pointer to an initialized struct representing the keys of
  * all the attributes
  * @param msp A pointer to an initialized struct representing the MSP policy
- * @param attrib A pointer to an array of integers defining which attributes are owned
- * to join corresponding keys to the final key for the decryption
+ * @param attrib A pointer to an array of integers defining which attributes are
+ * owned to join corresponding keys to the final key for the decryption
  * @param num_attrib The length of attrib
  */
 void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
