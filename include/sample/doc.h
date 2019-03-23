@@ -31,4 +31,4 @@
  * Module sample provides diferent implementations of samplers. Its primary
  * purpose is support choosing random mpz_t values from selected probability
  * distributions.
-*/
+ */

@@ -92,14 +92,23 @@ void cfe_paillier_free(cfe_paillier *s);
 void cfe_paillier_copy(cfe_paillier *res, cfe_paillier *s);
 
 /**
- * Generates a master secret key and master public key for the scheme.
+ * Initializes the vectors which represent the master secret key and master
+ * public key.
  *
+ * @param msk A pointer to an uninitialized vector
+ * @param mpk A pointer to an uninitialized vector
  * @param s A pointer to an instance of the scheme (*initialized* cfe_paillier
  * struct)
- * @param msk A pointer to an uninitialized vector (master
- * secret key will be stored here)
- * @param mpk A pointer to an uninitialized vector (master public key will be
- * stored here)
+ */
+void cfe_paillier_master_keys_init(cfe_vec *msk, cfe_vec *mpk, cfe_paillier *s);
+
+/**
+ * Generates a master secret key and master public key for the scheme.
+ *
+ * @param msk A pointer to a vector (master secret key will be stored here)
+ * @param mpk A pointer to a vector (master public key will be stored here)
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_paillier
+ * struct)
  * @return Error code
  */
 cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_paillier *s);
@@ -108,8 +117,8 @@ cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_pail
  * Takes master secret key and input vector y, and returns the functional
  * encryption key. In case the key could not be derived, it returns an error.
  *
- * @param derived_key Initialized mpz_t
- * (the functional encryption key's value will be stored here)
+ * @param derived_key The resulting functional encryption key (the value will be
+ * stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_paillier
  * struct)
  * @param msk A pointer to the master secret key
@@ -119,11 +128,20 @@ cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_pail
 cfe_error cfe_paillier_derive_key(mpz_t derived_key, cfe_paillier *s, cfe_vec *msk, cfe_vec *y);
 
 /**
+ * Initializes the vector which represents the ciphertext.
+ *
+ * @param ciphertext A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_paillier
+ * struct)
+ */
+void cfe_paillier_ciphertext_init(cfe_vec *ciphertext, cfe_paillier *s);
+
+/**
  * Encrypts input vector x with the provided master public key. It returns a
  * ciphertext vector. If encryption failed, an error is returned.
  *
- * @param ciphertext A pointer to an uninitialized vector (the resulting
- * ciphertext will be stored here)
+ * @param ciphertext A pointer to a vector (the resulting ciphertext will be
+ * stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_paillier
  * struct)
  * @param x A pointer to the input vector
@@ -137,7 +155,7 @@ cfe_error cfe_paillier_encrypt(cfe_vec *ciphertext, cfe_paillier *s, cfe_vec *x,
  * vector y. It returns the inner product of x and y. If decryption failed, an
  * error is returned.
  *
- * @param res Initialized mpz_t (the result of the decryption will be stored here)
+ * @param res The result of the decryption (the value will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_paillier
  * struct)
  * @param ciphertext A pointer to the ciphertext vector

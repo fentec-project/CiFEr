@@ -80,6 +80,14 @@ void cfe_damgard_copy(cfe_damgard *res, cfe_damgard *s) {
     mpz_init_set(res->h, s->h);
 }
 
+void cfe_damgard_sec_key_init(cfe_damgard_sec_key *msk, cfe_damgard *s) {
+    cfe_vec_inits(s->l, &msk->s, &msk->t, NULL);
+}
+
+void cfe_damgard_pub_key_init(cfe_vec *mpk, cfe_damgard *s) {
+    cfe_vec_init(mpk, s->l);
+}
+
 void cfe_damgard_sec_key_free(cfe_damgard_sec_key *key) {
     cfe_vec_frees(&key->s, &key->t, NULL);
 }
@@ -89,19 +97,17 @@ void cfe_damgard_derived_key_free(cfe_damgard_fe_key *key) {
 }
 
 // mpk must be uninitialized!
-void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *sec_key, cfe_vec *mpk, cfe_damgard *s) {
-    cfe_vec_inits(s->l, &sec_key->s, &sec_key->t, mpk, NULL);
-
+void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *msk, cfe_vec *mpk, cfe_damgard *s) {
     mpz_t s_i, t_i, y1, y2, r, p_min_1;
     mpz_inits(s_i, t_i, y1, y2, r, p_min_1, NULL);
 
     mpz_sub_ui(p_min_1, s->p, 1);
     for (size_t i = 0; i < s->l; i++) {
         cfe_uniform_sample_range_i_mpz(s_i, 2, p_min_1);
-        cfe_vec_set(&sec_key->s, s_i, i);
+        cfe_vec_set(&msk->s, s_i, i);
 
         cfe_uniform_sample_range_i_mpz(t_i, 2, p_min_1);
-        cfe_vec_set(&sec_key->t, t_i, i);
+        cfe_vec_set(&msk->t, t_i, i);
 
         mpz_powm(y1, s->g, s_i, s->p);
         mpz_powm(y2, s->h, t_i, s->p);
@@ -114,27 +120,34 @@ void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *sec_key, cfe_vec *mpk
     mpz_clears(s_i, t_i, y1, y2, r, p_min_1, NULL);
 }
 
+void cfe_damgard_fe_key_init(cfe_damgard_fe_key *fe_key) {
+    mpz_inits(fe_key->key1, fe_key->key2, NULL);
+}
+
 cfe_error
-cfe_damgard_derive_key(cfe_damgard_fe_key *derived_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
+cfe_damgard_derive_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
 
     mpz_t p_min_1;
-    mpz_inits(p_min_1, derived_key->key1, derived_key->key2, NULL);
+    mpz_init(p_min_1);
     mpz_sub_ui(p_min_1, s->p, 1);
 
-    cfe_vec_dot(derived_key->key1, &msk->s, y);
-    mpz_mod(derived_key->key1, derived_key->key1, p_min_1);
+    cfe_vec_dot(fe_key->key1, &msk->s, y);
+    mpz_mod(fe_key->key1, fe_key->key1, p_min_1);
 
-    cfe_vec_dot(derived_key->key2, &msk->t, y);
-    mpz_mod(derived_key->key2, derived_key->key2, p_min_1);
+    cfe_vec_dot(fe_key->key2, &msk->t, y);
+    mpz_mod(fe_key->key2, fe_key->key2, p_min_1);
 
     mpz_clear(p_min_1);
     return CFE_ERR_NONE;
 }
 
-// ciphertext must be uninitialized!
+void cfe_damgard_ciphertext_init(cfe_vec *ciphertext, cfe_damgard *s) {
+    cfe_vec_init(ciphertext, s->l + 2);
+}
+
 cfe_error cfe_damgard_encrypt(cfe_vec *ciphertext, cfe_damgard *s, cfe_vec *x, cfe_vec *mpk) {
     if (!cfe_vec_check_bound(x, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
@@ -143,8 +156,6 @@ cfe_error cfe_damgard_encrypt(cfe_vec *ciphertext, cfe_damgard *s, cfe_vec *x, c
     mpz_t r, ct, t1, t2;
     mpz_inits(r, ct, t1, t2, NULL);
     cfe_uniform_sample_range_i_mpz(r, 1, s->p);
-
-    cfe_vec_init(ciphertext, s->l + 2);
 
     mpz_powm(ct, s->g, r, s->p);
     cfe_vec_set(ciphertext, ct, 0);
@@ -174,7 +185,7 @@ cfe_error cfe_damgard_decrypt(mpz_t res, cfe_damgard *s, cfe_vec *ciphertext, cf
     }
 
     mpz_t num, ct, t1, t2, denom, denom_inv, r, order, bound;
-    mpz_inits(num, ct, t1, t2, denom, denom_inv, r, order, bound, res, NULL);
+    mpz_inits(num, ct, t1, t2, denom, denom_inv, r, order, bound, NULL);
 
     mpz_set_ui(num, 1);
 

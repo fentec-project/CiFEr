@@ -6,12 +6,19 @@ set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wredundant-decls \
 -Wnested-externs -Wmissing-include-dirs -Wstrict-prototypes -Wwrite-strings \
--Wno-unused-parameter -Wshadow -Wold-style-definition -O2")
+-Wno-unused-parameter -Wshadow -Wold-style-definition")
 
 # GCC warnings that Clang doesn't provide
 if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wjump-misses-init -Wlogical-op")
 endif ()
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif ()
+
+set(CMAKE_C_FLAGS_DEBUG "-g")
+set(CMAKE_C_FLAGS_RELEASE "-O2")
 
 # Header files
 include_directories(

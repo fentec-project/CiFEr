@@ -30,7 +30,6 @@
 #include <gmp.h>
 
 #include "internal/common.h"
-#include "internal/errors.h"
 #include "internal/dlog.h"
 
 typedef struct bigint_hash {

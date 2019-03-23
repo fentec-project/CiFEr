@@ -76,10 +76,15 @@ void cfe_ddh_free(cfe_ddh *s) {
     mpz_clears(s->bound, s->g, s->p, NULL);
 }
 
-// msk and mpk should be uninitialized!
-void cfe_ddh_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s) {
+void cfe_ddh_master_keys_init(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s) {
     cfe_vec_inits(s->l, msk, mpk, NULL);
+}
 
+void cfe_ddh_ciphertext_init(cfe_vec *ciphertext, cfe_ddh *s) {
+    cfe_vec_init(ciphertext, s->l + 1);
+}
+
+void cfe_ddh_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s) {
     mpz_t x, p_min_1;
     mpz_inits(x, p_min_1, NULL);
     mpz_sub_ui(p_min_1, s->p, 1);
@@ -94,14 +99,13 @@ void cfe_ddh_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s) {
     mpz_clears(x, p_min_1, NULL);
 }
 
-// res should be uninitialized
 cfe_error cfe_ddh_derive_key(mpz_t res, cfe_ddh *s, cfe_vec *msk, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
 
     mpz_t p_min_one;
-    mpz_inits(p_min_one, res, NULL);
+    mpz_init(p_min_one);
     cfe_vec_dot(res, msk, y);
     mpz_sub_ui(p_min_one, s->p, 1);
     mpz_mod(res, res, p_min_one);
@@ -109,7 +113,6 @@ cfe_error cfe_ddh_derive_key(mpz_t res, cfe_ddh *s, cfe_vec *msk, cfe_vec *y) {
     return CFE_ERR_NONE;
 }
 
-// ciphertext should be uninitialized!
 cfe_error cfe_ddh_encrypt(cfe_vec *ciphertext, cfe_ddh *s, cfe_vec *x, cfe_vec *mpk) {
     if (!cfe_vec_check_bound(x, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
@@ -118,8 +121,6 @@ cfe_error cfe_ddh_encrypt(cfe_vec *ciphertext, cfe_ddh *s, cfe_vec *x, cfe_vec *
     mpz_t r, ct, t1, t2;
     mpz_inits(r, ct, t1, t2, NULL);
     cfe_uniform_sample_range_i_mpz(r, 1, s->p);
-
-    cfe_vec_init(ciphertext, s->l + 1);
 
     mpz_powm(ct, s->g, r, s->p);
     cfe_vec_set(ciphertext, ct, 0);
@@ -140,14 +141,13 @@ cfe_error cfe_ddh_encrypt(cfe_vec *ciphertext, cfe_ddh *s, cfe_vec *x, cfe_vec *
     return CFE_ERR_NONE;
 }
 
-// res should be uninitialized
 cfe_error cfe_ddh_decrypt(mpz_t res, cfe_ddh *s, cfe_vec *ciphertext, mpz_t key, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
 
     mpz_t num, ct, t1, denom, denom_inv, r, order, bound;
-    mpz_inits(num, ct, t1, denom, denom_inv, r, order, bound, res, NULL);
+    mpz_inits(num, ct, t1, denom, denom_inv, r, order, bound, NULL);
 
     mpz_set_ui(num, 1);
 

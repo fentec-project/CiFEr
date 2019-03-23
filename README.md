@@ -47,17 +47,19 @@ the source code).
 - [AMCL](https://github.com/miracl/amcl)
 
 CiFEr relies on GMP for all big integer arithmetic. We recommend familiarizing 
-yourself with it before using CiFEr. To be able to run CMake as described below,
-AMCL must be compiled with BN254 curve. This can be done manually, but for
-convenience, we provide a Bash script that runs a modified AMCL setup (a Python
-script) and installs a minimal version of AMCL in the standard directory
-`/usr/local/lib` and header files in `/usr/local/include`. These default values
-can be changed in `external/amcl/setup_amcl.sh`. To use the script, run:
-````
+yourself with it before using CiFEr.
+
+To be able to build CiFEr as described below, AMCL must be compiled with BN254
+curve. This can be done manually, but for convenience, we provide a Bash script
+that runs a modified AMCL setup (a Python script) and installs a minimal version
+ of AMCL in the standard directory `/usr/local/lib` and header files in
+`/usr/local/include`. These default values can be changed in
+`external/amcl/setup_amcl.sh`. To use the script, run:
+```
 cd external/amcl
 sudo ./setup_amcl.sh
 cd ../..
-````
+```
 
 ### Build and install
 To build and install, first download it, then run the following commands in the 
@@ -157,12 +159,12 @@ this step, we need to pass in some configuration, e.g. values of parameters for
 the selected scheme.
 
 Let's say we selected a `cfe_ddh` scheme. We create a new scheme instance with:
-````c
+```c
 mpz_t bound;
 mpz_init_set_ui(bound, 2 << 14);
 cfe_ddh s;
 cfe_ddh_init(&s, 3, 128, bound);
-````
+```
 
 In the last line above, the first argument is length of input vectors **x**
 and **y**, the second argument is bit length of prime modulus _p_
@@ -194,7 +196,7 @@ around an array of `cfe_vec` vectors.
 In general, you only have to worry about providing input data (usually
 vectors **x** and **y**). Each element in a vector or matrix can be set by 
 calling their respective `_set` function, for example:
-````c
+```c
 cfe_vec x, y;
 cfe_vec_init(&x, 3);
 cfe_vec_init(&y, 3);
@@ -206,34 +208,37 @@ for (size_t i = 0; i < 3; i++) {
     cfe_vec_set(&y, el, 2-i);
 }
 // x is [1, 2, 3], y is [3, 2, 1]
-````
+```
 
 For matrices, you can set whole rows to contain the same values as a vector.
-````c
+```c
 cfe_mat A;
 cfe_mat_init(&A, 2, 3);
 cfe_mat_set_vec(&A, &x, 0);
 cfe_mat_set_vec(&A, &y, 1);
 // A is [[1, 2, 3], [3, 2, 1]]
-````
+```
 
 #### Random data
 To generate random `mpz_t` values from different probability distributions,
 you can use one of our several implementations of random samplers. The samplers
 are provided in the `sample` directory. Note that the uniform sampler does not 
-require special initialization while other samplers do.
+require special initialization while other samplers do. Before performing any
+random sampling, the function `cfe_init` needs to be called to ensure that the
+system's random number generator has been properly seeded.
  
 You can quickly construct random vectors and matrices by:
 1. Configuring the sampler of your choice, for example:
-    ````c
+    ```c
+    cfe_init();
     mpf_t sigma;
     mpf_init_set_ui(sigma, 10);
     cfe_normal_cumulative s;    // samples the cumulative normal (Gaussian) probability distribution, centered on 0
     cfe_normal_cumulative_init(&s, sigma, 256, true);
-    ````
+    ```
 2. Providing the data structure and sampler as an argument to the relevant 
 `_sample_vec` or `_sample_mat` functions. 
-    ````c
+    ```c
     cfe_vec v;
     cfe_mat m;
     cfe_vec_init(&v, 5);
@@ -245,13 +250,19 @@ You can quickly construct random vectors and matrices by:
     mpz_t max;
     mpz_init_set_ui(max, 10);
     cfe_uniform_sample_vec(&v, max);
-    ````
+    ```
     
 ## Use the scheme (examples)
-Please note that all the examples below omit error handling. All functions 
+Please note that all the examples below omit error handling. All functions
 which can fail return a `cfe_error` (its definition is in `errors.h` header, 
 located in the `internal` directory) which is non-zero if the function 
 encountered an error.
+
+Additionally, all examples also omit memory freeing. In CiFEr, all functions
+which allocate memory for their results (passed as input parameters) have the
+suffix `_init` and have a corresponding function with the suffix `_free`.
+All other functions expect their inputs to be already initialized and do not
+allocate any memory the user would need to free manually.
 
 ##### Using a single input scheme
 The example below demonstrates how to use single input scheme instances.
@@ -268,17 +279,19 @@ You will see that three `cfe_ddh` structs are instantiated to simulate the
 // Instantiation of a trusted entity that
 // will generate master keys and FE key
 size_t l = 2; // length of input vectors
-mpz_t bound, fe_key, xy, el; 
-mpz_init_set_ui(bound, 10); // upper bound for input vector coordinates
+mpz_t bound, fe_key, xy, el;
+mpz_inits(bound, fe_key, xy, el, NULL);
+mpz_set_ui(bound, 10); // upper bound for input vector coordinates
 modulus_len := 128 // bit length of prime modulus p
 
 cfe_ddh s, encryptor, decryptor;
 cfe_ddh_init(&s, l, modulus_len, bound);
 cfe_vec msk, mpk, ciphertext, x, y;
+cfe_ddh_master_keys_init(&msk, &mpk, &s);
 cfe_ddh_generate_master_keys(&msk, &mpk, &s);
 
 cfe_vec_init(&y, 2);
-mpz_init_set_ui(el, 1);
+mpz_set_ui(el, 1);
 cfe_vec_set(&y, el, 0);
 mpz_set_ui(el, 2);
 cfe_vec_set(&y, el, 1); // y is [1, 2]
@@ -289,12 +302,13 @@ cfe_ddh_derive_key(fe_key, &s, &msk, &y);
 // Encryptor wants to hide x and should be given
 // master public key by the trusted entity
 cfe_vec_init(&x, 2);
-mpz_init_set_ui(el, 3);
+mpz_set_ui(el, 3);
 cfe_vec_set(&x, el, 0);
 mpz_set_ui(el, 4);
 cfe_vec_set(&x, el, 1); // x is [3, 4]
 
 cfe_ddh_copy(&encryptor, &s);
+cfe_ddh_ciphertext_init(&ciphertext, &encryptor);
 cfe_ddh_encrypt(&ciphertext, &encryptor, &x, &mpk);
 
 // Simulate instantiation of decryptor that decrypts the cipher 
@@ -342,8 +356,10 @@ cfe_ddh_multi_init(&m, slots, l, modulus_len, bound);
 
 cfe_mat mpk;
 cfe_ddh_multi_sec_key msk;
+cfe_ddh_multi_master_keys_init(&mpk, &msk, &m);
 cfe_ddh_multi_generate_master_keys(&mpk, &msk, &m);
 cfe_ddh_multi_fe_key fe_key;
+cfe_ddh_multi_fe_key_init(&fe_key, &m);
 cfe_ddh_multi_derive_key(&fe_key, &m, &msk, &Y);
 
 // Different encryptors may reside on different machines.
@@ -363,6 +379,7 @@ for (size_t i = 0; i < slots; i++) {
     cfe_vec *pub_key = cfe_mat_get_row_ptr(&mpk, i);
     cfe_vec *otp = cfe_mat_get_row_ptr(&msk.otp_key, i);
     cfe_vec *x_vec = cfe_mat_get_row_ptr(&X, i);
+    cfe_ddh_multi_ciphertext_init(&ct, &encryptors[i]);
     cfe_ddh_multi_encrypt(&ct, &encryptors[i], x_vec, pub_key, otp);
     cfe_mat_set_vec(&ciphertext, &ct, i);
     cfe_vec_free(&ct);
@@ -373,6 +390,5 @@ for (size_t i = 0; i < slots; i++) {
 cfe_ddh_multi_copy(&decryptor, &m);
 cfe_ddh_multi_decrypt(prod, &decryptor, &ciphertext, &fe_key, &Y);
 ```
-Note that above we instantiate multiple encryptors - in reality,
- different encryptors will be instantiated on different machines. 
- 
+Note that above we instantiate multiple encryptors - in reality, 
+different encryptors will be instantiated on different machines.

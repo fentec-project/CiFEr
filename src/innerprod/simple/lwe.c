@@ -134,15 +134,22 @@ cfe_error cfe_lwe_init(cfe_lwe *s, size_t l, mpz_t bound_x, mpz_t bound_y, size_
     return err;
 }
 
+void cfe_lwe_sec_key_init(cfe_mat *SK, cfe_lwe *s) {
+    cfe_mat_init(SK, s->n, s->l);
+}
+
+void cfe_lwe_pub_key_init(cfe_mat *PK, cfe_lwe *s) {
+    cfe_mat_init(PK, s->m, s->l);
+}
+
 // Generates a secret key for the scheme.
 // The key is represented by a matrix with dimensions n*l whose
 // elements are random values from the interval [0, q).
 void cfe_lwe_generate_sec_key(cfe_mat *SK, cfe_lwe *s) {
-    cfe_mat_init(SK, s->n, s->l);
     cfe_uniform_sample_mat(SK, s->q);
 }
 
-// Generates a public key PK for the scheme.
+// Generates a public key for the scheme.
 // Public key is a matrix of m*l elements.
 cfe_error cfe_lwe_generate_pub_key(cfe_mat *PK, cfe_lwe *s, cfe_mat *SK) {
     if (SK->rows != s->n || SK->cols != s->l) {
@@ -166,7 +173,6 @@ cfe_error cfe_lwe_generate_pub_key(cfe_mat *PK, cfe_lwe *s, cfe_mat *SK) {
     cfe_normal_double_sample_mat(&E, &sampler);
 
     // Calculate public key as PK = (A * SK + E) % q
-    cfe_mat_init(PK, s->m, s->l);
     cfe_mat_mul(PK, &s->A, SK);
     cfe_mat_mod(PK, PK, s->q);
     cfe_mat_add(PK, PK, &E);
@@ -177,6 +183,10 @@ cfe_error cfe_lwe_generate_pub_key(cfe_mat *PK, cfe_lwe *s, cfe_mat *SK) {
     mpf_clear(one);
     cfe_normal_double_free(&sampler);
     return err;
+}
+
+void cfe_lwe_fe_key_init(cfe_vec *sk_y, cfe_lwe *s) {
+    cfe_vec_init(sk_y, s->n);
 }
 
 // Derives a secret key sk_y for decryption of inner product of y and
@@ -190,11 +200,14 @@ cfe_error cfe_lwe_derive_key(cfe_vec *sk_y, cfe_lwe *s, cfe_mat *SK, cfe_vec *y)
         return CFE_ERR_MALFORMED_SEC_KEY;
     }
 
-    cfe_vec_init(sk_y, s->n);
     cfe_mat_mul_vec(sk_y, SK, y);
     cfe_vec_mod(sk_y, sk_y, s->q);
 
     return CFE_ERR_NONE;
+}
+
+void cfe_lwe_ciphertext_init(cfe_vec *ct, cfe_lwe *s) {
+    cfe_vec_init(ct, s->n + s->l);
 }
 
 // Encrypts vector x using public key PK.
@@ -248,7 +261,6 @@ cfe_error cfe_lwe_encrypt(cfe_vec *ct, cfe_lwe *s, cfe_vec *x, cfe_mat *PK) {
     cfe_vec_mod(&ct_last, &ct_last, s->q);
 
     // Construct the final ciphertext vector by joining both parts
-    cfe_vec_init(ct, s->n + s->l);
     cfe_vec_join(ct, &ct_0, &ct_last);
 
     // Cleanup
@@ -315,7 +327,7 @@ cfe_error cfe_lwe_decrypt(mpz_t res, cfe_lwe *s, cfe_vec *ct, cfe_vec *sk_y, cfe
     mpz_add(d, d, half_q);
     mpz_fdiv_q(d, d, s->q);
 
-    mpz_init_set(res, d); // set the value of decrypted message as the result
+    mpz_set(res, d); // set the value of decrypted message as the result
 
     // Cleanup
     mpz_clears(d, prod, half_q, NULL);

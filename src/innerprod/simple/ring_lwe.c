@@ -93,12 +93,19 @@ cfe_error cfe_ring_lwe_init(cfe_ring_lwe *s, size_t l, size_t n, mpz_t bound, mp
     return CFE_ERR_NONE;
 }
 
+void cfe_ring_lwe_sec_key_init(cfe_mat *SK, cfe_ring_lwe *s) {
+    cfe_mat_init(SK, s->l, s->n);
+}
+
 // Generates a secret key for the scheme.
 // The key is represented by a matrix with dimensions l*n whose
 // elements are small values sampled as discrete Gaussian.
 void cfe_ring_lwe_generate_sec_key(cfe_mat *SK, cfe_ring_lwe *s) {
-    cfe_mat_init(SK, s->l, s->n);
     cfe_normal_cumulative_sample_mat(SK, &s->sampler);
+}
+
+void cfe_ring_lwe_pub_key_init(cfe_mat *PK, cfe_ring_lwe *s) {
+    cfe_mat_init(PK, s->l, s->n);
 }
 
 // Generates a public key PK for the scheme.
@@ -116,7 +123,6 @@ cfe_error cfe_ring_lwe_generate_pub_key(cfe_mat *PK, cfe_ring_lwe *s, cfe_mat *S
     // Calculate public key row by row as PK_i = (a * SK_i + E_i) % q
     // where operations of multiplication and addition are in the ring of
     // polynomials
-    cfe_mat_init(PK, s->l, s->n);
     cfe_vec pk_i, sk_i, e_i;
     cfe_vec_inits(s->n, &pk_i, &sk_i, &e_i, NULL);
 
@@ -134,6 +140,10 @@ cfe_error cfe_ring_lwe_generate_pub_key(cfe_mat *PK, cfe_ring_lwe *s, cfe_mat *S
     return CFE_ERR_NONE;
 }
 
+void cfe_ring_lwe_fe_key_init(cfe_vec *sk_y, cfe_ring_lwe *s) {
+    cfe_vec_init(sk_y, s->n);
+}
+
 // Derives a secret key sk_y for decryption of inner product of y and
 // a secret operand.
 // Secret key is a linear combination of input vector y and master secret keys.
@@ -145,10 +155,13 @@ cfe_error cfe_ring_lwe_derive_key(cfe_vec *sk_y, cfe_ring_lwe *s, cfe_mat *SK, c
         return CFE_ERR_MALFORMED_SEC_KEY;
     }
 
-    cfe_vec_init(sk_y, s->n);
     cfe_vec_mul_matrix(sk_y, y, SK);
     cfe_vec_mod(sk_y, sk_y, s->q);
     return CFE_ERR_NONE;
+}
+
+void cfe_ring_lwe_ciphertext_init(cfe_mat *CT, cfe_ring_lwe *s) {
+    cfe_mat_init(CT, s->l + 1, s->n);
 }
 
 // Encrypts matrix X using public key PK.
@@ -178,8 +191,6 @@ cfe_error cfe_ring_lwe_encrypt(cfe_mat *CT, cfe_ring_lwe *s, cfe_mat *X, cfe_mat
     //  where operations of multiplication and addition are in the ring of
     // polynomials
     // The last row of CT is set at the end
-    cfe_mat_init(CT, s->l + 1, s->n);
-
     cfe_vec v_ct, v_e;
     cfe_vec_inits(s->n, &v_ct, &v_e, NULL);
 
@@ -232,6 +243,10 @@ cfe_error cfe_ring_lwe_encrypt(cfe_mat *CT, cfe_ring_lwe *s, cfe_mat *X, cfe_mat
     return CFE_ERR_NONE;
 }
 
+void cfe_ring_lwe_decrypted_init(cfe_vec *res, cfe_ring_lwe *s) {
+    cfe_vec_init(res, s->n);
+}
+
 // Decrypts the ciphertext CT.
 // res will hold the decrypted product y*X
 // sk_y is the derived secret key for decryption of y*X
@@ -267,7 +282,6 @@ cfe_error cfe_ring_lwe_decrypt(cfe_vec *res, cfe_ring_lwe *s, cfe_mat *CT, cfe_v
     // decrypt the centered value of y*X
     cfe_vec ct_prod;
     cfe_vec_init(&ct_prod, s->n);
-    cfe_vec_init(res, s->n);
     cfe_vec_mul_matrix(&ct_prod, y, &CT_first);
     cfe_vec_mod(&ct_prod, &ct_prod, s->q);
     cfe_vec_poly_mul(res, &CT_last, sk_y);
