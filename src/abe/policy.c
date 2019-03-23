@@ -110,7 +110,7 @@ cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *ve
             break;
         }
         if (num_brc == 0 && i < strlen(bool_exp) - 2 && bool_exp[i] == 'O' &&
-            bool_exp[i+1] == 'R') {
+            bool_exp[i + 1] == 'R') {
             bool_exp1 = cfe_substring(bool_exp, 0, i);
             err = cfe_boolean_to_msp_iterative(&msp1, bool_exp1, vec, c);
             free(bool_exp1);
@@ -217,7 +217,7 @@ int cfe_str_to_int(char *str) {
 }
 
 char *cfe_substring(char *s, size_t start, size_t stop) {
-    char *sub = (char*) cfe_malloc(sizeof(char)*(stop - start + 1));
+    char *sub = (char *) cfe_malloc(sizeof(char) * (stop - start + 1));
     for (size_t i = start; i < stop; i++) {
         sub[i - start] = s[i];
     }
@@ -226,7 +226,7 @@ char *cfe_substring(char *s, size_t start, size_t stop) {
     return sub;
 }
 
-char *cfe_remove_spaces(char* source) {
+char *cfe_remove_spaces(char *source) {
     size_t count = 0;
     for (size_t i = 0; i < strlen(source); i++) {
         if (source[i] != ' ') {

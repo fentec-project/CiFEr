@@ -179,7 +179,7 @@ void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p);
  * owned to join corresponding keys to the final key for the decryption
  * @param num_attrib The length of attrib
  */
-void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, int* attrib, size_t num_attrib);
+void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, int *attrib, size_t num_attrib);
 
 /**
  * The function given the set of all keys produced from the MSP struct takes

@@ -100,7 +100,7 @@ char *cfe_substring(char *s, size_t start, size_t stop);
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-char *cfe_remove_spaces(char* source);
+char *cfe_remove_spaces(char *source);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
