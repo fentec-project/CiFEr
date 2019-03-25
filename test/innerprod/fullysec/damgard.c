@@ -35,7 +35,7 @@ MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 3;
     size_t modulus_len = 64;
     mpz_t bound, bound_neg, key1, key2, xy_check, xy;
-    mpz_inits(bound, bound_neg, key1, key2, xy_check, NULL);
+    mpz_inits(bound, bound_neg, key1, key2, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
@@ -53,14 +53,17 @@ MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
 
     cfe_damgard_sec_key msk;
 
+    cfe_damgard_sec_key_init(&msk, &s);
+    cfe_damgard_pub_key_init(&mpk, &s);
     cfe_damgard_generate_master_keys(&msk, &mpk, &s);
 
     cfe_damgard_fe_key key;
-
+    cfe_damgard_fe_key_init(&key);
     err = cfe_damgard_derive_key(&key, &s, &msk, &y);
     munit_assert(err == 0);
 
     cfe_damgard_copy(&encryptor, &s);
+    cfe_damgard_ciphertext_init(&ciphertext, &encryptor);
     err = cfe_damgard_encrypt(&ciphertext, &encryptor, &x, &mpk);
     munit_assert(err == 0);
 

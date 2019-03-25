@@ -113,37 +113,70 @@ void cfe_damgard_sec_key_free(cfe_damgard_sec_key *key);
 void cfe_damgard_derived_key_free(cfe_damgard_fe_key *key);
 
 /**
- * Generates a master secret key and master public key for the scheme.
+ * Initializes the struct which represents the master secret key.
  *
- * @param sec_key A pointer to an uninitialized cfe_damgard_sec_key struct (master
- * secret key will be stored here)
- * @param mpk A pointer to an uninitialized vector (master public key will be
- * stored here)
+ * @param msk A pointer to an uninitialized cfe_damgard_sec_key struct
  * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
  * struct)
  */
-void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *sec_key, cfe_vec *mpk, cfe_damgard *s);
+void cfe_damgard_sec_key_init(cfe_damgard_sec_key *msk, cfe_damgard *s);
+
+/**
+ * Initializes the vector which represents the master public key.
+ *
+ * @param mpk A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
+ * struct)
+ */
+void cfe_damgard_pub_key_init(cfe_vec *mpk, cfe_damgard *s);
+
+/**
+ * Generates a master secret key and master public key for the scheme.
+ *
+ * @param msk A pointer to a cfe_damgard_sec_key struct (master secret key will
+ * be stored here)
+ * @param mpk A pointer to a vector (master public key will be stored here)
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
+ * struct)
+ */
+void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *msk, cfe_vec *mpk, cfe_damgard *s);
+
+/**
+ * Initializes the struct which represents the functional encryption key.
+ *
+ * @param fe_key A pointer to an uninitialized cfe_damgard_fe_key struct
+ */
+void cfe_damgard_fe_key_init(cfe_damgard_fe_key *fe_key);
 
 /**
  * Takes master secret key and input vector y, and returns the functional
  * encryption key. In case the key could not be derived, it returns an error.
  *
- * @param derived_key A pointer to an uninitialized cfe_damgard_derived_key struct
- * (the functional encryption key's value will be stored here)
+ * @param fe_key A pointer to a cfe_damgard_derived_key struct (the functional
+ * encryption key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
  * struct)
  * @param msk A pointer to the master secret key
  * @param y A pointer to the inner product vector
  * @return Error code
  */
-cfe_error cfe_damgard_derive_key(cfe_damgard_fe_key *derived_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y);
+cfe_error cfe_damgard_derive_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y);
+
+/**
+ * Initializes the vector which represents the ciphertext.
+ *
+ * @param ciphertext A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
+ * struct)
+ */
+void cfe_damgard_ciphertext_init(cfe_vec *ciphertext, cfe_damgard *s);
 
 /**
  * Encrypts input vector x with the provided master public key. It returns a
  * ciphertext vector. If encryption failed, an error is returned.
  *
- * @param ciphertext A pointer to an uninitialized vector (the resulting
- * ciphertext will be stored here)
+ * @param ciphertext A pointer to a vector (the resulting ciphertext will be
+ * stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
  * struct)
  * @param x A pointer to the input vector

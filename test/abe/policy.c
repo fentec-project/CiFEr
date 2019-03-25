@@ -26,8 +26,6 @@
  */
 
 #include "munit.h"
-#include <stdbool.h>
-#include <stdio.h>
 
 #include "sample/uniform.h"
 #include "abe/policy.h"
@@ -45,7 +43,7 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     cfe_mat_init(&sub_mat, 2, msp.mat.cols);
     cfe_mat_init(&sub_mat_transpose, msp.mat.cols, 2);
 
-    // take a submatrix of the msp matrix on the second and forth row
+    // take a submatrix of the msp matrix on the second and fourth row
     // simulating that one has attribute 3 and 4.
     cfe_vec_copy(&(sub_mat.mat[0]), &(msp.mat.mat[1]));
     cfe_vec_copy(&(sub_mat.mat[1]), &(msp.mat.mat[3]));
@@ -68,7 +66,7 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     check = cfe_boolean_to_msp(&msp, bool_exp_faulty, true);
     munit_assert(check == CFE_ERR_CORRUPTED_BOOL_EXPRESSION);
 
-    // clearup
+    // cleanup
     cfe_msp_free(&msp);
     cfe_mat_frees(&sub_mat, &sub_mat_transpose, NULL);
     cfe_vec_frees(&one_vec, &x, NULL);
@@ -94,7 +92,8 @@ MunitResult test_gaussian_elimination(const MunitParameter params[], void *data)
     cfe_vec_mod(&vec, &vec, p);
 
     // use gaussian elimination to get x solving the equation vec = mat * x
-    cfe_gaussian_elimination(&x, &mat, &vec, p);
+    cfe_error err = cfe_gaussian_elimination(&x, &mat, &vec, p);
+    munit_assert(err == 0);
 
     // check if the result is correct, i.e. x_test = x
     for (size_t i = 0; i < x.size; i++) {
@@ -126,7 +125,7 @@ MunitTest policy_tests[] = {
         {(char *) "/test-boolean_to_msp",       test_boolean_to_msp,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/test-gaussian-elimination", test_gaussian_elimination, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/test-str-to-int",           test_str_to_int,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {NULL,                                  NULL,                      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
+        {NULL, NULL,                                                       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 MunitSuite policy_suite = {

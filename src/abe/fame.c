@@ -110,7 +110,7 @@ void cfe_fame_generate_master_keys(cfe_fame_pub_key *pk, cfe_fame_sec_key *sk, c
 }
 
 void cfe_fame_cipher_init(cfe_fame_cipher *cipher, cfe_msp *msp) {
-    cipher->ct = (ECP_BN254 (*)[3]) cfe_malloc(msp->mat.rows * 3 *sizeof(ECP_BN254));
+    cipher->ct = (ECP_BN254 (*)[3]) cfe_malloc(msp->mat.rows * 3 * sizeof(ECP_BN254));
     cfe_mat_init(&(cipher->msp.mat), msp->mat.rows, msp->mat.cols);
     cipher->msp.row_to_attrib = (int *) cfe_malloc(msp->mat.rows * (sizeof(int)));
 }
@@ -220,7 +220,7 @@ void cfe_fame_attrib_keys_free(cfe_fame_attrib_keys *keys) {
 }
 
 void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
-        size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame) {
+                                   size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame) {
     // prepare variables
     cfe_vec r, sigma;
     cfe_vec_init(&r, 2);
@@ -321,7 +321,7 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
 }
 
 cfe_error cfe_fame_decrypt(FP12_BN254 *res, cfe_fame_cipher *cipher,
-        cfe_fame_attrib_keys *keys, cfe_fame *fame) {
+                           cfe_fame_attrib_keys *keys, cfe_fame *fame) {
     // determine the intersection between owned attributes and specified in encryption
     size_t count_attrib = 0;
     size_t positions_keys[keys->num_attrib];

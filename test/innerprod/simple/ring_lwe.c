@@ -70,20 +70,25 @@ MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
     munit_assert(!err);
 
     cfe_mat SK, PK; // secret and public keys
+    cfe_ring_lwe_sec_key_init(&SK, &s);
     cfe_ring_lwe_generate_sec_key(&SK, &s);
+    cfe_ring_lwe_pub_key_init(&PK, &s);
     cfe_ring_lwe_generate_pub_key(&PK, &s, &SK);
 
     cfe_vec sk_y;
+    cfe_ring_lwe_fe_key_init(&sk_y, &s);
     err = cfe_ring_lwe_derive_key(&sk_y, &s, &SK, &y);
     munit_assert(!err);
 
     // encrypt the full mesage
-    cfe_mat c;
-    err = cfe_ring_lwe_encrypt(&c, &s, &X, &PK);
+    cfe_mat CT;
+    cfe_ring_lwe_ciphertext_init(&CT, &s);
+    err = cfe_ring_lwe_encrypt(&CT, &s, &X, &PK);
     munit_assert(!err);
 
     // decrypt the product y*X
-    err = cfe_ring_lwe_decrypt(&res, &s, &c, &sk_y, &y);
+    cfe_ring_lwe_decrypted_init(&res, &s);
+    err = cfe_ring_lwe_decrypt(&res, &s, &CT, &sk_y, &y);
     munit_assert(!err);
 
     // check if the result is correct
@@ -91,7 +96,7 @@ MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
         munit_assert(mpz_cmp(res.vec[i], expect.vec[i]) == 0);
     }
 
-    cfe_mat_frees(&X, &c, &SK, &PK, NULL);
+    cfe_mat_frees(&X, &CT, &SK, &PK, NULL);
     cfe_vec_frees(&y, &sk_y, &expect, &res, NULL);
     mpz_clears(B, B_neg, p, q, NULL);
     mpf_clear(sigma);

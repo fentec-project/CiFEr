@@ -141,14 +141,42 @@ void cfe_ddh_multi_sec_key_free(cfe_ddh_multi_sec_key *key);
 void cfe_ddh_multi_fe_key_free(cfe_ddh_multi_fe_key *key);
 
 /**
+ * Initializes the structs which represent the master secret key and master
+ * public key.
+ *
+ * @param msk A pointer to an uninitialized matrix
+ * @param mpk A pointer to an uninitialized cfe_dhh_multi_sec_key struct
+ * @param m A pointer to an instance of the scheme (*initialized* cfe_ddh_multi
+ * struct)
+ */
+void cfe_ddh_multi_master_keys_init(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk, cfe_ddh_multi *m);
+
+/**
+ * Initializes the struct which represents the functional encryption key.
+ *
+ * @param key A pointer to an uninitialized cfe_dhh_multi_fe_key struct
+ * @param m A pointer to an instance of the scheme (*initialized* cfe_ddh_multi
+ * struct)
+ */
+void cfe_ddh_multi_fe_key_init(cfe_ddh_multi_fe_key *key, cfe_ddh_multi *m);
+
+/**
+ * Initializes the vector which represents the ciphertext.
+ *
+ * @param ciphertext A pointer to an uninitialized vector
+ * @param e A pointer to an instance of the encryptor (*initialized*
+ * cfe_ddh_multi_enc struct)
+ */
+void cfe_ddh_multi_ciphertext_init(cfe_vec *ciphertext, cfe_ddh_multi_enc *e);
+
+/**
  * Generates a matrix comprised of master public keys and a struct encapsulating
  * master secret keys for the scheme.
  * It returns an error in case master keys could not be generated.
  *
- * @param mpk A pointer to an uninitialized matrix (master public key will be
- * stored here)
- * @param msk A pointer to an uninitialized cfe_ddh_multi_sec_key struct (master
- * secret key will be stored here)
+ * @param mpk A pointer to a matrix (master public key will be stored here)
+ * @param msk A pointer to a cfe_ddh_multi_sec_key struct (master secret key
+ * will be stored here)
  * @param m A pointer to an instance of the scheme (*initialized* cfe_ddh_multi
  * struct)
  */
@@ -159,8 +187,8 @@ void cfe_ddh_multi_generate_master_keys(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk
  * returns the functional encryption key.
  * In case the key could not be derived, it returns an error.
 
- * @param res A pointer to an uninitialized cfe_ddh_multi_fe_key struct (the
- * functional encryption key's value will be stored here)
+ * @param res A pointer to a cfe_ddh_multi_fe_key struct (the functional
+ * encryption key will be stored here)
  * @param m A pointer to an instance of the scheme (*initialized* cfe_ddh_multi
  * struct)
  * @param msk A pointer to the master secret key
@@ -174,8 +202,8 @@ cfe_error cfe_ddh_multi_derive_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, 
  * and one-time pad otp (which is a part of the secret key). It returns the
  * ciphertext vector. If encryption failed, an error is returned.
  *
- * @param ciphertext A pointer to an uninitialized vector (the resulting
- * ciphertext will be stored here)
+ * @param ciphertext A pointer to a vector (the resulting ciphertext will be
+ * stored here)
  * @param e A pointer to an instance of the encryptor (*initialized*
  * cfe_ddh_multi_enc struct)
  * @param x A pointer to the input vector

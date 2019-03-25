@@ -136,6 +136,10 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
     return err;
 }
 
+void cfe_lwe_fs_sec_key_init(cfe_mat *SK, cfe_lwe_fs *s) {
+    cfe_mat_init(SK, s->l, s->m);
+}
+
 cfe_error cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s) {
     mpf_t one;
     mpf_init_set_ui(one, 1);
@@ -151,8 +155,6 @@ cfe_error cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s) {
         mpf_clear(one);
         return CFE_ERR_SEC_KEY_GEN_FAILED;
     }
-
-    cfe_mat_init(SK, s->l, s->m);
 
     // sample the matrix
     mpz_t val;
@@ -180,16 +182,22 @@ cfe_error cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s) {
     return CFE_ERR_NONE;
 }
 
+void cfe_lwe_fs_pub_key_init(cfe_mat *PK, cfe_lwe_fs *s) {
+    cfe_mat_init(PK, s->l, s->n);
+}
 
 cfe_error cfe_lwe_fs_generate_pub_key(cfe_mat *PK, cfe_lwe_fs *s, cfe_mat *SK) {
     if (SK->rows != s->l || SK->cols != s->m) {
         return CFE_ERR_MALFORMED_SEC_KEY;
     }
 
-    cfe_mat_init(PK, s->l, s->n);
     cfe_mat_mul(PK, SK, &s->A);
     cfe_mat_mod(PK, PK, s->q);
     return CFE_ERR_NONE;
+}
+
+void cfe_lwe_fs_fe_key_init(cfe_vec *z_y, cfe_lwe_fs *s) {
+    cfe_vec_init(z_y, s->m);
 }
 
 // generates a key (vector) z_y that only decrypts the inner product with y
@@ -201,10 +209,13 @@ cfe_error cfe_lwe_fs_derive_key(cfe_vec *z_y, cfe_lwe_fs *s, cfe_vec *y, cfe_mat
         return CFE_ERR_MALFORMED_SEC_KEY;
     }
 
-    cfe_vec_init(z_y, s->m);
     cfe_vec_mul_matrix(z_y, y, SK);
     cfe_vec_mod(z_y, z_y, s->q);
     return CFE_ERR_NONE;
+}
+
+void cfe_lwe_fs_ciphertext_init(cfe_vec *ct, cfe_lwe_fs *s) {
+    cfe_vec_init(ct, s->m + s->l);
 }
 
 // Encrypts vector x using a public key.
@@ -258,7 +269,6 @@ cfe_error cfe_lwe_fs_encrypt(cfe_vec *ct, cfe_lwe_fs *s, cfe_vec *x, cfe_mat *PK
     cfe_vec_add(&c1, &c1, &t);
     cfe_vec_mod(&c1, &c1, s->q);
 
-    cfe_vec_init(ct, c0.size + c1.size);
     cfe_vec_join(ct, &c0, &c1);
 
     mpz_clear(q_div_k);
@@ -308,7 +318,6 @@ cfe_error cfe_lwe_fs_decrypt(mpz_t res, cfe_lwe_fs *s, cfe_vec *ct, cfe_vec *z_y
     mpz_div(q_div_k, s->q, s->K);
     mpz_div(q_div_k_times_2, s->q, k_times_2);
 
-    mpz_init(res);
     mpz_add(res, mu1, q_div_k_times_2);
     mpz_div(res, res, q_div_k);
 
@@ -316,7 +325,6 @@ cfe_error cfe_lwe_fs_decrypt(mpz_t res, cfe_lwe_fs *s, cfe_vec *ct, cfe_vec *z_y
     cfe_vec_frees(&c0, &c1, NULL);
     return CFE_ERR_NONE;
 }
-
 
 // Frees the memory allocated for configuration of the scheme.
 void cfe_lwe_fs_free(cfe_lwe_fs *s) {

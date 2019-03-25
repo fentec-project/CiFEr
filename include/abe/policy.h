@@ -85,12 +85,13 @@ cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *ve
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-void cfe_init_set_and_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
+void cfe_init_set_vecs_and(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
 int cfe_str_to_int(char *str);
+
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
@@ -99,7 +100,7 @@ char *cfe_substring(char *s, size_t start, size_t stop);
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-char *cfe_remove_spaces(char* source);
+char *cfe_remove_spaces(char *source);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -116,8 +117,7 @@ void cfe_msp_free(cfe_msp *msp);
  * to be over Z_p, where p should be a prime number. If such x does not exist,
  * then the function returns an 1, else 0.
  *
- * @param res A pointer to an uninitialized cfe_res struct being the the vector
- * where the result will be saved
+ * @param res A pointer to an uninitialized vector where the result will be saved
  * @param mat A pointer to the matrix for the equation
  * @param vec A pointer to the right-hand side vector in the equation
  * @param p Modulus for the computations

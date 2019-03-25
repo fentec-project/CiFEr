@@ -78,13 +78,29 @@ void cfe_ddh_free(cfe_ddh *s);
 void cfe_ddh_copy(cfe_ddh *res, cfe_ddh *s);
 
 /**
+ * Initializes the vectors which represent the master secret key and master
+ * public key.
+ *
+ * @param msk A pointer to an uninitialized vector
+ * @param mpk A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_ddh struct)
+ */
+void cfe_ddh_master_keys_init(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s);
+
+/**
+ * Initializes the vector which represents the ciphertext.
+ *
+ * @param ciphertext A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_ddh struct)
+ */
+void cfe_ddh_ciphertext_init(cfe_vec *ciphertext, cfe_ddh *s);
+
+/**
  * Generates a pair of master secret key and master public key for the scheme.
  * It returns an error in case master keys could not be generated.
  *
- * @param msk A pointer to an uninitialized vector (master secret key will be
- * stored here)
- * @param mpk A pointer to an uninitialized vector (master public key will be
- * stored here)
+ * @param msk A pointer to a vector (master secret key will be stored here)
+ * @param mpk A pointer to a vector (master public key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_ddh struct)
  */
 void cfe_ddh_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s);
@@ -105,8 +121,8 @@ cfe_error cfe_ddh_derive_key(mpz_t res, cfe_ddh *s, cfe_vec *msk, cfe_vec *y);
  * Encrypts input vector x with the provided master public key. It returns a
  * ciphertext vector. If encryption failed, an error is returned.
  *
- * @param ciphertext A pointer to an uninitialized vector (the resulting
- * ciphertext will be stored here)
+ * @param ciphertext A pointer to a vector (the resulting ciphertext will be
+ * stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_ddh struct)
  * @param x A pointer to the input vector
  * @param mpk A pointer to the master public key

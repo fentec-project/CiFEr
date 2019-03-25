@@ -77,7 +77,7 @@ void cfe_normal_precomp_exp(cfe_normal *s) {
         mpz_mul_ui(x, x, 2);
     }
 
-    // clearup
+    // cleanup
     mpz_clears(x, max_float_z, NULL);
     mpf_clears(two_sigma_square, max_float, sqrt_n, NULL);
 }

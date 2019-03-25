@@ -35,7 +35,7 @@ MunitResult test_ddh_end_to_end(const MunitParameter *params, void *data) {
     size_t modulus_len = 128;
 
     mpz_t bound, bound_neg, func_key, xy_check, xy;
-    mpz_inits(bound, bound_neg, xy_check, NULL);
+    mpz_inits(bound, bound_neg, func_key, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 15);
     mpz_neg(bound_neg, bound);
@@ -50,12 +50,14 @@ MunitResult test_ddh_end_to_end(const MunitParameter *params, void *data) {
     cfe_uniform_sample_range_vec(&y, bound_neg, bound);
     cfe_vec_dot(xy_check, &x, &y);
 
+    cfe_ddh_master_keys_init(&msk, &mpk, &s);
     cfe_ddh_generate_master_keys(&msk, &mpk, &s);
 
     err = cfe_ddh_derive_key(func_key, &s, &msk, &y);
     munit_assert(err == 0);
 
     cfe_ddh_copy(&encryptor, &s);
+    cfe_ddh_ciphertext_init(&ciphertext, &encryptor);
     err = cfe_ddh_encrypt(&ciphertext, &encryptor, &x, &mpk);
     munit_assert(err == 0);
 

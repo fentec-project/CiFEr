@@ -33,12 +33,11 @@ void BIG_256_56_from_mpz(BIG_256_56 dst, mpz_t src) {
     mpz_inits(x, y, NULL);
     mpz_set(y, src);
     size_t size = (MODBYTES_256_56 * 8) - ((MODBYTES_256_56 * 8) % BASEBITS_256_56);
-    for (int i = 0; i < ((MODBYTES_256_56 * 8) / BASEBITS_256_56) + 1; i++)
-    {
+    for (int i = 0; i < ((MODBYTES_256_56 * 8) / BASEBITS_256_56) + 1; i++) {
         BIG_256_56_fshl(dst, BASEBITS_256_56);
         mpz_fdiv_q_2exp(x, y, size);
         mpz_fdiv_r_2exp(y, y, size);
-        dst[0]+= mpz_get_ui(x);
+        dst[0] += mpz_get_ui(x);
         size = size - BASEBITS_256_56;
     }
     mpz_clears(x, y, NULL);

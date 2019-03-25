@@ -138,7 +138,7 @@ void cfe_fame_sec_key_free(cfe_fame_sec_key *sk);
  * @param fame A pointer to an initialized struct representing the scheme
  */
 void cfe_fame_generate_master_keys(cfe_fame_pub_key *pk,
-        cfe_fame_sec_key *sk, cfe_fame *fame);
+                                   cfe_fame_sec_key *sk, cfe_fame *fame);
 
 /**
  * Initializes the ciphertext that will be generated given a
@@ -173,7 +173,7 @@ void cfe_fame_cipher_free(cfe_fame_cipher *cipher);
  * @param fame A pointer to an initialized struct representing the scheme
  */
 void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg,
-        cfe_msp *msp, cfe_fame_pub_key *pk, cfe_fame *fame);
+                      cfe_msp *msp, cfe_fame_pub_key *pk, cfe_fame *fame);
 
 /**
  * Initializes attribute keys needed for the decryption. The number of attributes
@@ -205,7 +205,7 @@ void cfe_fame_attrib_keys_free(cfe_fame_attrib_keys *keys);
  * @param fame A pointer to an initialized struct representing the scheme
  */
 void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
-        size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame);
+                                   size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame);
 
 // TODO: change decryption to be a string when mapping is defined
 /**

@@ -35,7 +35,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     size_t slots = 2;
     size_t modulus_len = 64;
     mpz_t bound, xy_check, xy;
-    mpz_inits(bound, xy_check, NULL);
+    mpz_inits(bound, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
 
@@ -50,7 +50,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     cfe_uniform_sample_mat(&y, bound);
 
     cfe_damgard_multi_sec_key msk;
-
+    cfe_damgard_multi_master_keys_init(&mpk, &msk, &m);
     cfe_damgard_multi_generate_master_keys(&mpk, &msk, &m);
 
     for (size_t i = 0; i < slots; i++) {
@@ -58,23 +58,24 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     }
 
     cfe_damgard_multi_fe_key key;
-
+    cfe_damgard_multi_fe_key_init(&key, &m);
     err = cfe_damgard_multi_derive_key(&key, &m, &msk, &y);
     munit_assert(err == 0);
 
+    cfe_vec ct;
+    cfe_damgard_multi_ciphertext_init(&ct, &encryptors[0]);
     for (size_t i = 0; i < slots; i++) {
         cfe_vec *x_vec = cfe_mat_get_row_ptr(&x, i);
         cfe_uniform_sample_vec(x_vec, bound);
 
-        cfe_vec ct;
         cfe_vec *pub_key = cfe_mat_get_row_ptr(&mpk, i);
         cfe_vec *otp = cfe_mat_get_row_ptr(&msk.otp, i);
         err = cfe_damgard_multi_encrypt(&ct, &encryptors[i], x_vec, pub_key, otp);
         munit_assert(err == 0);
 
         cfe_mat_set_vec(&ciphertext, &ct, i);
-        cfe_vec_free(&ct);
     }
+    cfe_vec_free(&ct);
 
     cfe_mat_dot(xy_check, &x, &y);
     mpz_mod(xy_check, xy_check, bound);

@@ -81,53 +81,86 @@ typedef struct cfe_lwe {
 cfe_error cfe_lwe_init(cfe_lwe *s, size_t l, mpz_t bound_x, mpz_t bound_y, size_t n);
 
 /**
- * Generates a private secret key for the scheme.
+ * Initializes the matrix which represents the secret key.
  *
- * @param sec_key A pointer to an uninitialized matrix (master
- * secret key will be stored here)
+ * @param SK A pointer to an uninitialized matrix
  * @param s A pointer to an instance of the scheme (*initialized* cfe_lwe
  * struct)
  */
-void cfe_lwe_generate_sec_key(cfe_mat *sec_key, cfe_lwe *s);
+void cfe_lwe_sec_key_init(cfe_mat *SK, cfe_lwe *s);
+
+/**
+ * Generates a private secret key for the scheme.
+ *
+ * @param SK A pointer to a matrix (master secret key will be stored here)
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_lwe
+ * struct)
+ */
+void cfe_lwe_generate_sec_key(cfe_mat *SK, cfe_lwe *s);
+
+/**
+ * Initializes the matrix which represents the public key.
+ *
+ * @param PK A pointer to an uninitialized matrix
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_lwe
+ * struct)
+ */
+void cfe_lwe_pub_key_init(cfe_mat *PK, cfe_lwe *s);
 
 /**
  * Generates a public key for the scheme.
  *
- * @param pub_key A pointer to an uninitialized instance of pub_key
- * struct (public key will be stored here)
+ * @param PK A pointer to a matrix (public key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_lwe
  * struct)
- * @param sec_key A pointer to an initialized matrix representing the secret key.
+ * @param SK A pointer to an initialized matrix representing the secret key.
  * @return Error code
  */
-cfe_error cfe_lwe_generate_pub_key(cfe_mat *pub_key, cfe_lwe *s, cfe_mat *sec_key);
+cfe_error cfe_lwe_generate_pub_key(cfe_mat *PK, cfe_lwe *s, cfe_mat *SK);
+
+/**
+ * Initializes the vector which represents the functional encryption key.
+ *
+ * @param sk_y A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized*
+ * cfe_lwe struct)
+ */
+void cfe_lwe_fe_key_init(cfe_vec *sk_y, cfe_lwe *s);
 
 /**
  * Takes master secret key and inner product vector, and returns the functional
  * encryption key.
  *
- * @param sk_y A pointer to an uninitialized vector (the functional encryption
- * key will be stored here)
- * @param sec_key A pointer to the master secret key
+ * @param sk_y A pointer to a vector (the functional encryption key will be
+ * stored here)
+ * @param SK A pointer to the master secret key
  * @param s A pointer to an instance of the scheme (*initialized*
  * cfe_lwe struct)
  * @param y A pointer to the inner product vector
  * @return Error code
  */
-cfe_error cfe_lwe_derive_key(cfe_vec *sk_y, cfe_lwe *s, cfe_mat *sec_key, cfe_vec *y);
+cfe_error cfe_lwe_derive_key(cfe_vec *sk_y, cfe_lwe *s, cfe_mat *SK, cfe_vec *y);
+
+/**
+ * Initializes the vector which represents the ciphertext.
+ *
+ * @param ct A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_lwe
+ * struct)
+ */
+void cfe_lwe_ciphertext_init(cfe_vec *ct, cfe_lwe *s);
 
 /**
  * Encrypts input vector x with the provided master public key.
  *
- * @param x A pointer to the input vector
- * @param ct A pointer to an uninitialized vector
- * (the resulting ciphertext will be stored here)
+ * @param ct A pointer to a vector (the resulting ciphertext will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_lwe
  * struct)
- * @param pub_key A pointer to the matrix representing the public key.
+ * @param x A pointer to the input vector
+ * @param PK A pointer to the matrix representing the public key.
  * @return Error code
  */
-cfe_error cfe_lwe_encrypt(cfe_vec *ct, cfe_lwe *s, cfe_vec *x, cfe_mat *pub_key);
+cfe_error cfe_lwe_encrypt(cfe_vec *ct, cfe_lwe *s, cfe_vec *x, cfe_mat *PK);
 
 /**
  * Accepts the encrypted vector x, functional encryption key, and a plaintext

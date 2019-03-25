@@ -61,8 +61,17 @@ void cfe_ddh_multi_enc_free(cfe_ddh_multi_enc *e) {
     cfe_ddh_free(&e->scheme);
 }
 
+void cfe_ddh_multi_master_keys_init(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk, cfe_ddh_multi *m) {
+    cfe_mat_inits(m->slots, m->scheme.l, mpk, &msk->msk, &msk->otp_key, NULL);
+}
+
 void cfe_ddh_multi_sec_key_free(cfe_ddh_multi_sec_key *key) {
     cfe_mat_frees(&key->msk, &key->otp_key, NULL);
+}
+
+void cfe_ddh_multi_fe_key_init(cfe_ddh_multi_fe_key *key, cfe_ddh_multi *m) {
+    mpz_init(key->otp_key);
+    cfe_vec_init(&key->keys, m->scheme.l);
 }
 
 void cfe_ddh_multi_fe_key_free(cfe_ddh_multi_fe_key *key) {
@@ -70,24 +79,25 @@ void cfe_ddh_multi_fe_key_free(cfe_ddh_multi_fe_key *key) {
     mpz_clear(key->otp_key);
 }
 
-// mpk should be uninitialized!
-void cfe_ddh_multi_generate_master_keys(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk, cfe_ddh_multi *m) {
-    cfe_mat_inits(m->slots, m->scheme.l, mpk, &msk->msk, &msk->otp_key, NULL);
+void cfe_ddh_multi_ciphertext_init(cfe_vec *ciphertext, cfe_ddh_multi_enc *e) {
+    cfe_ddh_ciphertext_init(ciphertext, &e->scheme);
+}
 
+void cfe_ddh_multi_generate_master_keys(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk, cfe_ddh_multi *m) {
     cfe_vec rand_v;
     cfe_vec_init(&rand_v, m->scheme.l);
+    cfe_vec msk_v, mpk_v;
+    cfe_ddh_master_keys_init(&msk_v, &mpk_v, &m->scheme);
 
     for (size_t i = 0; i < m->slots; i++) {
-        cfe_vec msk_v, mpk_v;
         cfe_ddh_generate_master_keys(&msk_v, &mpk_v, &m->scheme);
         cfe_mat_set_vec(&msk->msk, &msk_v, i);
         cfe_mat_set_vec(mpk, &mpk_v, i);
 
-        cfe_vec_frees(&msk_v, &mpk_v, NULL);
-
         cfe_uniform_sample_vec(&rand_v, m->scheme.bound);
         cfe_mat_set_vec(&msk->otp_key, &rand_v, i);
     }
+    cfe_vec_frees(&msk_v, &mpk_v, NULL);
 
     cfe_vec_free(&rand_v);
 }
@@ -102,26 +112,21 @@ cfe_ddh_multi_derive_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, cfe_ddh_mu
     cfe_error err = CFE_ERR_NONE;
 
     mpz_t z, key;
-    mpz_init(z);
+    mpz_inits(z, key, NULL);
 
     cfe_mat_dot(z, &msk->otp_key, y);
     mpz_mod(z, z, m->scheme.bound);
-
-    mpz_init_set(res->otp_key, z);
-    cfe_vec_init(&res->keys, m->scheme.l);
+    mpz_set(res->otp_key, z);
 
     for (size_t i = 0; i < m->slots; i++) {
         err = cfe_ddh_derive_key(key, &m->scheme, cfe_mat_get_row_ptr(&msk->msk, i), cfe_mat_get_row_ptr(y, i));
         if (err) {
-            cfe_ddh_multi_fe_key_free(res);
-            mpz_clear(key);
             break;
         }
-
         cfe_vec_set(&res->keys, key, i);
-        mpz_clear(key);
     }
 
+    mpz_clear(key);
     mpz_clear(z);
     return err;
 }
@@ -151,20 +156,19 @@ cfe_ddh_multi_decrypt(mpz_t res, cfe_ddh_multi *m, cfe_mat *ciphertext, cfe_ddh_
     cfe_error err = CFE_ERR_NONE;
 
     mpz_t sum, c, k;
-    mpz_inits(sum, k, res, NULL);
+    mpz_inits(sum, c, k, NULL);
 
     for (size_t i = 0; i < m->slots; i++) {
         cfe_vec_get(k, &key->keys, i);
         err = cfe_ddh_decrypt(c, &m->scheme, cfe_mat_get_row_ptr(ciphertext, i), k, cfe_mat_get_row_ptr(y, i));
         if (err) {
-            mpz_clear(c);
             break;
         }
 
         mpz_add(sum, sum, c);
-        mpz_clear(c);
     }
 
+    mpz_clear(c);
     mpz_sub(res, sum, key->otp_key);
     mpz_mod(res, res, m->scheme.bound);
 

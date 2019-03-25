@@ -82,20 +82,36 @@ typedef struct cfe_ring_lwe {
 cfe_error cfe_ring_lwe_init(cfe_ring_lwe *s, size_t l, size_t n, mpz_t bound, mpz_t p, mpz_t q, mpf_t sigma);
 
 /**
+ * Initializes the matrix which represents the secret key.
+ *
+ * @param SK A pointer to an uninitialized matrix
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe
+ * struct)
+ */
+void cfe_ring_lwe_sec_key_init(cfe_mat *SK, cfe_ring_lwe *s);
+
+/**
  * Generates a private secret key for the scheme.
  *
- * @param SK A pointer to an uninitialized matrix (master
- * secret key will be stored here)
+ * @param SK A pointer to a matrix (master secret key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe
  * struct)
  */
 void cfe_ring_lwe_generate_sec_key(cfe_mat *SK, cfe_ring_lwe *s);
 
 /**
+ * Initializes the matrix which represents the public key.
+ *
+ * @param PK A pointer to an uninitialized matrix
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe
+ * struct)
+ */
+void cfe_ring_lwe_pub_key_init(cfe_mat *PK, cfe_ring_lwe *s);
+
+/**
  * Generates a public key for the scheme.
  *
- * @param PK A pointer to an uninitialized instance of pub_key
- * struct (public key will be stored here)
+ * @param PK A pointer to a matrix (public key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe
  * struct)
  * @param SK A pointer to an initialized matrix representing the secret key.
@@ -104,11 +120,20 @@ void cfe_ring_lwe_generate_sec_key(cfe_mat *SK, cfe_ring_lwe *s);
 cfe_error cfe_ring_lwe_generate_pub_key(cfe_mat *PK, cfe_ring_lwe *s, cfe_mat *SK);
 
 /**
+ * Initializes the vector which represents the functional encryption key.
+ *
+ * @param sk_y A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized*
+ * cfe_ring_lwe struct)
+ */
+void cfe_ring_lwe_fe_key_init(cfe_vec *sk_y, cfe_ring_lwe *s);
+
+/**
  * Takes master secret key and inner product vector, and returns the functional
  * encryption key.
  *
- * @param sk_y A pointer to an uninitialized vector (the functional encryption
- * key will be stored here)
+ * @param sk_y A pointer to a vector (the functional encryption key will be
+ * stored here)
  * @param s A pointer to an instance of the scheme (*initialized*
  * cfe_ring_lwe struct)
  * @param SK A pointer to the master secret key
@@ -118,24 +143,41 @@ cfe_error cfe_ring_lwe_generate_pub_key(cfe_mat *PK, cfe_ring_lwe *s, cfe_mat *S
 cfe_error cfe_ring_lwe_derive_key(cfe_vec *sk_y, cfe_ring_lwe *s, cfe_mat *SK, cfe_vec *y);
 
 /**
+ * Initializes the matrix which represents the ciphertext.
+ *
+ * @param CT A pointer to an uninitialized matrix
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe
+ * struct)
+ */
+void cfe_ring_lwe_ciphertext_init(cfe_mat *CT, cfe_ring_lwe *s);
+
+/**
  * Encrypts input matrix x with the provided master public key.
  *
- * @param ct A pointer to an uninitialized matrix
- * (the resulting ciphertext will be stored here)
+ * @param CT A pointer to a matrix (the resulting ciphertext will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe
  * struct)
  * @param x A pointer to the input matrix
  * @param PK A pointer to the matrix representing the public key.
  * @return Error code
  */
-cfe_error cfe_ring_lwe_encrypt(cfe_mat *ct, cfe_ring_lwe *s, cfe_mat *x, cfe_mat *PK);
+cfe_error cfe_ring_lwe_encrypt(cfe_mat *CT, cfe_ring_lwe *s, cfe_mat *x, cfe_mat *PK);
+
+/**
+ * Initialized the vector which represents the result of the decryption.
+ *
+ * @param res A pointer to an uninitialized vector
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe
+ * struct)
+ */
+void cfe_ring_lwe_decrypted_init(cfe_vec *res, cfe_ring_lwe *s);
 
 /**
  * Accepts the encrypted matrix X, functional encryption key, and an inner
  * product vector y. It returns the product y^T * X. If decryption failed, an
  * error is returned.
  *
- * @param res An uninitialized vector (result of the decryption will be stored here)
+ * @param res A pointer to a vector (result of the decryption will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_ring_lwe struct)
  * @param ct A pointer to the ciphertext matrix
  * @param sk_y The functional encryption key

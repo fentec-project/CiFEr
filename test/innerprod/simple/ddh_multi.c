@@ -36,7 +36,7 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
     size_t modulus_len = 64;
 
     mpz_t bound, xy_check, xy;
-    mpz_inits(bound, xy_check, NULL);
+    mpz_inits(bound, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
 
@@ -54,12 +54,14 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
     cfe_ddh_multi_sec_key msk;
     cfe_ddh_multi_fe_key key;
 
+    cfe_ddh_multi_master_keys_init(&mpk, &msk, &m);
     cfe_ddh_multi_generate_master_keys(&mpk, &msk, &m);
 
     for (size_t i = 0; i < slots; i++) {
         cfe_ddh_multi_enc_init(&encryptors[i], &m);
     }
 
+    cfe_ddh_multi_fe_key_init(&key, &m);
     err = cfe_ddh_multi_derive_key(&key, &m, &msk, &y);
     munit_assert(err == 0);
 
@@ -70,6 +72,7 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
         cfe_vec ct;
         cfe_vec *pub_key = cfe_mat_get_row_ptr(&mpk, i);
         cfe_vec *otp = cfe_mat_get_row_ptr(&msk.otp_key, i);
+        cfe_ddh_multi_ciphertext_init(&ct, &encryptors[i]);
         err = cfe_ddh_multi_encrypt(&ct, &encryptors[i], x_vec, pub_key, otp);
         munit_assert(err == 0);
 
