@@ -154,7 +154,7 @@ void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, int *attrib, size_t n
 void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
                             cfe_msp *msp, int *attrib, size_t num_attrib) {
     size_t count_attrib = 0;
-    size_t *positions = (size_t *) cfe_malloc(sizeof(size_t) * num_attrib);
+    size_t *positions = (size_t *) cfe_malloc(sizeof(size_t) * keys->mat.rows);
 
     for (size_t i = 0; i < msp->mat.rows; i++) {
         for (size_t j = 0; j < num_attrib; j++) {

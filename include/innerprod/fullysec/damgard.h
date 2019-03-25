@@ -135,7 +135,7 @@ void cfe_damgard_pub_key_init(cfe_vec *mpk, cfe_damgard *s);
  *
  * @param msk A pointer to a cfe_damgard_sec_key struct (master secret key will
  * be stored here)
- * @param mpk A pointer to an uvector (master public key will be stored here)
+ * @param mpk A pointer to a vector (master public key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
  * struct)
  */

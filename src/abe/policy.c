@@ -89,7 +89,7 @@ cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *ve
         if (num_brc == 0 && i < strlen(bool_exp) - 3 && bool_exp[i] == 'A' &&
             bool_exp[i + 1] == 'N' && bool_exp[i + 2] == 'D') {
             bool_exp1 = cfe_substring(bool_exp, 0, i);
-            cfe_init_and_set_vecs(&vec1, &vec2, vec, c);
+            cfe_init_set_vecs_and(&vec1, &vec2, vec, c);
 
             err = cfe_boolean_to_msp_iterative(&msp1, bool_exp1, &vec1, c + 1);
             free(bool_exp1);
@@ -187,10 +187,10 @@ cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *ve
     }
 }
 
-// init_and_set_vecs is a helping function that given a vector and a counter
+// cfe_init_set_vecs_and is a helping function that given a vector and a counter
 // creates two new vectors used whenever an AND gate is found in an iterative
 // step of boolean_to_msp
-void cfe_init_and_set_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c) {
+void cfe_init_set_vecs_and(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c) {
     mpz_t zero;
     mpz_init_set_ui(zero, 0);
     cfe_vec_inits(c + 1, vec1, vec2, NULL);

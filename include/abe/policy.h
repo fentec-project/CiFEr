@@ -85,7 +85,7 @@ cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *ve
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
-void cfe_init_and_set_vecs(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
+void cfe_init_set_vecs_and(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
