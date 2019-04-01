@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: python  # Has git, python, pip already installed, useful for CMake and AMCL
 
@@ -9,7 +9,9 @@ jobs:
 
       - run:
           name: Install compilers and libraries
-          command: apt update && apt install -y build-essential libgmp-dev libsodium-dev clang
+          command: |
+            apt update
+            apt install -y build-essential libgmp-dev libsodium-dev clang
 
       - run:
           name: Install CMake
@@ -17,13 +19,79 @@ jobs:
 
       - run:
           name: Install AMCL
-          command: cd external/amcl && ./setup_amcl.sh
+          command: |
+            cd external/amcl
+            ./setup_amcl.sh
 
       - run:
           name: Build and test with gcc
-          command: cmake -DCMAKE_C_COMPILER=gcc . && make && make test
+          command: |
+            cmake -DCMAKE_C_COMPILER=gcc .
+            make
+            make test
 
       - run:
           name: Build and test with Clang
-          command: cmake -DCMAKE_C_COMPILER=clang . && make && make test
+          command: |
+            cmake -DCMAKE_C_COMPILER=clang .
+            make
+            make test
 
+  docs:
+    docker:
+      - image: ubuntu  # Only git and doxygen are needed
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Doxygen and git
+          command: |
+            apt update
+            apt install -y doxygen git
+
+      - run:
+          name: Add GitHub hostname to known hosts
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+      - run:
+          name: Checkout gh-pages branch into docs directory
+          command: git clone -b gh-pages --single-branch $CIRCLE_REPOSITORY_URL docs
+
+      - add_ssh_keys:  # Add SSH deploy key (registered on GitHub) which can push to the gh-pages branch
+          fingerprints:
+            - "8f:96:26:52:7f:12:d1:86:ee:bf:1d:f9:2d:37:81:55"
+
+      - run:
+          name: Generate documentation
+          command: doxygen
+
+      - run:
+          name: Setup git
+          command: |
+            cd docs
+            git config user.email "circleci@cifer"
+            git config user.name "CircleCI"
+
+      - run:
+          name: Push changes to gh-pages branch
+          command: |
+            cd docs
+            git add -A
+            git commit -m "Automated documentation update for commit $CIRCLE_SHA1" --allow-empty
+            git push
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - test              # Run tests
+      - docs:             # Build and push documentation
+          requires:
+            - test        # Only build docs if tests succeed
+          filters:
+            branches:
+              only:
+                - master  # Only build docs if on master branch
