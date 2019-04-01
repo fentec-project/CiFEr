@@ -88,7 +88,13 @@ workflows:
   workflow:
     jobs:
       - test              # Run tests
+        branches:
+          ignore:
+            - gh-pages
       - docs:             # Build and push documentation
+          branches:
+            ignore:
+              - gh-pages
           requires:
             - test        # Only build docs if tests succeed
           filters:

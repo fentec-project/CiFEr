@@ -12,8 +12,10 @@ introduction on our [Introductory Wiki page](https://github.com/fentec-project/g
 The documentation for CiFEr is available on 
 [GitHub Pages](https://fentec-project.github.io/CiFEr).
 
-CiFEr is distributed under the dual licenses, 
-[GNU LGPL v3](https://www.gnu.org/licenses/lgpl.html) and 
+CiFEr is distributed under the
+[Apache 2 license](https://www.apache.org/licenses/LICENSE-2.0). It uses
+[GMP](https://gmplib.org/), which is distributed under the dual licenses,
+[GNU LGPL v3](https://www.gnu.org/licenses/lgpl.html) and
 [GNU GPL v2](https://www.gnu.org/licenses/gpl-2.0.html).
 
 <!-- toc -->
