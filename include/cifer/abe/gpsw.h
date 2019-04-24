@@ -22,7 +22,7 @@
 
 #include "cifer/data/vec_curve.h"
 #include "cifer/data/vec.h"
-#include "cifer/policy.h"
+#include "cifer/abe/policy.h"
 #include "cifer/internal/errors.h"
 
 /**
