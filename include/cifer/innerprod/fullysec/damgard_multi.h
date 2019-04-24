@@ -17,8 +17,8 @@
 #ifndef CIFER_DAMGARD_MULTI_H
 #define CIFER_DAMGARD_MULTI_H
 
-#include "data/mat.h"
-#include "innerprod/fullysec/damgard.h"
+#include "cifer/data/mat.h"
+#include "cifer/innerprod/fullysec/damgard.h"
 
 /**
  * \file

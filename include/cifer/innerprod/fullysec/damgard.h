@@ -17,8 +17,8 @@
 #ifndef CIFER_DAMGARD_H
 #define CIFER_DAMGARD_H
 
-#include "data/vec.h"
-#include "internal/errors.h"
+#include "cifer/data/vec.h"
+#include "cifer/internal/errors.h"
 
 /**
  * \file

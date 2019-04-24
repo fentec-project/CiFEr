@@ -14,34 +14,40 @@
  * limitations under the License.
  */
 
-#ifndef CIFER_COMMON_H
-#define CIFER_COMMON_H
+#ifndef CIFER_KEYGEN_H
+#define CIFER_KEYGEN_H
 
-#include <stddef.h>
+#include <gmp.h>
 
-#include "internal/errors.h"
+#include "cifer/internal/errors.h"
 
 /**
  * \file
  * \ingroup internal
- * \brief Common library functionality
+ * \brief ElGamal key generation
  */
 
+typedef struct cfe_elgamal {
+    mpz_t p; // Modulus
+    mpz_t g; // Generator of the cyclic group
+    mpz_t q; // (p - 1) / 2, i.e. order of g
+} cfe_elgamal;
+
+
 /**
- * This function initializes the library. It ensures that the system's random
- * number generator has been properly seeded.
- * This function must be called before any other functions from this library.
+ * Initializes the cfe_elgamal struct.
  *
+ * @param key A pointer to an uninitialized cfe_elgamal struct
+ * @param modulus_len The bit length of the modulus
  * @return Error code
  */
-cfe_error cfe_init(void);
+cfe_error cfe_elgamal_init(cfe_elgamal *key, size_t modulus_len);
 
 /**
- * Malloc wrapper which aborts on failure (out-of-memory error).
+ * Frees the memory occupied by the members of the struct.
  *
- * @param size Size of memory block
- * @return Pointer to allocated memory
+ * @param key A pointer to an initialized cfe_elgamal struct
  */
-void *cfe_malloc(size_t size);
+void cfe_elgamal_free(cfe_elgamal *key);
 
 #endif

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "innerprod/simple/ddh_multi.h"
-#include "sample/uniform.h"
+#include "cifer/innerprod/simple/ddh_multi.h"
+#include "cifer/sample/uniform.h"
 
 cfe_error cfe_ddh_multi_init(cfe_ddh_multi *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound) {
     cfe_ddh s;

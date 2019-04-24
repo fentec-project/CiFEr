@@ -15,9 +15,9 @@
  */
 
 #include <gmp.h>
-#include "test.h"
-#include "innerprod/simple/ddh_multi.h"
-#include "sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/innerprod/simple/ddh_multi.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 3;

@@ -17,8 +17,8 @@
 #ifndef CIFER_NORMAL_DOUBLE_H
 #define CIFER_NORMAL_DOUBLE_H
 
-#include "sample/normal_cumulative.h"
-#include "internal/errors.h"
+#include "cifer/sample/normal_cumulative.h"
+#include "cifer/internal/errors.h"
 
 /**
  * \file

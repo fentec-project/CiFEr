@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "abe/fame.h"
+#include "cifer/test.h"
+#include "cifer/abe/fame.h"
 
 MunitResult test_fame_end_to_end(const MunitParameter *params, void *data) {
     // create a new FAME struct

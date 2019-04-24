@@ -16,8 +16,8 @@
 
 #include "munit.h"
 
-#include "sample/uniform.h"
-#include "abe/policy.h"
+#include "cifer/sample/uniform.h"
+#include "cifer/abe/policy.h"
 
 
 MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {

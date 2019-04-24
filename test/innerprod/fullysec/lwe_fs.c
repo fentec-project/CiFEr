@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "innerprod/fullysec/lwe_fs.h"
-#include "sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/innerprod/fullysec/lwe_fs.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_lwe_fully_secure(const MunitParameter *params, void *data) {
     size_t l = 4;  /* dimensionality of vector space for the inner product */

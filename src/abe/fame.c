@@ -21,10 +21,10 @@
 #include <math.h>
 #include <string.h>
 
-#include "internal/common.h"
-#include "internal/big.h"
-#include "sample/uniform.h"
-#include "abe/fame.h"
+#include "cifer/internal/common.h"
+#include "cifer/internal/big.h"
+#include "cifer/sample/uniform.h"
+#include "cifer/abe/fame.h"
 
 
 void cfe_fame_init(cfe_fame *fame) {

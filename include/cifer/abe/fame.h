@@ -22,9 +22,9 @@
 #include <amcl/ecp_BN254.h>
 #include <amcl/ecp2_BN254.h>
 
-#include "data/vec.h"
-#include "abe/policy.h"
-#include "internal/errors.h"
+#include "cifer/data/vec.h"
+#include "cifer/abe/policy.h"
+#include "cifer/internal/errors.h"
 
 /**
 * \file

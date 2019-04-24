@@ -16,8 +16,8 @@
 
 #include <stdlib.h>
 
-#include "sample/normal_cumulative.h"
-#include "sample/uniform.h"
+#include "cifer/sample/normal_cumulative.h"
+#include "cifer/sample/uniform.h"
 
 void cfe_normal_cumulative_init(cfe_normal_cumulative *s, mpf_t sigma, size_t n, bool two_sided) {
     s->two_sided = two_sided;

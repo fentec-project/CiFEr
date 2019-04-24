@@ -17,8 +17,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "data/vec_float.h"
-#include "internal/common.h"
+#include "cifer/data/vec_float.h"
+#include "cifer/internal/common.h"
 
 // Initializes a vector.
 void cfe_vec_float_init(cfe_vec_float *v, size_t size, size_t prec) {

@@ -19,11 +19,11 @@
 #include <amcl/big_256_56.h>
 #include <amcl/pair_BN254.h>
 
-#include "internal/common.h"
-#include "internal/big.h"
-#include "sample/uniform.h"
-#include "abe/policy.h"
-#include "abe/gpsw.h"
+#include "cifer/internal/common.h"
+#include "cifer/internal/big.h"
+#include "cifer/sample/uniform.h"
+#include "cifer/abe/policy.h"
+#include "cifer/abe/gpsw.h"
 
 void cfe_gpsw_init(cfe_gpsw *gpsw, size_t l) {
     gpsw->l = l;

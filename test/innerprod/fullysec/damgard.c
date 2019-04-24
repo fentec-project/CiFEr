@@ -15,10 +15,10 @@
  */
 
 #include <gmp.h>
-#include "test.h"
+#include "cifer/test.h"
 
-#include "innerprod/fullysec/damgard.h"
-#include "sample/uniform.h"
+#include "cifer/innerprod/fullysec/damgard.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 3;

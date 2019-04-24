@@ -18,8 +18,8 @@
 #include <uthash.h>
 #include <gmp.h>
 
-#include "internal/common.h"
-#include "internal/dlog.h"
+#include "cifer/internal/common.h"
+#include "cifer/internal/dlog.h"
 
 typedef struct bigint_hash {
     mpz_t key;

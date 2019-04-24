@@ -17,7 +17,7 @@
 #ifndef CIFER_NORMAL_CUMULATIVE_H
 #define CIFER_NORMAL_CUMULATIVE_H
 
-#include "sample/normal.h"
+#include "cifer/sample/normal.h"
 
 /**
  * \file

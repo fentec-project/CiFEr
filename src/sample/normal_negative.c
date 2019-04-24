@@ -16,8 +16,8 @@
 
 #include <stdlib.h>
 
-#include "sample/normal_negative.h"
-#include "sample/uniform.h"
+#include "cifer/sample/normal_negative.h"
+#include "cifer/sample/uniform.h"
 
 void cfe_normal_negative_init(cfe_normal_negative *s, mpf_t sigma, size_t n) {
     cfe_normal_init(&s->nor, sigma, n);

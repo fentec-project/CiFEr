@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "internal/keygen.h"
-#include "innerprod/simple/ring_lwe.h"
-#include "sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/internal/keygen.h"
+#include "cifer/innerprod/simple/ring_lwe.h"
+#include "cifer/sample/uniform.h"
 
 
 MunitResult test_ring_lwe(const MunitParameter *params, void *data) {

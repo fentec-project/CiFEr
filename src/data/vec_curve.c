@@ -16,11 +16,11 @@
 
 #include <stdlib.h>
 #include <assert.h>
-#include "internal/big.h"
+#include "cifer/internal/big.h"
 
-#include "data/vec.h"
-#include "data/vec_curve.h"
-#include "internal/common.h"
+#include "cifer/data/vec.h"
+#include "cifer/data/vec_curve.h"
+#include "cifer/internal/common.h"
 
 void cfe_vec_G1_init(cfe_vec_G1 *v, size_t size) {
     v->size = size;

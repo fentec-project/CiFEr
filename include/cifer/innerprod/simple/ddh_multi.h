@@ -17,8 +17,8 @@
 #ifndef CIFER_DDH_MULTI_H
 #define CIFER_DDH_MULTI_H
 
-#include "data/mat.h"
-#include "innerprod/simple/ddh.h"
+#include "cifer/data/mat.h"
+#include "cifer/innerprod/simple/ddh.h"
 
 /**
  * \file

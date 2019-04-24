@@ -19,7 +19,7 @@
 
 #include <amcl/ecp_BN254.h>
 #include <amcl/ecp2_BN254.h>
-#include "vec.h"
+#include "cifer/data/vec.h"
 
 /**
  * \file

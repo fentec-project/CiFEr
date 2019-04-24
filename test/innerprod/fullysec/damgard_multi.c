@@ -15,9 +15,9 @@
  */
 
 #include <gmp.h>
-#include "test.h"
-#include "innerprod/fullysec/damgard_multi.h"
-#include "sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/innerprod/fullysec/damgard_multi.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 3;
