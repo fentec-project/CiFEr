@@ -18,8 +18,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "data/mat.h"
-#include "internal/common.h"
+#include "cifer/data/mat.h"
+#include "cifer/internal/common.h"
 
 // Initializes a matrix.
 void cfe_mat_init(cfe_mat *m, size_t rows, size_t cols) {

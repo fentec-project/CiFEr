@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "internal/keygen.h"
-#include "innerprod/simple/lwe.h"
-#include "sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/internal/keygen.h"
+#include "cifer/innerprod/simple/lwe.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_lwe(const MunitParameter *params, void *data) {
     // Length of data vectors x, y

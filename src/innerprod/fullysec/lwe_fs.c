@@ -16,10 +16,10 @@
 
 #include <math.h>
 
-#include "innerprod/fullysec/lwe_fs.h"
-#include "internal/prime.h"
-#include "sample/normal_double.h"
-#include "sample/uniform.h"
+#include "cifer/innerprod/fullysec/lwe_fs.h"
+#include "cifer/internal/prime.h"
+#include "cifer/sample/normal_double.h"
+#include "cifer/sample/uniform.h"
 
 // Initializes scheme struct with the desired confifuration
 // and configures public parameters for the scheme.

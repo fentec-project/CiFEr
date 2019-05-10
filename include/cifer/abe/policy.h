@@ -20,9 +20,9 @@
 #include <stdbool.h>
 #include <gmp.h>
 
-#include "data/mat.h"
-#include "data/vec.h"
-#include "internal/errors.h"
+#include "cifer/data/mat.h"
+#include "cifer/data/vec.h"
+#include "cifer/internal/errors.h"
 
 /**
  * \file

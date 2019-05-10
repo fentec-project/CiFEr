@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "sample/normal_cumulative.h"
+#include "cifer/test.h"
+#include "cifer/sample/normal_cumulative.h"
 
 MunitResult test_normal_cumulative(const MunitParameter *params, void *data) {
     mpf_t sigma;

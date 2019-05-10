@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "test.h"
+#include "cifer/test.h"
 
-#include "data/vec.h"
-#include "sample/uniform.h"
+#include "cifer/data/vec.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_vector_init_free(const MunitParameter params[], void *data) {
     cfe_vec v;

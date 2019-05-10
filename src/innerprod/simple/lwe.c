@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include "innerprod/simple/lwe.h"
+#include "cifer/innerprod/simple/lwe.h"
 
-#include "internal/prime.h"
-#include "sample/normal_double.h"
-#include "sample/uniform.h"
+#include "cifer/internal/prime.h"
+#include "cifer/sample/normal_double.h"
+#include "cifer/sample/uniform.h"
 
 // Calculates the center function t(x) = floor(x*q/p) % q for a vector x.
 void center(cfe_lwe *s, cfe_vec *t, cfe_vec *x) {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "sample/normal_negative.h"
+#include "cifer/test.h"
+#include "cifer/sample/normal_negative.h"
 
 MunitResult test_normal_negative(const MunitParameter *params, void *data) {
     mpf_t sigma;

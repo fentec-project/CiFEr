@@ -17,7 +17,7 @@
 #ifndef CIFER_NORMAL_NEGATIVE_H
 #define CIFER_NORMAL_NEGATIVE_H
 
-#include "sample/normal.h"
+#include "cifer/sample/normal.h"
 
 /**
  * \file

@@ -20,10 +20,10 @@
 #include <math.h>
 #include <gmp.h>
 
-#include "data/vec.h"
-#include "data/mat.h"
-#include "internal/errors.h"
-#include "sample/normal_cumulative.h"
+#include "cifer/data/vec.h"
+#include "cifer/data/mat.h"
+#include "cifer/internal/errors.h"
+#include "cifer/sample/normal_cumulative.h"
 
 /**
  * \file

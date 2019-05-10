@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_uniform(const MunitParameter *params, void *data) {
     mpz_t r;

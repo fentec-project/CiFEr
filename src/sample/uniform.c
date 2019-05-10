@@ -16,8 +16,8 @@
 
 #include <sodium.h>
 
-#include "internal/common.h"
-#include "sample/uniform.h"
+#include "cifer/internal/common.h"
+#include "cifer/sample/uniform.h"
 
 bool cfe_bit_sample(void) {
     return (bool) randombytes_uniform(2);

@@ -18,9 +18,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "data/vec.h"
-#include "data/mat.h"
-#include "internal/common.h"
+#include "cifer/data/vec.h"
+#include "cifer/data/mat.h"
+#include "cifer/internal/common.h"
 
 // Initializes a vector.
 void cfe_vec_init(cfe_vec *v, size_t size) {

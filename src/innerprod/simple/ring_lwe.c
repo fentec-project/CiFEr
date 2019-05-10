@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "innerprod/simple/ring_lwe.h"
+#include "cifer/innerprod/simple/ring_lwe.h"
 
-#include "sample/uniform.h"
+#include "cifer/sample/uniform.h"
 
 // This version of the scheme provides a speedup in comparison to
 // ordinary LWE scheme. Another difference is that the encypted measage

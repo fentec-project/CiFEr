@@ -16,8 +16,8 @@
 
 #include "munit.h"
 
-#include "data/mat.h"
-#include "sample/uniform.h"
+#include "cifer/data/mat.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_matrix_init_free(const MunitParameter params[], void *data) {
     cfe_mat m;

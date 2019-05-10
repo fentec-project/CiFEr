@@ -87,11 +87,7 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - test:               # Run tests
-          filters:
-            branches:
-              ignore:
-                - gh-pages  # Don't run tests on gh-pages branch
+      - test                # Run tests
       - docs:               # Build and push documentation
           requires:
             - test          # Only build docs if tests succeed

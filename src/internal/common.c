@@ -16,7 +16,7 @@
 
 #include <sodium.h>
 
-#include "internal/common.h"
+#include "cifer/internal/common.h"
 
 cfe_error cfe_init(void) {
     if (sodium_init() == -1) {

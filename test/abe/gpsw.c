@@ -18,9 +18,9 @@
 #include <amcl/ecp_BN254.h>
 #include <amcl/pair_BN254.h>
 
-#include "internal/common.h"
-#include "test.h"
-#include "abe/gpsw.h"
+#include "cifer/internal/common.h"
+#include "cifer/test.h"
+#include "cifer/abe/gpsw.h"
 
 MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // create a new GPSW struct with the universe of l possible

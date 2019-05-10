@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "internal/big.h"
+#include "cifer/internal/big.h"
 
 void BIG_256_56_from_mpz(BIG_256_56 dst, mpz_t src) {
     BIG_256_56_zero(dst);

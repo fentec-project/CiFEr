@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "internal/prime.h"
+#include "cifer/test.h"
+#include "cifer/internal/prime.h"
 
 MunitResult test_is_safe_prime(const MunitParameter params[], void *data) {
     mpz_t n;

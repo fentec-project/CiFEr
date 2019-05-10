@@ -20,7 +20,7 @@
 #include <stdbool.h>
 #include <gmp.h>
 
-#include "internal/errors.h"
+#include "cifer/internal/errors.h"
 
 /**
  * \file

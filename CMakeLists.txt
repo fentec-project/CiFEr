@@ -63,7 +63,7 @@ target_link_libraries(cifer gmp sodium m amcl)
 
 # Install library and copy header to install dir
 install(TARGETS cifer DESTINATION lib)
-install(DIRECTORY include/ DESTINATION cifer)
+install(DIRECTORY include/ DESTINATION include)
 
 # Create an executable
 set(binary_SOURCES

@@ -15,8 +15,8 @@
  */
 
 #include <stdio.h>
-#include "test.h"
-#include "internal/common.h"
+#include "cifer/test.h"
+#include "cifer/internal/common.h"
 
 int main(int argc, char *argv[]) {
     MunitSuite all_suites[] = {

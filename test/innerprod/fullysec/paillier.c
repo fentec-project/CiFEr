@@ -15,10 +15,10 @@
  */
 
 #include <gmp.h>
-#include "test.h"
-#include "data/vec.h"
-#include "innerprod/fullysec/paillier.h"
-#include "sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/data/vec.h"
+#include "cifer/innerprod/fullysec/paillier.h"
+#include "cifer/sample/uniform.h"
 
 MunitResult test_paillier_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 50;

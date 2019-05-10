@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "internal/keygen.h"
+#include "cifer/test.h"
+#include "cifer/internal/keygen.h"
 
 MunitResult test_elgamal_init_free(const MunitParameter *params, void *data) {
     cfe_elgamal key;

@@ -19,8 +19,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "internal/common.h"
-#include "abe/policy.h"
+#include "cifer/internal/common.h"
+#include "cifer/abe/policy.h"
 
 
 cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {

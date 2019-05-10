@@ -20,10 +20,10 @@
 #include <gmp.h>
 #include <amcl/fp12_BN254.h>
 
-#include "data/vec_curve.h"
-#include "data/vec.h"
-#include "policy.h"
-#include "internal/errors.h"
+#include "cifer/data/vec_curve.h"
+#include "cifer/data/vec.h"
+#include "cifer/abe/policy.h"
+#include "cifer/internal/errors.h"
 
 /**
  * \file

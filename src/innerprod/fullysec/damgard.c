@@ -17,10 +17,10 @@
 #include <stdlib.h>
 #include <gmp.h>
 
-#include "innerprod/fullysec/damgard.h"
-#include "internal/keygen.h"
-#include "internal/dlog.h"
-#include "sample/uniform.h"
+#include "cifer/innerprod/fullysec/damgard.h"
+#include "cifer/internal/keygen.h"
+#include "cifer/internal/dlog.h"
+#include "cifer/sample/uniform.h"
 
 
 cfe_error cfe_damgard_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t bound) {

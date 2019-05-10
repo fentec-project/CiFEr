@@ -18,8 +18,8 @@
 #include <stdlib.h>
 #include <sodium.h>
 
-#include "internal/common.h"
-#include "internal/prime.h"
+#include "cifer/internal/common.h"
+#include "cifer/internal/prime.h"
 
 // Checks if p is a safe prime, e.g. if (p-1)/2 is also a prime.
 bool cfe_is_safe_prime(mpz_t p) {

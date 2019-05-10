@@ -18,8 +18,8 @@
 #define CIFER_NORMAL_H
 
 #include <gmp.h>
-#include "data/vec.h"
-#include "data/vec_float.h"
+#include "cifer/data/vec.h"
+#include "cifer/data/vec_float.h"
 
 /**
  * \file

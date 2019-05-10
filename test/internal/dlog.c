@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "internal/keygen.h"
-#include "sample/uniform.h"
-#include "test.h"
-#include "internal/dlog.h"
+#include "cifer/internal/keygen.h"
+#include "cifer/sample/uniform.h"
+#include "cifer/test.h"
+#include "cifer/internal/dlog.h"
 
 typedef struct dlog_params {
     mpz_t h; // public key

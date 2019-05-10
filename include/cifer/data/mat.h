@@ -19,7 +19,7 @@
 
 #include <gmp.h>
 
-#include "data/vec.h"
+#include "cifer/data/vec.h"
 
 /**
  * \file

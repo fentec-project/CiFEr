@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "internal/keygen.h"
-#include "internal/prime.h"
-#include "sample/uniform.h"
+#include "cifer/internal/keygen.h"
+#include "cifer/internal/prime.h"
+#include "cifer/sample/uniform.h"
 
 // Initializes elgamal struct.
 cfe_error cfe_elgamal_init(cfe_elgamal *key, size_t modulus_len) {

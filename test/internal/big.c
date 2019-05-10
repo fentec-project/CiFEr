@@ -18,8 +18,8 @@
 #include <amcl/ecp_BN254.h>
 #include <amcl/ecp2_BN254.h>
 #include <amcl/pair_BN254.h>
-#include "internal/big.h"
-#include "test.h"
+#include "cifer/internal/big.h"
+#include "cifer/test.h"
 
 MunitResult test_big(const MunitParameter *params, void *data) {
     // check if e(g1 + g1, g2) = e(g1, g2 + g2)

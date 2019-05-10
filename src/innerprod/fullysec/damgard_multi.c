@@ -16,9 +16,9 @@
 
 #include <stdlib.h>
 
-#include "innerprod/fullysec/damgard_multi.h"
-#include "internal/common.h"
-#include "sample/uniform.h"
+#include "cifer/innerprod/fullysec/damgard_multi.h"
+#include "cifer/internal/common.h"
+#include "cifer/sample/uniform.h"
 
 cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound) {
     cfe_damgard s;

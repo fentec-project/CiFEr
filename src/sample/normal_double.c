@@ -15,10 +15,9 @@
  */
 
 #include <stdlib.h>
-#include <internal/errors.h>
-
-#include "sample/normal_double.h"
-#include "sample/uniform.h"
+#include "cifer/internal/errors.h"
+#include "cifer/sample/normal_double.h"
+#include "cifer/sample/uniform.h"
 
 cfe_error cfe_normal_double_init(cfe_normal_double *s, mpf_t sigma, size_t n, mpf_t first_sigma) {
     cfe_error err = CFE_ERR_NONE;

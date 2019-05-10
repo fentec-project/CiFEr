@@ -15,7 +15,7 @@
  */
 
 #include <stdlib.h>
-#include "sample/normal.h"
+#include "cifer/sample/normal.h"
 
 void cfe_normal_init(cfe_normal *s, mpf_t sigma, size_t n) {
     mpf_init_set(s->sigma, sigma);

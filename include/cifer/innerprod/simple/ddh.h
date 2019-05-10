@@ -17,8 +17,8 @@
 #ifndef CIFER_DDH_H
 #define CIFER_DDH_H
 
-#include "data/vec.h"
-#include "internal/errors.h"
+#include "cifer/data/vec.h"
+#include "cifer/internal/errors.h"
 
 /**
  * \file

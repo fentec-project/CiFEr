@@ -17,10 +17,10 @@
 #include <stdlib.h>
 #include <gmp.h>
 
-#include "innerprod/fullysec/paillier.h"
-#include "internal/prime.h"
-#include "sample/uniform.h"
-#include "sample/normal_double.h"
+#include "cifer/innerprod/fullysec/paillier.h"
+#include "cifer/internal/prime.h"
+#include "cifer/sample/uniform.h"
+#include "cifer/sample/normal_double.h"
 
 cfe_error cfe_paillier_init(cfe_paillier *s, size_t l, size_t lambda, size_t bit_len, mpz_t bound_x, mpz_t bound_y) {
     mpz_t p, q, n, n_square, check, g_prime, g, n_to_5;

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "test.h"
-#include "sample/normal_double.h"
+#include "cifer/test.h"
+#include "cifer/sample/normal_double.h"
 
 void test_normal_double_helper(double sigma_d, double first_sigma_d, double mean_low, double mean_high, double var_low,
                                double var_high) {
