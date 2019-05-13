@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+#include <amcl/fp12_BN254.h>
+#include <cifer/internal/big.h>
+#include <amcl/ecp_BN254.h>
+#include <amcl/ecp2_BN254.h>
+#include <amcl/pair_BN254.h>
+#include <cifer/internal/common.h>
 #include "cifer/internal/keygen.h"
 #include "cifer/sample/uniform.h"
 #include "cifer/test.h"
@@ -26,6 +32,14 @@ typedef struct dlog_params {
     mpz_t x; // private key
     mpz_t q; // order of g
 } dlog_params;
+
+typedef struct dlog_BN254_params {
+    FP12_BN254 h; // value
+    FP12_BN254 g; // generator
+    mpz_t bound; // bound for exponent
+    mpz_t x; // exponent
+    mpz_t q; // order of g
+} dlog_BN254_params;
 
 void fixed_dlog_params_small(dlog_params *dp) {
     mpz_inits(dp->h, dp->g, dp->p, dp->x, dp->q, NULL);
@@ -158,6 +172,40 @@ MunitResult test_pollard_rho(const MunitParameter params[], void *data) {
     return MUNIT_OK;
 }
 
+void random_dlog_BN254_params(dlog_BN254_params *dp) {
+    mpz_inits(dp->x, dp->q, dp->bound, NULL);
+    mpz_from_BIG_256_56(dp->q, (int64_t *) CURVE_Order_BN254);
+    ECP_BN254 g1;
+    ECP2_BN254 g2;
+    ECP_BN254_generator(&g1);
+    ECP2_BN254_generator(&g2);
+    PAIR_BN254_ate(&(dp->g), &g2, &g1);
+    PAIR_BN254_fexp(&(dp->g));
+
+    mpz_set_ui(dp->bound, 113);
+    cfe_uniform_sample(dp->x, dp->bound);
+    BIG_256_56 x_b;
+    BIG_256_56_from_mpz(x_b, dp->x);
+    FP12_BN254_pow(&(dp->h), &(dp->g), x_b);
+}
+
+MunitResult test_baby_step_giant_step_BN254(const MunitParameter params[], void *data) {
+    dlog_BN254_params dp;
+    random_dlog_BN254_params(&dp);
+
+    mpz_t res;
+    mpz_init(res);
+
+    cfe_error err = cfe_baby_giant_BN256(res, &dp.h, &dp.g, dp.q, dp.bound);
+
+    munit_assert(err == 0);
+    munit_assert(mpz_cmp(res, dp.x) == 0);
+
+    mpz_clears(dp.x, dp.q, res, NULL);
+    return MUNIT_OK;
+}
+
+
 MunitTest dlog_tests[] = {
         {(char *) "/baby-giant-fixed",    test_baby_step_giant_step_fixed,    NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/baby-giant-bounded",  test_baby_step_giant_step_bounded,  NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
@@ -165,6 +213,7 @@ MunitTest dlog_tests[] = {
         {(char *) "/baby-giant-with-neg", test_baby_step_giant_step_with_neg, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/pollard-rho-fixed",   test_pollard_rho_fixed,             NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/pollard-rho",         test_pollard_rho,                   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/baby-giant-BN254",    test_baby_step_giant_step_BN254,    NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                                          NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 

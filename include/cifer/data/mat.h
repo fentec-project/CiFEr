@@ -18,6 +18,7 @@
 #define CIFER_MATRIX_H
 
 #include <gmp.h>
+#include <cifer/internal/errors.h>
 
 #include "cifer/data/vec.h"
 
@@ -172,5 +173,16 @@ void cfe_mat_from_vec(cfe_mat *m, cfe_vec *v);
  * Transposes the matrix.
  */
 void cfe_mat_transpose(cfe_mat *t, cfe_mat *m);
+
+// cfe_extract_submatrix returns a matrix obtained from m by removing row i and column j.
+// It returns an error if i >= number of rows of m, or if j >= number of
+// columns of m.
+void cfe_mat_extract_submatrix(cfe_mat *m, cfe_mat *min, size_t i, size_t j);
+
+void cfe_mat_determinant(cfe_mat *m, mpz_t det);
+
+cfe_error cfe_mat_inverse_mod(cfe_mat *m, cfe_mat *inverse_mat, mpz_t mod);
+
+void cfe_mat_mul_x_mat_y(mpz_t res, cfe_mat *mat, cfe_vec *x, cfe_vec *y);
 
 #endif
