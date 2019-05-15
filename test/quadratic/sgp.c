@@ -50,7 +50,7 @@ MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
     // create a master secret key
     cfe_sgp_sec_key msk;
     cfe_sgp_sec_key_init(&msk, &s);
-    cfe_sgp_generate_master_key(&msk, &s);
+    cfe_sgp_sec_key_generate(&msk, &s);
 
     // take random vectors x, y
     cfe_vec x, y;
@@ -82,7 +82,7 @@ MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
     cfe_mat_free(&m);
     cfe_sgp_free(&s);
     cfe_sgp_sec_key_free(&msk);
-    cfe_sgp_cipher_free(&cipher, &s);
+    cfe_sgp_cipher_free(&cipher);
     mpz_clears(b, b_neg, xy, dec, NULL);
 
     return MUNIT_OK;

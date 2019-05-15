@@ -18,8 +18,8 @@
 #define CIFER_MATRIX_H
 
 #include <gmp.h>
-#include <cifer/internal/errors.h>
 
+#include "cifer/internal/errors.h"
 #include "cifer/data/vec.h"
 
 /**

@@ -36,6 +36,7 @@
 #include "cifer/internal/common.h"
 
 cfe_error cfe_sgp_init(cfe_sgp *s, size_t n, mpz_t bound) {
+    cfe_error err = CFE_ERR_NONE;
     mpz_t bound_check;
     s->n = n;
     mpz_inits(s->bound, s->mod, bound_check, NULL);
@@ -45,10 +46,10 @@ cfe_error cfe_sgp_init(cfe_sgp *s, size_t n, mpz_t bound) {
     mpz_pow_ui(bound_check, bound, 3);
     mpz_mul_ui(bound_check, bound_check, n * n);
     if (mpz_cmp(bound_check, s->mod) > 0) {
-        return 1;
-    } else {
-        return CFE_ERR_NONE;
+        err = CFE_ERR_BOUND_CHECK_FAILED;
     }
+    mpz_clear(bound_check);
+    return err;
 }
 
 void cfe_sgp_free(cfe_sgp *s) {
@@ -63,7 +64,7 @@ void cfe_sgp_sec_key_free(cfe_sgp_sec_key *msk) {
     cfe_vec_frees(&(msk->s), &(msk->t), NULL);
 }
 
-void cfe_sgp_generate_master_key(cfe_sgp_sec_key *msk, cfe_sgp *sgp) {
+void cfe_sgp_sec_key_generate(cfe_sgp_sec_key *msk, cfe_sgp *sgp) {
     cfe_uniform_sample_vec(&(msk->s), sgp->bound);
     cfe_uniform_sample_vec(&(msk->t), sgp->bound);
 }
@@ -99,17 +100,17 @@ void cfe_sgp_cipher_init(cfe_sgp_cipher *cipher, cfe_sgp *s) {
         cfe_vec_G1_init(&(cipher->a[i]), 2);
         cfe_vec_G2_init(&(cipher->b[i]), 2);
     }
+    cipher->n = s->n;
 }
 
-void cfe_sgp_cipher_free(cfe_sgp_cipher *cipher, cfe_sgp *s) {
-    for (size_t i = 0; i < s->n; i++) {
+void cfe_sgp_cipher_free(cfe_sgp_cipher *cipher) {
+    for (size_t i = 0; i < cipher->n; i++) {
         cfe_vec_G1_free(&(cipher->a[i]));
         cfe_vec_G2_free(&(cipher->b[i]));
     }
     free(cipher->a);
     free(cipher->b);
 }
-
 
 cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_vec *y, cfe_sgp_sec_key *msk) {
     if ((cfe_vec_check_bound(x, s->bound) == false) || (cfe_vec_check_bound(y, s->bound) == false)) {

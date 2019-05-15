@@ -18,7 +18,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -34,7 +34,7 @@
 
 /**
  * \file
- * \ingroup simple
+ * \ingroup quadratic
  * \brief SGP scheme.
  */
 
@@ -42,7 +42,7 @@
  * cfe_sgp represents a scheme for quadratic multi-variate polynomials
 // based on  Sans, Gay and Pointcheval:
 // "Reading in the Dark: Classifying Encrypted Digits with
-// Functional Encryption".
+// Functional Encryption", see https://eprint.iacr.org/2018/206.pdf.
  */
 typedef struct cfe_sgp {
     size_t n;
@@ -66,6 +66,7 @@ typedef struct cfe_sgp_cipher {
     ECP_BN254 g1MulGamma;
     cfe_vec_G1 *a;
     cfe_vec_G2 *b;
+    size_t n;
 } cfe_sgp_cipher;
 
 /**
@@ -101,7 +102,7 @@ void cfe_sgp_sec_key_init(cfe_sgp_sec_key *msk, cfe_sgp *sgp);
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.
  *
- * @param s A pointer to an instance of the secret key (*initialized*
+ * @param msk A pointer to an instance of the secret key (*initialized*
  * cfe_sgp_sec_key struct)
  */
 void cfe_sgp_sec_key_free(cfe_sgp_sec_key *msk);
@@ -114,7 +115,7 @@ void cfe_sgp_sec_key_free(cfe_sgp_sec_key *msk);
  * struct)
  * @return Error code
  */
-void cfe_sgp_generate_master_key(cfe_sgp_sec_key *msk, cfe_sgp *s);
+void cfe_sgp_sec_key_generate(cfe_sgp_sec_key *msk, cfe_sgp *s);
 
 /**
  * Takes master secret key and a matrix, and returns the corresponding functional
@@ -133,8 +134,8 @@ cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp_sec_key *msk, cfe_mat *f, 
 /**
  * Initializes the struct which represents the ciphertext.
  *
- * @param msk A pointer to an uninitialized ciphertext struct
- * @param sgp A pointer to an instance of the scheme (*initialized* cfe_sgp
+ * @param cipher A pointer to an uninitialized ciphertext struct
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_sgp
  * struct)
  */
 void cfe_sgp_cipher_init(cfe_sgp_cipher *cipher, cfe_sgp *s);
@@ -143,10 +144,10 @@ void cfe_sgp_cipher_init(cfe_sgp_cipher *cipher, cfe_sgp *s);
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.
  *
- * @param s A pointer to an instance of the ciphertext (*initialized*
+ * @param cipher A pointer to an instance of the ciphertext (*initialized*
  * cfe_sgp_cipher struct)
  */
-void cfe_sgp_cipher_free(cfe_sgp_cipher *cipher, cfe_sgp *s);
+void cfe_sgp_cipher_free(cfe_sgp_cipher *cipher);
 
 /**
  * Encrypts input vectors x and y with the provided master secret key.
