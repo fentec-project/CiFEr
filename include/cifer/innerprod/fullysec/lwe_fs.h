@@ -127,8 +127,8 @@ void cfe_lwe_fs_fe_key_init(cfe_vec *z_y, cfe_lwe_fs *s);
  * Takes master secret key and inner product vector, and returns the functional
  * encryption key.
  *
- * @param z_y A pointer to an uninitialized vector (the functional encryption
- * key will be stored here)
+ * @param z_y A pointer to an initialized functional encryption
+ * key, which will be stored here
  * @param s A pointer to an instance of the scheme (*initialized*
  * cfe_lwe_fs struct)
  * @param y A pointer to the input vector

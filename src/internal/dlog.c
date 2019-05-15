@@ -219,7 +219,7 @@ typedef struct BN254_hash {
     UT_hash_handle hh;
 } BN254_hash;
 
-cfe_error cfe_baby_giant_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t bound) {
+cfe_error cfe_baby_giant_FP12_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t bound) {
     mpz_t m, i;
     mpz_inits(m, i, NULL);
     FP12_BN254 x, x_neg, z;

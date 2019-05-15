@@ -26,12 +26,12 @@
  */
 
 #include <gmp.h>
+#include <amcl/big_256_56.h>
+#include <cifer/internal/big.h>
+
 #include "cifer/test.h"
 #include "cifer/quadratic/sgp.h"
 #include "cifer/sample/uniform.h"
-
-#include <amcl/big_256_56.h>
-#include <cifer/internal/big.h>
 
 MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
     // set the parameters

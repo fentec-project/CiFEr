@@ -168,7 +168,7 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
     return CFE_ERR_NONE;
 }
 
-void cfe_sgp_decrypt(mpz_t res, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f, cfe_sgp *s) {
+cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f, cfe_sgp *s) {
     FP12_BN254 prod;
     PAIR_BN254_ate(&prod, key, &(cipher->g1MulGamma));
     PAIR_BN254_fexp(&prod);
@@ -221,6 +221,8 @@ void cfe_sgp_decrypt(mpz_t res, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat
     mpz_pow_ui(res_bound, s->bound, 3);
     mpz_mul_ui(res_bound, res_bound, s->n * s->n);
 
-    cfe_baby_giant_BN256_with_neg(res, &prod, &gt, res_bound);
+    cfe_error err;
+    err = cfe_baby_giant_FP12_BN256_with_neg(res, &prod, &gt, res_bound);
     mpz_clears(el, res_bound, NULL);
+    return err;
 }

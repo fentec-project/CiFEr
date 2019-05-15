@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-#include <amcl/fp12_BN254.h>
-#include <cifer/internal/big.h>
-#include <amcl/ecp_BN254.h>
-#include <amcl/ecp2_BN254.h>
 #include <amcl/pair_BN254.h>
-#include <cifer/internal/common.h>
+
+#include "cifer/internal/common.h"
+#include "cifer/internal/big.h"
 #include "cifer/internal/keygen.h"
 #include "cifer/sample/uniform.h"
 #include "cifer/test.h"
@@ -213,7 +211,7 @@ MunitResult test_baby_step_giant_step_BN254(const MunitParameter params[], void 
     mpz_init(res);
 
     // compute the discrete logarithm
-    cfe_error err = cfe_baby_giant_BN256_with_neg(res, &dp.h, &dp.g, dp.bound);
+    cfe_error err = cfe_baby_giant_FP12_BN256_with_neg(res, &dp.h, &dp.g, dp.bound);
 
     // test if the result is correct
     munit_assert(err == 0);
