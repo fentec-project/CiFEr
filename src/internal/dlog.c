@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-#include <stdlib.h>
 #include <uthash.h>
-#include <gmp.h>
-#include <amcl/fp12_BN254.h>
-#include <cifer/internal/big.h>
+#include <amcl/ecp_BN254.h>
 
+#include "cifer/internal/big.h"
 #include "cifer/internal/common.h"
 #include "cifer/internal/dlog.h"
 
@@ -221,45 +219,44 @@ typedef struct BN254_hash {
     UT_hash_handle hh;
 } BN254_hash;
 
-cfe_error cfe_baby_giant_BN256(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t order, mpz_t bound) {
+cfe_error cfe_baby_giant_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t bound) {
     mpz_t m, i;
     mpz_inits(m, i, NULL);
     FP12_BN254 x, x_neg, z;
     cfe_error err = CFE_ERR_DLOG_NOT_FOUND;
 
-    if (bound != NULL) {
-        mpz_sqrt(m, bound);
-    } else {
-        mpz_sqrt(m, order);
-    }
+    mpz_sqrt(m, bound);
     mpz_add_ui(m, m, 1);
 
-    FP12_BN254_one(&x);
-
     // the hash table
-    struct BN254_hash *T = NULL;
+    BN254_hash *T = NULL;
 
     // reusable pointer for hash table entries + a temporary variable for clearing later
     BN254_hash *t, *u;
+    // elements of the elliptic curve can be represented as so called octets
     octet oct;
     oct.val = cfe_malloc(12 * MODBYTES_256_56 * sizeof(char));
-//    FP12_BN254_toOctet(&oct, &x);
+
+    FP12_BN254_one(&x);
+    FP12_BN254_reduce(&x);
     for (mpz_set_ui(i, 0); mpz_cmp(i, m) < 0; mpz_add_ui(i, i, 1)) {
         // store T[x] = i
         // create a struct t and store the key and value
-        // the key is actually the internal contents of a mpz_t, the array and the minimal possible length
+        // the key is a string obtained from the the element of the
+        // elliptic curve and the minimal possible length
         t = (BN254_hash *) cfe_malloc(sizeof(BN254_hash));
-
         FP12_BN254_copy(&(t->key), &x);
         mpz_init_set(t->val, i);
-
         FP12_BN254_toOctet(&oct, &x);
-        // the key is a pointer the the array and the length in bytes
+        // the key is a pointer to the string in octet
         HASH_ADD_KEYPTR(hh, T, oct.val, oct.len * sizeof(char), t);
 
         FP12_BN254_mul(&x, g);
+        FP12_BN254_reduce(&x);
     }
 
+    // simultaneously check for solutions for positive and negative
+    // values
     FP12_BN254_inv(&z, g);
     BIG_256_56 m_b;
     BIG_256_56_from_mpz(m_b, m);
@@ -269,8 +266,7 @@ cfe_error cfe_baby_giant_BN256(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t or
 
     for (mpz_set_ui(i, 0); mpz_cmp(i, m) < 0; mpz_add_ui(i, i, 1)) {
         // get T[x]
-        // the value in X needs to be assigned to a temporary variable
-        // TODO: check this solution
+        // the value in x needs to be assigned to a temporary variable
         FP12_BN254_toOctet(&oct, &x);
         HASH_FIND(hh, T, oct.val, oct.len * sizeof(char), t);
 
@@ -282,6 +278,7 @@ cfe_error cfe_baby_giant_BN256(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t or
         }
 
         FP12_BN254_mul(&x, &z);
+        FP12_BN254_reduce(&x);
 
         FP12_BN254_toOctet(&oct, &x_neg);
         HASH_FIND(hh, T, oct.val, oct.len * sizeof(char), t);
@@ -295,6 +292,7 @@ cfe_error cfe_baby_giant_BN256(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t or
         }
 
         FP12_BN254_mul(&x_neg, &z);
+        FP12_BN254_reduce(&x_neg);
     }
 
     // cleanup

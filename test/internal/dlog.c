@@ -38,7 +38,6 @@ typedef struct dlog_BN254_params {
     FP12_BN254 g; // generator
     mpz_t bound; // bound for exponent
     mpz_t x; // exponent
-    mpz_t q; // order of g
 } dlog_BN254_params;
 
 void fixed_dlog_params_small(dlog_params *dp) {
@@ -173,8 +172,9 @@ MunitResult test_pollard_rho(const MunitParameter params[], void *data) {
 }
 
 void random_dlog_BN254_params(dlog_BN254_params *dp) {
-    mpz_inits(dp->x, dp->q, dp->bound, NULL);
-    mpz_from_BIG_256_56(dp->q, (int64_t *) CURVE_Order_BN254);
+    // prepare the parameters
+    mpz_t bound_neg, x_neg;
+    mpz_inits(dp->x, dp->bound, bound_neg, x_neg, NULL);
     ECP_BN254 g1;
     ECP2_BN254 g2;
     ECP_BN254_generator(&g1);
@@ -182,29 +182,47 @@ void random_dlog_BN254_params(dlog_BN254_params *dp) {
     PAIR_BN254_ate(&(dp->g), &g2, &g1);
     PAIR_BN254_fexp(&(dp->g));
 
-    mpz_set_ui(dp->bound, 113);
-    cfe_uniform_sample(dp->x, dp->bound);
+    // chose a inteval from which we will sample
+    mpz_set_ui(dp->bound, 1024);
+    mpz_neg(bound_neg, dp->bound);
+
+    // sample a value of discrete log
+    cfe_uniform_sample_range(dp->x, bound_neg, dp->bound);
+    // compute g, h, such that g**x = h
     BIG_256_56 x_b;
-    BIG_256_56_from_mpz(x_b, dp->x);
-    FP12_BN254_pow(&(dp->h), &(dp->g), x_b);
+    if (mpz_cmp_ui(dp->x, 0) < 0) {
+        FP12_BN254_inv(&(dp->h), &(dp->g));
+        mpz_neg(x_neg, dp->x);
+        BIG_256_56_from_mpz(x_b, x_neg);
+        FP12_BN254_pow(&(dp->h), &(dp->h), x_b);
+
+    } else if ((mpz_cmp_ui(dp->x, 0) > 0)) {
+        BIG_256_56_from_mpz(x_b, dp->x);
+        FP12_BN254_pow(&(dp->h), &(dp->g), x_b);
+    } else if ((mpz_cmp_ui(dp->x, 0) == 0)) {
+        FP12_BN254_one(&(dp->h));
+    }
+    mpz_clears(bound_neg, x_neg, NULL);
 }
 
 MunitResult test_baby_step_giant_step_BN254(const MunitParameter params[], void *data) {
+    // prepare the parameters
     dlog_BN254_params dp;
     random_dlog_BN254_params(&dp);
-
     mpz_t res;
     mpz_init(res);
 
-    cfe_error err = cfe_baby_giant_BN256(res, &dp.h, &dp.g, dp.q, dp.bound);
+    // compute the discrete logarithm
+    cfe_error err = cfe_baby_giant_BN256_with_neg(res, &dp.h, &dp.g, dp.bound);
 
+    // test if the result is correct
     munit_assert(err == 0);
     munit_assert(mpz_cmp(res, dp.x) == 0);
 
-    mpz_clears(dp.x, dp.q, res, NULL);
+    // cleanup
+    mpz_clears(dp.x, dp.bound, res, NULL);
     return MUNIT_OK;
 }
-
 
 MunitTest dlog_tests[] = {
         {(char *) "/baby-giant-fixed",    test_baby_step_giant_step_fixed,    NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},

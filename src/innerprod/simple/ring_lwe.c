@@ -290,7 +290,7 @@ cfe_error cfe_ring_lwe_decrypt(cfe_vec *res, cfe_ring_lwe *s, cfe_mat *CT, cfe_v
     cfe_vec_init(&half_q_vec, s->n);
     for (size_t i = 0; i < s->n; i++) {
         cfe_vec_get(res_i, res, i);
-        if (mpz_cmp(res_i, half_q) == 1) {
+        if (mpz_cmp(res_i, half_q) > 0) {
             mpz_sub(res_i, res_i, s->q);
             cfe_vec_set(res, res_i, i);
         }

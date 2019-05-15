@@ -308,7 +308,7 @@ cfe_error cfe_lwe_decrypt(mpz_t res, cfe_lwe *s, cfe_vec *ct, cfe_vec *sk_y, cfe
     mpz_init(half_q);
     mpz_fdiv_q_ui(half_q, s->q, 2);
 
-    if (mpz_cmp(d, half_q) == 1) {
+    if (mpz_cmp(d, half_q) > 0) {
         mpz_sub(d, d, s->q);
     }
 

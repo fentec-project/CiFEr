@@ -32,8 +32,6 @@
 #include "cifer/internal/errors.h"
 #include "cifer/data/vec_curve.h"
 
-#include <amcl/pair_BN254.h>
-
 /**
  * \file
  * \ingroup simple
@@ -67,7 +65,7 @@ typedef struct cfe_sgp_cipher {
     cfe_vec_G2 *b;
 } cfe_sgp_cipher;
 
-void cfe_sgp_init(cfe_sgp *s, size_t n, mpz_t bound);
+cfe_error cfe_sgp_init(cfe_sgp *s, size_t n, mpz_t bound);
 
 void cfe_sgp_free(cfe_sgp *s);
 
@@ -83,7 +81,7 @@ void cfe_sgp_cipher_free(cfe_sgp_cipher *cipher, cfe_sgp *s);
 
 cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *ciphertext, cfe_sgp *s, cfe_vec *x, cfe_vec *y, cfe_sgp_sec_key *msk);
 
-void cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp_sec_key *msk, cfe_mat *f);
+cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp_sec_key *msk, cfe_mat *f, cfe_sgp *sgp);
 
 void cfe_sgp_decrypt(mpz_t res, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f, cfe_sgp *s);
 

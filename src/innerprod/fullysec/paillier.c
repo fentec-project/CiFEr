@@ -206,7 +206,7 @@ cfe_error cfe_paillier_decrypt(mpz_t res, cfe_paillier *s, cfe_vec *ciphertext, 
     mpz_div(res, res, s->n);
 
     mpz_div_ui(half_n, s->n, 2);
-    if (mpz_cmp(res, half_n) == 1) {
+    if (mpz_cmp(res, half_n) > 0) {
         mpz_sub(res, res, s->n);
     }
 

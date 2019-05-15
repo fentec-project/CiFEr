@@ -82,6 +82,6 @@ cfe_error cfe_baby_giant_with_neg(mpz_t res, mpz_t h, mpz_t g, mpz_t p, mpz_t _o
  */
 cfe_error cfe_pollard_rho(mpz_t res, mpz_t h, mpz_t g, mpz_t p, mpz_t n);
 
-cfe_error cfe_baby_giant_BN256(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t _order, mpz_t bound);
+cfe_error cfe_baby_giant_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t bound);
 
 #endif
