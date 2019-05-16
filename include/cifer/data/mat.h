@@ -184,12 +184,12 @@ void cfe_mat_extract_submatrix(cfe_mat *m, cfe_mat *min, size_t i, size_t j);
 /**
  * Determinant of a square matrix.
  */
-void cfe_mat_determinant(cfe_mat *m, mpz_t det);
+void cfe_mat_determinant(mpz_t det, cfe_mat *m);
 
 /**
  * Inverse of a matrix over a modular field Z_mod.
  */
-cfe_error cfe_mat_inverse_mod(cfe_mat *m, cfe_mat *inverse_mat, mpz_t mod);
+cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod);
 
 /**
  * Calcualtes x^T * mat * y, for x, y vectors and mat a matrix.

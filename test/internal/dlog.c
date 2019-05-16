@@ -180,7 +180,7 @@ void random_dlog_BN254_params(dlog_BN254_params *dp) {
     PAIR_BN254_ate(&(dp->g), &g2, &g1);
     PAIR_BN254_fexp(&(dp->g));
 
-    // chose a inteval from which we will sample
+    // choose an interval from which we will sample
     mpz_set_ui(dp->bound, 1024);
     mpz_neg(bound_neg, dp->bound);
 

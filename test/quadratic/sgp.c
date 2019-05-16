@@ -35,7 +35,7 @@
 
 MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
     // set the parameters
-    size_t n = 5;
+    size_t l = 5;
     mpz_t b, b_neg;
     mpz_inits(b, b_neg, NULL);
     mpz_set_si(b, 8);
@@ -44,17 +44,17 @@ MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
 
     // create a scheme
     cfe_sgp s;
-    err = cfe_sgp_init(&s, n, b);
+    err = cfe_sgp_init(&s, l, b);
     munit_assert(err == 0);
 
     // create a master secret key
     cfe_sgp_sec_key msk;
     cfe_sgp_sec_key_init(&msk, &s);
-    cfe_sgp_sec_key_generate(&msk, &s);
+    cfe_sgp_generate_sec_key(&msk, &s);
 
     // take random vectors x, y
     cfe_vec x, y;
-    cfe_vec_inits(s.n, &x, &y, NULL);
+    cfe_vec_inits(s.l, &x, &y, NULL);
     cfe_uniform_sample_range_vec(&x, b_neg, b);
     cfe_uniform_sample_range_vec(&y, b_neg, b);
 
@@ -67,14 +67,14 @@ MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
     // derive keys and decrypt the value x*m*y for a
     // random matrix f
     cfe_mat m;
-    cfe_mat_init(&m, n, n);
+    cfe_mat_init(&m, l, l);
     cfe_uniform_sample_range_mat(&m, b_neg, b);
     ECP2_BN254 key;
-    err = cfe_sgp_derive_key(&key, &msk, &m, &s);
+    err = cfe_sgp_derive_key(&key, &s, &msk, &m);
     munit_assert(err == 0);
     mpz_t dec, xy;
     mpz_inits(dec, xy , NULL);
-    cfe_sgp_decrypt(dec, &cipher, &key, &m, &s);
+    cfe_sgp_decrypt(dec, &s, &cipher, &key, &m);
     cfe_mat_mul_x_mat_y(xy, &m, &x, &y);
     munit_assert(mpz_cmp(dec, xy) == 0);
 

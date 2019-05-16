@@ -45,10 +45,10 @@
 // Functional Encryption", see https://eprint.iacr.org/2018/206.pdf.
  */
 typedef struct cfe_sgp {
-    size_t n;
+    size_t l;
     mpz_t bound;
     mpz_t mod;
-    BIG_256_56 modBig;
+    BIG_256_56 mod_big;
 } cfe_sgp;
 
 /**
@@ -66,19 +66,19 @@ typedef struct cfe_sgp_cipher {
     ECP_BN254 g1MulGamma;
     cfe_vec_G1 *a;
     cfe_vec_G2 *b;
-    size_t n;
+    size_t l;
 } cfe_sgp_cipher;
 
 /**
  * Configures a new instance of the scheme.
  *
  * @param s A pointer to an uninitialized struct representing the scheme
- * @param n The length of input vectors
+ * @param l The length of input vectors
  * @param bound The bound by which coordinates of the encryption vectors
  * and matrix for quadratic polynomial are bounded
  * @return Error code
  */
-cfe_error cfe_sgp_init(cfe_sgp *s, size_t n, mpz_t bound);
+cfe_error cfe_sgp_init(cfe_sgp *s, size_t l, mpz_t bound);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -115,7 +115,7 @@ void cfe_sgp_sec_key_free(cfe_sgp_sec_key *msk);
  * struct)
  * @return Error code
  */
-void cfe_sgp_sec_key_generate(cfe_sgp_sec_key *msk, cfe_sgp *s);
+void cfe_sgp_generate_sec_key(cfe_sgp_sec_key *msk, cfe_sgp *s);
 
 /**
  * Takes master secret key and a matrix, and returns the corresponding functional
@@ -123,13 +123,13 @@ void cfe_sgp_sec_key_generate(cfe_sgp_sec_key *msk, cfe_sgp *s);
  *
  * @param key A pointer to a ECP2_BN254 struct (the functional encryption
  * key will be stored here)
- * @param msk A pointer to the master secret key
- * @param f A pointer to the matrix for the quadratic polynomial
  * @param sgp A pointer to an instance of the scheme (*initialized*
  * cfe_sgp struct)
+ * @param msk A pointer to the master secret key
+ * @param f A pointer to the matrix for the quadratic polynomial
  * @return Error code
  */
-cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp_sec_key *msk, cfe_mat *f, cfe_sgp *sgp);
+cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f);
 
 /**
  * Initializes the struct which represents the ciphertext.
@@ -168,13 +168,13 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
  * error is returned.
  *
  * @param res The result of the decryption (the value will be stored here)
+ * @param s A pointer to an instance of the scheme (*initialized* cfe_sgp
+ * struct)
  * @param cipher A pointer to the ciphertext
  * @param key A pointer to the functional encryption key
  * @param f A pointer to the matrix of the quadratic polynomial
- * @param s A pointer to an instance of the scheme (*initialized* cfe_sgp
- * struct)
  * @return Error code
  */
-cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f, cfe_sgp *s);
+cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp *s, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f);
 
 #endif

@@ -35,16 +35,16 @@
 #include "cifer/data/vec_curve.h"
 #include "cifer/internal/common.h"
 
-cfe_error cfe_sgp_init(cfe_sgp *s, size_t n, mpz_t bound) {
+cfe_error cfe_sgp_init(cfe_sgp *s, size_t l, mpz_t bound) {
     cfe_error err = CFE_ERR_NONE;
     mpz_t bound_check;
-    s->n = n;
+    s->l = l;
     mpz_inits(s->bound, s->mod, bound_check, NULL);
     mpz_set(s->bound, bound);
-    BIG_256_56_rcopy(s->modBig, CURVE_Order_BN254);
-    mpz_from_BIG_256_56(s->mod, s->modBig);
+    BIG_256_56_rcopy(s->mod_big, CURVE_Order_BN254);
+    mpz_from_BIG_256_56(s->mod, s->mod_big);
     mpz_pow_ui(bound_check, bound, 3);
-    mpz_mul_ui(bound_check, bound_check, n * n);
+    mpz_mul_ui(bound_check, bound_check, l * l);
     if (mpz_cmp(bound_check, s->mod) > 0) {
         err = CFE_ERR_BOUND_CHECK_FAILED;
     }
@@ -57,22 +57,25 @@ void cfe_sgp_free(cfe_sgp *s) {
 }
 
 void cfe_sgp_sec_key_init(cfe_sgp_sec_key *msk, cfe_sgp *sgp) {
-    cfe_vec_inits(sgp->n, &(msk->s), &(msk->t), NULL);
+    cfe_vec_inits(sgp->l, &(msk->s), &(msk->t), NULL);
 }
 
 void cfe_sgp_sec_key_free(cfe_sgp_sec_key *msk) {
     cfe_vec_frees(&(msk->s), &(msk->t), NULL);
 }
 
-void cfe_sgp_sec_key_generate(cfe_sgp_sec_key *msk, cfe_sgp *sgp) {
+void cfe_sgp_generate_sec_key(cfe_sgp_sec_key *msk, cfe_sgp *sgp) {
     cfe_uniform_sample_vec(&(msk->s), sgp->bound);
     cfe_uniform_sample_vec(&(msk->t), sgp->bound);
 }
 
-cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp_sec_key *msk, cfe_mat *f, cfe_sgp *sgp) {
+cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f) {
     if (cfe_mat_check_bound(f, sgp->bound) == false) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     };
+    if (f->rows != sgp->l || f->cols != sgp->l) {
+        return CFE_ERR_DIM_MISMATCH;
+    }
     mpz_t res;
     mpz_init(res);
 
@@ -94,17 +97,17 @@ cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp_sec_key *msk, cfe_mat *f, 
 
 void cfe_sgp_cipher_init(cfe_sgp_cipher *cipher, cfe_sgp *s) {
     ECP_BN254_generator(&(cipher->g1MulGamma));
-    cipher->a = (cfe_vec_G1 *) cfe_malloc(s->n * sizeof(cfe_vec_G1));
-    cipher->b = (cfe_vec_G2 *) cfe_malloc(s->n * sizeof(cfe_vec_G2));
-    for (size_t i = 0; i < s->n; i++) {
+    cipher->a = (cfe_vec_G1 *) cfe_malloc(s->l * sizeof(cfe_vec_G1));
+    cipher->b = (cfe_vec_G2 *) cfe_malloc(s->l * sizeof(cfe_vec_G2));
+    for (size_t i = 0; i < s->l; i++) {
         cfe_vec_G1_init(&(cipher->a[i]), 2);
         cfe_vec_G2_init(&(cipher->b[i]), 2);
     }
-    cipher->n = s->n;
+    cipher->l = s->l;
 }
 
 void cfe_sgp_cipher_free(cfe_sgp_cipher *cipher) {
-    for (size_t i = 0; i < cipher->n; i++) {
+    for (size_t i = 0; i < cipher->l; i++) {
         cfe_vec_G1_free(&(cipher->a[i]));
         cfe_vec_G2_free(&(cipher->b[i]));
     }
@@ -116,12 +119,15 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
     if ((cfe_vec_check_bound(x, s->bound) == false) || (cfe_vec_check_bound(y, s->bound) == false)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
+    if (x->size != s->l || y->size != s->l) {
+        return CFE_ERR_DIM_MISMATCH;
+    }
 
     cfe_mat W, W_inv, W_inv_tr;
     cfe_mat_inits(2, 2, &W, &W_inv, &W_inv_tr, NULL);
     cfe_uniform_sample_mat(&W, s->mod);
     cfe_error err;
-    err = cfe_mat_inverse_mod(&W, &W_inv, s->mod);
+    err = cfe_mat_inverse_mod(&W_inv, &W, s->mod);
     if (err != CFE_ERR_NONE) {
         return err;
     }
@@ -134,7 +140,7 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
     cfe_vec v, v_i;
     cfe_vec_inits(2, &v, &v_i, NULL);
 
-    for (size_t i = 0; i < s->n; i++) {
+    for (size_t i = 0; i < s->l; i++) {
         cfe_vec_get(x_i, x, i);
         cfe_vec_get(s_i, &(msk->s), i);
         mpz_mul(tmp, gamma, s_i);
@@ -169,7 +175,7 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
     return CFE_ERR_NONE;
 }
 
-cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f, cfe_sgp *s) {
+cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp *s, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f) {
     FP12_BN254 prod;
     PAIR_BN254_ate(&prod, key, &(cipher->g1MulGamma));
     PAIR_BN254_fexp(&prod);
@@ -220,7 +226,7 @@ cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cf
     PAIR_BN254_fexp(&gt);
 
     mpz_pow_ui(res_bound, s->bound, 3);
-    mpz_mul_ui(res_bound, res_bound, s->n * s->n);
+    mpz_mul_ui(res_bound, res_bound, s->l * s->l);
 
     cfe_error err;
     err = cfe_baby_giant_FP12_BN256_with_neg(res, &prod, &gt, res_bound);

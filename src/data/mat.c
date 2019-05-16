@@ -272,8 +272,9 @@ void cfe_mat_mul(cfe_mat *res, cfe_mat *m1, cfe_mat *m2) {
     mpz_clears(sum, prod, x, y, NULL);
 }
 
-void cfe_mat_extract_submatrix(cfe_mat *m, cfe_mat *min, size_t i, size_t j) {
+void cfe_mat_extract_submatrix(cfe_mat *min, cfe_mat *m, size_t i, size_t j) {
     assert(i < m->rows && j < m->cols);
+    assert(min->rows == m->rows -1 && min->cols == m->cols -1);
 
     size_t ind1 = 0;
     mpz_t val;
@@ -296,7 +297,7 @@ void cfe_mat_extract_submatrix(cfe_mat *m, cfe_mat *min, size_t i, size_t j) {
     mpz_clear(val);
 }
 
-void cfe_mat_determinant(cfe_mat *m, mpz_t det) {
+void cfe_mat_determinant(mpz_t det, cfe_mat *m) {
     assert(m->rows == m->cols);
 
     if (m->rows == 1) {
@@ -313,9 +314,9 @@ void cfe_mat_determinant(cfe_mat *m, mpz_t det) {
     cfe_mat_init(&min, m->rows - 1, m->cols - 1);
 
     for (size_t i = 0; i < m->rows; i++) {
-        cfe_mat_extract_submatrix(m, &min, 0, i);
+        cfe_mat_extract_submatrix(&min, m, 0, i);
         cfe_mat_get(val, m, 0, i);
-        cfe_mat_determinant(&min, minor);
+        cfe_mat_determinant(minor, &min);
 
         mpz_mul(minor, minor, val);
         mpz_mul(minor, minor, sign);
@@ -326,11 +327,11 @@ void cfe_mat_determinant(cfe_mat *m, mpz_t det) {
     mpz_clears(sign, minus, val, minor, NULL);
 }
 
-cfe_error cfe_mat_inverse_mod(cfe_mat *m, cfe_mat *inverse_mat, mpz_t mod) {
+cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod) {
     cfe_error err = CFE_ERR_NONE;
     mpz_t det, det_inv, sign, minus, minor, val;
     mpz_inits(det, det_inv, sign, minus, minor, val, NULL);
-    cfe_mat_determinant(m, det);
+    cfe_mat_determinant(det, m);
     mpz_mod(det, det, mod);
     if(mpz_cmp_si(det, 0) == 0) {
         err = CFE_ERR_NO_INVERSE;
@@ -344,8 +345,8 @@ cfe_error cfe_mat_inverse_mod(cfe_mat *m, cfe_mat *inverse_mat, mpz_t mod) {
     cfe_mat_init(&transposed, m->rows, m->cols);
     for (size_t i = 0; i < m->rows; i++) {
         for (size_t j = 0; j < m->cols; j++) {
-            cfe_mat_extract_submatrix(m, &min, i, j);
-            cfe_mat_determinant(&min, minor);
+            cfe_mat_extract_submatrix(&min, m, i, j);
+            cfe_mat_determinant(minor, &min);
 
             mpz_mod(minor, minor, mod);
             mpz_pow_ui(sign, minus, i+j);
