@@ -54,6 +54,7 @@ set(library_SOURCES
         src/abe/policy.c
         src/abe/gpsw.c
         src/abe/fame.c
+        src/quadratic/sgp.c
         )
 
 add_library(cifer SHARED ${library_SOURCES})
@@ -90,6 +91,7 @@ set(binary_SOURCES
         test/abe/gpsw.c
         test/abe/fame.c
         external/munit/munit.c
+        test/quadratic/sgp.c
         )
 
 add_executable(cifer_test ${binary_SOURCES})

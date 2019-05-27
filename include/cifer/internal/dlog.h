@@ -18,6 +18,7 @@
 #define CIFER_DLOG_H
 
 #include <gmp.h>
+#include <amcl/fp12_BN254.h>
 
 #include "cifer/internal/errors.h"
 
@@ -80,5 +81,21 @@ cfe_error cfe_baby_giant_with_neg(mpz_t res, mpz_t h, mpz_t g, mpz_t p, mpz_t _o
  * @return Error code
  */
 cfe_error cfe_pollard_rho(mpz_t res, mpz_t h, mpz_t g, mpz_t p, mpz_t n);
+
+/**
+ * @brief Baby-step giant-step method for computing the discrete logarithm in
+ * the pairing group FP12_BN254 finding also negative solutions.
+ *
+ * It searches for a solution (-bound, bound). The function returns x, where
+ * h = g^x in the group. If the solution was not found within the provided
+ * bound, it returns an error.
+ *
+ * @param res Discrete logarithm (the result value placeholder)
+ * @param h Element
+ * @param g Generator
+ * @param bound Bound for solution
+ * @return Error code
+ */
+cfe_error cfe_baby_giant_FP12_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t bound);
 
 #endif

@@ -271,3 +271,106 @@ void cfe_mat_mul(cfe_mat *res, cfe_mat *m1, cfe_mat *m2) {
     }
     mpz_clears(sum, prod, x, y, NULL);
 }
+
+void cfe_mat_extract_submatrix(cfe_mat *min, cfe_mat *m, size_t i, size_t j) {
+    assert(i < m->rows && j < m->cols);
+    assert(min->rows == m->rows -1 && min->cols == m->cols -1);
+
+    size_t ind1 = 0;
+    mpz_t val;
+    mpz_init(val);
+    for (size_t k = 0; k < m->rows - 1; k++) {
+        if (k == i) {
+            ind1++;
+        }
+        size_t ind2 = 0;
+        for (size_t l = 0; l < m->cols - 1; l++) {
+            if (l == j) {
+                ind2++;
+            }
+            cfe_mat_get(val, m, ind1, ind2);
+            cfe_mat_set(min, val, k, l);
+            ind2++;
+        }
+        ind1++;
+    }
+    mpz_clear(val);
+}
+
+void cfe_mat_determinant(mpz_t det, cfe_mat *m) {
+    assert(m->rows == m->cols);
+
+    if (m->rows == 1) {
+        cfe_mat_get(det, m, 0, 0);
+        return;
+    }
+    mpz_set_si(det, 0);
+    mpz_t sign, minus, val, minor;
+    mpz_inits(sign, minus, val, minor, NULL);
+    mpz_set_ui(sign, 1);
+    mpz_set_si(minus, -1);
+
+    cfe_mat min;
+    cfe_mat_init(&min, m->rows - 1, m->cols - 1);
+
+    for (size_t i = 0; i < m->rows; i++) {
+        cfe_mat_extract_submatrix(&min, m, 0, i);
+        cfe_mat_get(val, m, 0, i);
+        cfe_mat_determinant(minor, &min);
+
+        mpz_mul(minor, minor, val);
+        mpz_mul(minor, minor, sign);
+        mpz_mul(sign, sign, minus);
+        mpz_add(det, det, minor);
+    }
+    cfe_mat_free(&min);
+    mpz_clears(sign, minus, val, minor, NULL);
+}
+
+cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod) {
+    cfe_error err = CFE_ERR_NONE;
+    mpz_t det, det_inv, sign, minus, minor, val;
+    mpz_inits(det, det_inv, sign, minus, minor, val, NULL);
+    cfe_mat_determinant(det, m);
+    mpz_mod(det, det, mod);
+    if(mpz_cmp_si(det, 0) == 0) {
+        err = CFE_ERR_NO_INVERSE;
+        goto cleanup;
+    }
+    mpz_invert(det_inv, det, mod);
+
+    mpz_set_si(minus, -1);
+    cfe_mat min, transposed;
+    cfe_mat_init(&min, m->rows - 1, m->cols - 1);
+    cfe_mat_init(&transposed, m->rows, m->cols);
+    for (size_t i = 0; i < m->rows; i++) {
+        for (size_t j = 0; j < m->cols; j++) {
+            cfe_mat_extract_submatrix(&min, m, i, j);
+            cfe_mat_determinant(minor, &min);
+
+            mpz_mod(minor, minor, mod);
+            mpz_pow_ui(sign, minus, i+j);
+
+            mpz_mul(val, minor, det_inv);
+            mpz_mul(val, val, sign);
+            mpz_mod(val, val, mod);
+
+            cfe_mat_set(&transposed, val, i, j);
+        }
+    }
+
+    cfe_mat_transpose(inverse_mat, &transposed);
+    cfe_mat_frees(&min, &transposed, NULL);
+    cleanup:
+    mpz_clears(det, det_inv, sign, minus, minor, val, NULL);
+
+    return err;
+}
+
+void cfe_mat_mul_x_mat_y(mpz_t res, cfe_mat *mat, cfe_vec *x, cfe_vec *y) {
+    cfe_vec t;
+    cfe_vec_init(&t, x->size);
+    cfe_mat_mul_vec(&t, mat, y);
+    cfe_vec_dot(res, &t, x);
+    cfe_vec_free(&t);
+}

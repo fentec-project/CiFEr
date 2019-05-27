@@ -48,6 +48,7 @@ typedef enum cfe_error {
     CFE_ERR_INSUFFICIENT_KEYS,
     CFE_ERR_CORRUPTED_BOOL_EXPRESSION,
     CFE_ERR_NO_SOLUTION_EXISTS,
+    CFE_ERR_NO_INVERSE,
 } cfe_error;
 
 #endif
