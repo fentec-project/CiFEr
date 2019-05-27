@@ -64,6 +64,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aba94fd416f01aab44ea5ece0a76b5009"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dlog_8h.html#aba94fd416f01aab44ea5ece0a76b5009">cfe_pollard_rho</a> (mpz_t res, mpz_t h, mpz_t g, mpz_t p, mpz_t n)</td></tr>
 <tr class="memdesc:aba94fd416f01aab44ea5ece0a76b5009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pollard's rho algorithm - simple, non-parallel version.  <a href="#aba94fd416f01aab44ea5ece0a76b5009">More...</a><br /></td></tr>
 <tr class="separator:aba94fd416f01aab44ea5ece0a76b5009"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae93b71f25b68cf8c663198c3c5554b3d"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dlog_8h.html#ae93b71f25b68cf8c663198c3c5554b3d">cfe_baby_giant_FP12_BN256_with_neg</a> (mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t bound)</td></tr>
+<tr class="memdesc:ae93b71f25b68cf8c663198c3c5554b3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Baby-step giant-step method for computing the discrete logarithm in the pairing group FP12_BN254 finding also negative solutions.  <a href="#ae93b71f25b68cf8c663198c3c5554b3d">More...</a><br /></td></tr>
+<tr class="separator:ae93b71f25b68cf8c663198c3c5554b3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Algorithms for computing discrete logarithms. </p>
@@ -255,6 +258,59 @@ Functions</h2></td></tr>
     <tr><td class="paramname">g</td><td>Generator </td></tr>
     <tr><td class="paramname">p</td><td>Modulus </td></tr>
     <tr><td class="paramname">n</td><td>Order </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Error code </dd></dl>
+
+</div>
+</div>
+<a id="ae93b71f25b68cf8c663198c3c5554b3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae93b71f25b68cf8c663198c3c5554b3d">&#9670;&nbsp;</a></span>cfe_baby_giant_FP12_BN256_with_neg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cfe_error cfe_baby_giant_FP12_BN256_with_neg </td>
+          <td>(</td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">FP12_BN254 *&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">FP12_BN254 *&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>bound</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Baby-step giant-step method for computing the discrete logarithm in the pairing group FP12_BN254 finding also negative solutions. </p>
+<p>It searches for a solution (-bound, bound). The function returns x, where h = g^x in the group. If the solution was not found within the provided bound, it returns an error.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>Discrete logarithm (the result value placeholder) </td></tr>
+    <tr><td class="paramname">h</td><td>Element </td></tr>
+    <tr><td class="paramname">g</td><td>Generator </td></tr>
+    <tr><td class="paramname">bound</td><td>Bound for solution </td></tr>
   </table>
   </dd>
 </dl>
