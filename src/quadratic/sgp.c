@@ -74,7 +74,7 @@ cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk
         return CFE_ERR_BOUND_CHECK_FAILED;
     };
     if (f->rows != sgp->l || f->cols != sgp->l) {
-        return CFE_ERR_DIM_MISMATCH;
+        return CFE_ERR_MALFORMED_INPUT;
     }
     mpz_t res;
     mpz_init(res);
@@ -120,7 +120,7 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
     if (x->size != s->l || y->size != s->l) {
-        return CFE_ERR_DIM_MISMATCH;
+        return CFE_ERR_MALFORMED_INPUT;
     }
 
     cfe_mat W, W_inv, W_inv_tr;
