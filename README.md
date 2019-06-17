@@ -134,6 +134,14 @@ security) by
     ([paper](https://eprint.iacr.org/2017/972.pdf)) and instantiated from the 
     scheme in the first point (`cfe_damgard_multi`).
 
+#### Quadratic scheme
+You will need to include headers from `quadratic` directory.
+
+It contains an implementation of an efficient FE scheme for quadratic
+multi-variate polynomials by Sans, Gay and Pointcheval ([paper](https://eprint.iacr.org/2018/206.pdf))
+which is based on bilinear pairings, and offers adaptive security
+under chosen-plaintext attacks (IND-CPA security).
+
 #### Attribute based encryption (ABE) schemes
 You will need to include headers from `abe` directory. There are two implemented
 schemes:
@@ -324,7 +332,7 @@ cfe_ddh_decrypt(xy, &decryptor, &ciphertext, fe_key, &y);
 ##### Using a multi input scheme
 This example demonstrates how multi input FE schemes can be used.
  
-Here we assume that there are `slots` encryptors (e<sub>i</sub>), each with 
+Here we assume that there are `numClients` encryptors (e<sub>i</sub>), each with 
 their corresponding input vector x<sub>i</sub>. A trusted entity generates all 
 the master keys needed for encryption and distributes appropriate keys to 
 appropriate encryptor. Then, encryptor e<sub>i</sub> uses their keys to encrypt 
@@ -335,17 +343,17 @@ decryptor is able to compute the result - inner product over all vectors, as
 _Σ <x<sub>i</sub>,y<sub>i</sub>>._
 
 ```c
-size_t slots = 2;             // number of encryptors
+size_t numClients = 2;             // number of encryptors
 size_t l = 3;                 // length of input vectors
 mpz_t bound, prod;
 mpz_init_set_ui(bound, 1000); // upper bound for input vectors
 
 // Simulate collection of input data.
 // X and Y represent matrices of input vectors, where X are collected
-// from slots encryptors (ommitted), and Y is only known by a single decryptor.
+// from numClients encryptors (ommitted), and Y is only known by a single decryptor.
 // Encryptor i only knows its own input vector X[i].
 cfe_mat X, Y;
-cfe_mat_inits(slots, l, &X, &Y, NULL);
+cfe_mat_inits(numClients, l, &X, &Y, NULL);
 cfe_uniform_sample_mat(&X, bound);
 cfe_uniform_sample_mat(&Y, bound);
 
@@ -354,7 +362,7 @@ cfe_uniform_sample_mat(&Y, bound);
 // key derivedKey for the decryptor.
 size_t modulus_len = 64;
 cfe_ddh_multi m, decryptor;
-cfe_ddh_multi_init(&m, slots, l, modulus_len, bound);
+cfe_ddh_multi_init(&m, numClients, l, modulus_len, bound);
 
 cfe_mat mpk;
 cfe_ddh_multi_sec_key msk;
@@ -365,18 +373,18 @@ cfe_ddh_multi_fe_key_init(&fe_key, &m);
 cfe_ddh_multi_derive_key(&fe_key, &m, &msk, &Y);
 
 // Different encryptors may reside on different machines.
-// We simulate this with the for loop below, where slots
+// We simulate this with the for loop below, where numClients
 // encryptors are generated.
-cfe_ddh_multi_enc encryptors[slots];
-for (size_t i = 0; i < slots; i++) {
+cfe_ddh_multi_enc encryptors[numClients];
+for (size_t i = 0; i < numClients; i++) {
     cfe_ddh_multi_enc_init(&encryptors[i], &m);
 }
 
 // Each encryptor encrypts its own input vector X[i] with the
 // keys given to it by the trusted entity.
 cfe_mat ciphertext;
-cfe_mat_init(&ciphertext, slots, l + 1);
-for (size_t i = 0; i < slots; i++) {
+cfe_mat_init(&ciphertext, numClients, l + 1);
+for (size_t i = 0; i < numClients; i++) {
     cfe_vec ct;
     cfe_vec *pub_key = cfe_mat_get_row_ptr(&mpk, i);
     cfe_vec *otp = cfe_mat_get_row_ptr(&msk.otp_key, i);
@@ -394,3 +402,90 @@ cfe_ddh_multi_decrypt(prod, &decryptor, &ciphertext, &fe_key, &Y);
 ```
 Note that above we instantiate multiple encryptors - in reality, 
 different encryptors will be instantiated on different machines.
+
+##### Using a quadratic scheme
+In the example below, we omit instantiation of different entities
+(encryptor and decryptor).
+```c
+// set the parameters
+size_t l = 5;
+mpz_t b;
+mpz_set_si(b, 8);
+
+// create a scheme
+cfe_sgp s;
+err = cfe_sgp_init(&s, l, b);
+
+// create a master secret key
+cfe_sgp_sec_key msk;
+cfe_sgp_sec_key_init(&msk, &s);
+cfe_sgp_generate_sec_key(&msk, &s);
+
+// take random vectors x, y
+cfe_vec x, y;
+cfe_vec_inits(s.l, &x, &y, NULL);
+cfe_uniform_sample_vec(&x, b);
+cfe_uniform_sample_vec(&y, b);
+
+// encrypt the vectors
+cfe_sgp_cipher cipher;
+cfe_sgp_cipher_init(&cipher, &s);
+cfe_sgp_encrypt(&cipher, &s, &x, &y, &msk);
+
+// derive keys and decrypt the value x*m*y for a
+// random matrix m
+cfe_mat m;
+cfe_mat_init(&m, l, l);
+cfe_uniform_sample_mat(&m, b);
+ECP2_BN254 key;
+cfe_sgp_derive_key(&key, &s, &msk, &m);
+mpz_t dec;
+mpz_init(dec);
+cfe_sgp_decrypt(dec, &s, &cipher, &key, &m);
+```
+
+##### Using ABE schemes
+
+In the example below we demonstrate a usage of ABE scheme FAME. We
+omit instantiation of different entities (encryptor and decryptor).
+We want to encrypt the following message msg so that only those
+who own the attributes satisfying a boolean expression 'policy'
+can decrypt.
+```c
+// create a new FAME struct
+cfe_fame fame;
+cfe_fame_init(&fame);
+
+// initialize and generate a public key and a secret key for the scheme
+cfe_fame_pub_key pk;
+cfe_fame_sec_key sk;
+cfe_fame_sec_key_init(&sk);
+cfe_fame_generate_master_keys(&pk, &sk, &fame);
+
+// create a message to be encrypted
+FP12_BN254 msg;
+FP12_BN254_one(&msg);
+
+// create a msp structure out of a boolean expression representing the
+// policy specifying which attributes are needed to decrypt the ciphertext
+char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
+cfe_msp msp;
+cfe_boolean_to_msp(&msp, bool_exp, false);
+
+// initialize a ciphertext and encrypt the message based on the msp structure
+// describing the policy
+cfe_fame_cipher cipher;
+cfe_fame_cipher_init(&cipher, &msp);
+cfe_fame_encrypt(&cipher, &msg, &msp, &pk, &fame);
+
+// produce keys that are given to an entity with a set
+// of attributes in owned_attrib
+int owned_attrib[] = {1, 3, 6};
+cfe_fame_attrib_keys keys;
+cfe_fame_attrib_keys_init(&keys, 3); // the number of attributes needs to be specified
+cfe_fame_generate_attrib_keys(&keys, owned_attrib, 3, &sk, &fame);
+
+// decrypt the message with owned keys
+FP12_BN254 decryption;
+cfe_fame_decrypt(&decryption, &cipher, &keys, &fame);
+```
