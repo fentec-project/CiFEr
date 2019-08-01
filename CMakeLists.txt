@@ -56,6 +56,7 @@ set(library_SOURCES
         src/abe/policy.c
         src/abe/gpsw.c
         src/abe/fame.c
+        src/abe/dippe.c
         src/quadratic/sgp.c
         )
 
@@ -93,6 +94,7 @@ set(binary_SOURCES
         test/abe/policy.c
         test/abe/gpsw.c
         test/abe/fame.c
+        test/abe/dippe.c
         external/munit/munit.c
         test/quadratic/sgp.c
         )
