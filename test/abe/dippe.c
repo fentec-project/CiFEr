@@ -1,14 +1,11 @@
 
-#include <amcl/big_256_56.h>
 #include <amcl/pair_BN254.h>
-#include <amcl/ecp_BN254.h>
-#include <amcl/ecp2_BN254.h>
 
 #include "cifer/test.h"
 #include "cifer/data/vec.h"
 #include "cifer/abe/dippe.h"
 
-MunitResult test_dippe_end_conjunction(const MunitParameter *params, void *data) {
+MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void *data) {
     cfe_error err;
 
     // Init DIPPE scheme
@@ -92,19 +89,19 @@ MunitResult test_dippe_end_conjunction(const MunitParameter *params, void *data)
 
         // Cleanup
         mpz_clear(attrs);
-        cfe_dippe_cipher_clear(&cipher);
+        cfe_dippe_cipher_free(&cipher);
         for (int j=0; j<6; j++) {
-            cfe_dippe_user_secret_key_clear(&(usks[j]));
+            cfe_dippe_user_secret_key_free(&(usks[j]));
         }
     }
 
     // Cleanup
     cfe_vec_free(&pol);
-    cfe_dippe_sec_key_clear(&(sk[0]));
-    cfe_dippe_sec_key_clear(&(sk[1]));
-    cfe_dippe_pub_key_clear(&(pk[0]));
-    cfe_dippe_pub_key_clear(&(pk[1]));
-    cfe_dippe_clear(&dippe);
+    cfe_dippe_sec_key_free(&(sk[0]));
+    cfe_dippe_sec_key_free(&(sk[1]));
+    cfe_dippe_pub_key_free(&(pk[0]));
+    cfe_dippe_pub_key_free(&(pk[1]));
+    cfe_dippe_free(&dippe);
 
     return MUNIT_OK;
 }
@@ -191,17 +188,17 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 
         // Cleanup
         mpz_clear(attrs);
-        cfe_dippe_cipher_clear(&cipher);
+        cfe_dippe_cipher_free(&cipher);
         for (int j=0; j<5; j++) {
-            cfe_dippe_user_secret_key_clear(&(usks[j]));
+            cfe_dippe_user_secret_key_free(&(usks[j]));
         }
     }
 
     // Cleanup
     cfe_vec_free(&pol);
-    cfe_dippe_sec_key_clear(&sk0);
-    cfe_dippe_pub_key_clear(&pk0);
-    cfe_dippe_clear(&dippe);
+    cfe_dippe_sec_key_free(&sk0);
+    cfe_dippe_pub_key_free(&pk0);
+    cfe_dippe_free(&dippe);
 
     return MUNIT_OK;
 }
