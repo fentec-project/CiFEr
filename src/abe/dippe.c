@@ -176,7 +176,7 @@ void cfe_dippe_setup(cfe_dippe *dippe, unsigned int assump_size) {
 }
 
 /**
- * Initializes an authority nad generates its public and private key
+ * Initializes an authority and generates its public and private key
  *
  * @param dippe A pointer to a cfe_dippe struct
  * @param pk A pointer to a cfe_dippe_pub_key struct; Represents the public key that is about to be populated
@@ -251,7 +251,7 @@ void cfe_dippe_authsetup(cfe_dippe *dippe, cfe_dippe_pub_key *pk, cfe_dippe_sec_
 }
 
 /**
- * Encrypts a given message by the provided policy
+ * Encrypts a given message under the provided policy
  *
  * @param dippe A pointer to a cfe_dippe struct
  * @param cipher A pointer to a cfe_dippe_cipher struct; Represents the ciphertext that is about to be populated
