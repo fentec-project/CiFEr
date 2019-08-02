@@ -213,19 +213,4 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
 cfe_error cfe_fame_decrypt(FP12_BN254 *res, cfe_fame_cipher *cipher,
                            cfe_fame_attrib_keys *keys, cfe_fame *fame);
 
-/**
- * A helping function used in cfe_fame_encrypt and cfe_fame_generate_attrib_keys.
- */
-char *cfe_strings_concat_for_hash(char *str, ...);
-
-/**
- * A helping function used in cfe_fame_encrypt and cfe_fame_generate_attrib_keys.
- */
-char *cfe_int_to_str(int i);
-
-/**
- * A helping function used in cfe_fame_encrypt and cfe_fame_generate_attrib_keys.
- */
-void cfe_hash_G1(ECP_BN254 *g, char *str);
-
 #endif

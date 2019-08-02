@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 
+#include <sodium/randombytes.h>
 #include "cifer/test.h"
 #include "cifer/sample/uniform.h"
 
 MunitResult test_uniform(const MunitParameter *params, void *data) {
-    mpz_t r;
-    mpz_init(r);
-    size_t b = 10;
+    mpz_t r, bound;
+    mpz_inits(r, bound, NULL);
+    size_t b = 8;
+    mpz_set_ui(bound, 10);
 
     cfe_uniform_sample_i(r, b); // we expect r to be assigned a value from [0, b)
 
     munit_assert(mpz_cmp_ui(r, 0) >= 0);    // r >= 0
     munit_assert(mpz_cmp_si(r, b) < 0);     // r < b
 
-    mpz_clear(r);
+    cfe_vec v;
+    cfe_vec_init(&v, 10);
+    unsigned char key[randombytes_SEEDBYTES];
+    for (size_t i=0; i<32; i++) {
+        key[i] = 'a';
+    }
+    cfe_uniform_sample_vec_det(&v, bound, key);
+
+    mpz_clears(r, bound, NULL);
+    cfe_vec_free(&v);
 
     return MUNIT_OK;
 }

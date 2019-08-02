@@ -36,6 +36,7 @@ set(library_SOURCES
         src/internal/big.c
         src/internal/common.c
         src/internal/dlog.c
+        src/internal/hash.c
         src/internal/keygen.c
         src/internal/prime.c
         src/innerprod/simple/ddh.c

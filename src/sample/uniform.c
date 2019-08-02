@@ -29,12 +29,6 @@ void cfe_uniform_sample(mpz_t res, mpz_t upper) {
     size_t n_bytes = ((n_bits - 1) / 8) + 1;
     uint8_t *rand_bytes = (uint8_t *) cfe_malloc(n_bytes * sizeof(uint8_t));
 
-    // calculate max unsigned number that we can represent with the given
-    // number of bits
-    mpz_t max;
-    mpz_init(max);
-    mpz_ui_pow_ui(max, 2, n_bits);
-
     while (1) {
         randombytes_buf(rand_bytes, n_bytes); // get random bytes
 
@@ -43,8 +37,8 @@ void cfe_uniform_sample(mpz_t res, mpz_t upper) {
         mpz_import(res, n_bytes, 1, 1, 0, 0, rand_bytes);
 
         // random number too big, divide it
-        if (mpz_cmp(res, max) >= 0) {
-            mpz_fdiv_r(res, res, max);
+        if (mpz_sizeinbase(res, 2)  > n_bits) {
+            mpz_fdiv_r_2exp(res, res, n_bits);
         }
         // if we're below the upper bound, we have a valid random number
         if (mpz_cmp(res, upper) < 0) {
@@ -53,7 +47,6 @@ void cfe_uniform_sample(mpz_t res, mpz_t upper) {
     }
 
     free(rand_bytes);
-    mpz_clear(max);
 }
 
 void cfe_uniform_sample_i(mpz_t res, size_t upper) {
@@ -117,4 +110,45 @@ void cfe_uniform_sample_range_mat(cfe_mat *res, mpz_t lower, mpz_t upper) {
     for (size_t i = 0; i < res->rows; i++) {
         cfe_uniform_sample_range_vec(&res->mat[i], lower, upper);
     }
+}
+
+void cfe_uniform_sample_vec_det(cfe_vec *res, mpz_t max, unsigned char *key) {
+    size_t n_bits_max = mpz_sizeinbase(max, 2);
+    size_t n_bytes_for_vec = ((n_bits_max * res->size - 1) / 8) + 1;
+
+    mpz_t num, el;
+    mpz_inits(num, el, NULL);
+
+    for (size_t i = 3;; i++) {
+        uint8_t *rand_bytes = (uint8_t *) cfe_malloc(i * n_bytes_for_vec * sizeof(uint8_t));
+        randombytes_buf_deterministic(rand_bytes, i * n_bytes_for_vec, key);
+        free(rand_bytes);
+
+        size_t j = 0, k = 0;
+        while (j <= (i * n_bytes_for_vec * 8 - n_bits_max)) {
+            mpz_fdiv_r_2exp(el, num, n_bits_max);
+            mpz_fdiv_q_2exp(num, num, n_bits_max);
+
+            if (mpz_cmp(el, max) < 0) {
+                cfe_vec_set(res, el, k);
+                k++;
+            }
+            if (k == res->size) {
+                break;
+            }
+            j += n_bits_max;
+        }
+        if (k == res->size) {
+            break;
+        }
+    }
+    mpz_clears(num, el, NULL);
+}
+
+void cfe_uniform_sample_mat_det(cfe_mat *res, mpz_t max, unsigned char *key) {
+    cfe_vec v;
+    cfe_vec_init(&v, res->rows * res->cols);
+    cfe_uniform_sample_vec_det(&v, max, key);
+    cfe_mat_from_vec(res, &v);
+    cfe_vec_free(&v);
 }

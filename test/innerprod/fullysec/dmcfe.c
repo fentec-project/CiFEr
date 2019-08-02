@@ -15,8 +15,8 @@
  */
 
 #include <gmp.h>
-#include "cifer/test.h"
 
+#include "cifer/test.h"
 #include "cifer/innerprod/fullysec/dmcfe.h"
 #include "cifer/sample/uniform.h"
 
@@ -29,14 +29,14 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     mpz_neg(bound_neg, bound);
 
     cfe_dmcfe_client clients[num_clients];
-    cfe_mat *pub_t[num_clients];
+    ECP_BN254 pub_keys[num_clients];
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_client_init(&(clients[i]), i);
-        pub_t[i] = &(clients[i].share_pub);
+        pub_keys[i] = clients[i].client_pub_key;
     }
 
     for (size_t i = 0; i < num_clients; i++) {
-        cfe_dmcfe_set_share(&(clients[i]), pub_t, num_clients);
+        cfe_dmcfe_set_share(&(clients[i]), pub_keys, num_clients);
     }
 
     cfe_vec x, y;
@@ -54,50 +54,16 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     }
 
     cfe_dmcfe_decrypt(xy, ciphers, key_shares, label, &y, bound, num_clients);
-    cfe_vec_dot(xy_check, &x, &y);
 
+    cfe_vec_dot(xy_check, &x, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
-//    cfe_damgard s, encryptor, decryptor;
-//    cfe_error err = cfe_damgard_init(&s, l, modulus_len, bound);
-//    munit_assert(err == 0);
-//
-//    cfe_vec mpk, ciphertext, x, y;
-//    cfe_vec_inits(l, &x, &y, NULL);
-//    cfe_uniform_sample_range_vec(&x, bound_neg, bound);
-//    cfe_uniform_sample_range_vec(&y, bound_neg, bound);
-//    cfe_vec_dot(xy_check, &x, &y);
-//
-//    cfe_damgard_sec_key msk;
-//
-//    cfe_damgard_sec_key_init(&msk, &s);
-//    cfe_damgard_pub_key_init(&mpk, &s);
-//    cfe_damgard_generate_master_keys(&msk, &mpk, &s);
-//
-//    cfe_damgard_fe_key key;
-//    cfe_damgard_fe_key_init(&key);
-//    err = cfe_damgard_derive_key(&key, &s, &msk, &y);
-//    munit_assert(err == 0);
-//
-//    cfe_damgard_copy(&encryptor, &s);
-//    cfe_damgard_ciphertext_init(&ciphertext, &encryptor);
-//    err = cfe_damgard_encrypt(&ciphertext, &encryptor, &x, &mpk);
-//    munit_assert(err == 0);
-//
-//    cfe_damgard_copy(&decryptor, &s);
-//    err = cfe_damgard_decrypt(xy, &decryptor, &ciphertext, &key, &y);
-//    munit_assert(err == 0);
-//
-//    munit_assert(mpz_cmp(xy, xy_check) == 0);
-//
-//    mpz_clears(bound, bound_neg, key1, key2, xy_check, xy, NULL);
-//    cfe_vec_frees(&x, &y, &mpk, &ciphertext, NULL);
-//
-//    cfe_damgard_sec_key_free(&msk);
-//    cfe_damgard_derived_key_free(&key);
-//    cfe_damgard_free(&s);
-//    cfe_damgard_free(&encryptor);
-//    cfe_damgard_free(&decryptor);
+    mpz_clears(bound, bound_neg, key1, key2, xy_check, xy, NULL);
+    for (size_t i = 0; i < num_clients; i++) {
+        cfe_dmcfe_client_free(&(clients[i]));
+        cfe_vec_G2_free(&(key_shares[i]));
+    }
+    cfe_vec_frees(&x, &y, NULL);
 
     return MUNIT_OK;
 }

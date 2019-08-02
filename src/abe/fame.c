@@ -23,6 +23,7 @@
 
 #include "cifer/internal/common.h"
 #include "cifer/internal/big.h"
+#include "cifer/internal/hash.h"
 #include "cifer/sample/uniform.h"
 #include "cifer/abe/fame.h"
 
@@ -149,7 +150,7 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
             ECP_BN254_inf(&(cipher->ct[i][l]));
             for (int k = 0; k < 2; k++) {
                 str_k = cfe_int_to_str(k);
-                for_hash = cfe_strings_concat_for_hash(str_attrib, " ", str_l, " ", str_k, NULL);
+                for_hash = cfe_strings_concat(str_attrib, " ", str_l, " ", str_k, NULL);
                 cfe_hash_G1(&hs, for_hash);
                 ECP_BN254_mul(&hs, s_big[k]);
                 ECP_BN254_add(&(cipher->ct[i][l]), &hs);
@@ -162,7 +163,7 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
                 ECP_BN254_inf(&hs_pow_m);
                 for (int k = 0; k < 2; k++) {
                     str_k = cfe_int_to_str(k);
-                    for_hash = cfe_strings_concat_for_hash((char *) "0 ", str_j, " ", str_l, " ", str_k, NULL);
+                    for_hash = cfe_strings_concat((char *) "0 ", str_j, " ", str_l, " ", str_k, NULL);
                     cfe_hash_G1(&(hs), for_hash);
                     ECP_BN254_mul(&(hs), s_big[k]);
                     ECP_BN254_add(&hs_pow_m, &(hs));
@@ -253,7 +254,7 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
             ECP_BN254_copy(&(keys->k[i][t]), &g_sigma);
             for (int j = 0; j < 3; j++) {
                 str_j = cfe_int_to_str(j);
-                for_hash = cfe_strings_concat_for_hash(str_attrib, " ", str_j, " ", str_t, NULL);
+                for_hash = cfe_strings_concat(str_attrib, " ", str_j, " ", str_t, NULL);
                 cfe_hash_G1(&hs, for_hash);
 
                 BIG_256_56_from_mpz(tmp_big, pow[j]);
@@ -285,7 +286,7 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
         str_t = cfe_int_to_str(t);
         for (int j = 0; j < 3; j++) {
             str_j = cfe_int_to_str(j);
-            for_hash = cfe_strings_concat_for_hash((char *) "0 0 ", str_j, " ", str_t, NULL);
+            for_hash = cfe_strings_concat((char *) "0 0 ", str_j, " ", str_t, NULL);
             cfe_hash_G1(&hs, for_hash);
 
             BIG_256_56_from_mpz(tmp_big, pow[j]);
@@ -388,56 +389,4 @@ cfe_error cfe_fame_decrypt(FP12_BN254 *res, cfe_fame_cipher *cipher,
     mpz_clear(zero);
 
     return CFE_ERR_NONE;
-}
-
-// cfe_hash_G1 hashes a string of length MODBYTES_256_56
-// into the elliptic group represented by ECP_BN254.
-void cfe_hash_G1(ECP_BN254 *g, char *str) {
-    octet tmp;
-    tmp.val = str;
-    ECP_BN254_mapit(g, &tmp);
-}
-
-// cfe_strings_concat_for_hash joins the given strings to create
-// a string of length MODBYTES_256_56 needed for the hashing function.
-char *cfe_strings_concat_for_hash(char *start, ...) {
-    // allocate memory for the result
-    char *res = (char *) cfe_malloc((MODBYTES_256_56 + 1) * sizeof(char));
-
-    // set the string
-    va_list ap;
-    char *str = start;
-    va_start(ap, start);
-    size_t j = 0;
-    while (str != NULL) {
-        for (size_t i = 0; i < strlen(str); i++) {
-            res[j] = str[i];
-            j++;
-        }
-        str = va_arg(ap, char*);
-    }
-
-    // pad the string
-    for (size_t i = j; i < MODBYTES_256_56 + 1; i++) {
-        res[i] = '\0';
-    }
-    va_end(ap);
-
-    return res;
-}
-
-// cfe_int_to_str changes a non-negative int into a string of its
-// decimal representation
-char *cfe_int_to_str(int i) {
-    int len;
-    if (i == 0) {
-        len = 1;
-    } else {
-        len = (int) log10(i) + 1;
-    }
-    char *result = (char *) cfe_malloc((len + 1) * sizeof(char));
-
-    sprintf(result, "%d", i);
-
-    return result;
 }
