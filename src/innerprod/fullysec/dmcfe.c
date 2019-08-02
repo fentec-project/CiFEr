@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <math.h>
-#include <string.h>
 #include <sodium.h>
-#include <gmp.h>
 #include <amcl/pair_BN254.h>
 #include <amcl/pbc_support.h>
 
 #include "cifer/internal/big.h"
-#include "cifer/internal/common.h"
 #include "cifer/innerprod/fullysec/dmcfe.h"
-#include "cifer/internal/keygen.h"
 #include "cifer/internal/dlog.h"
 #include "cifer/internal/hash.h"
 #include "cifer/sample/uniform.h"

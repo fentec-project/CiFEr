@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <gmp.h>
-
 #include "cifer/test.h"
 #include "cifer/innerprod/fullysec/dmcfe.h"
 #include "cifer/sample/uniform.h"

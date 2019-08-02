@@ -18,11 +18,6 @@
 #ifndef CIFER_DMCFE_H
 #define CIFER_DMCFE_H
 
-#include <amcl/big_256_56.h>
-#include <amcl/fp12_BN254.h>
-#include <amcl/ecp_BN254.h>
-#include <amcl/ecp2_BN254.h>
-
 #include "cifer/data/mat.h"
 #include "cifer/data/vec_curve.h"
 

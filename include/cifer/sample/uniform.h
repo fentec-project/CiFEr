@@ -17,9 +17,6 @@
 #ifndef CIFER_UNIFORM_H
 #define CIFER_UNIFORM_H
 
-#include <stdbool.h>
-#include <gmp.h>
-
 #include "cifer/data/vec.h"
 #include "cifer/data/mat.h"
 
