@@ -53,7 +53,7 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
         cfe_dmcfe_generate_key_share(&(key_shares[i]), &y, &(clients[i]));
     }
 
-    cfe_dmcfe_decrypt(xy, ciphers, key_shares, label, &y, bound, num_clients);
+    cfe_dmcfe_decrypt(xy, ciphers, key_shares, label, &y, bound);
 
     cfe_vec_dot(xy_check, &x, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);

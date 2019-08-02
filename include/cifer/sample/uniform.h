@@ -90,8 +90,16 @@ void cfe_uniform_sample_range_mat(cfe_mat *res, mpz_t lower, mpz_t upper);
  */
 bool cfe_bit_sample(void);
 
+/**
+ * Sets the elements of a vector to pseudo-uniform random integers < max, completely
+ * determined by the given key.
+ */
 void cfe_uniform_sample_vec_det(cfe_vec *res, mpz_t max, unsigned char *key);
 
+/**
+ * Sets the elements of a matrix to pseudo-uniform random integers < max, completely
+ * determined by the given key.
+ */
 void cfe_uniform_sample_mat_det(cfe_mat *res, mpz_t max, unsigned char *key);
 
 #endif

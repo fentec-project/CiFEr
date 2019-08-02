@@ -16,22 +16,21 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
-#include <gmp.h>
-#include <cifer/internal/big.h>
-#include <amcl/pair_BN254.h>
-#include <amcl/pbc_support.h>
-#include <cifer/internal/common.h>
 #include <math.h>
 #include <string.h>
 #include <sodium.h>
+#include <gmp.h>
+#include <amcl/pair_BN254.h>
+#include <amcl/pbc_support.h>
 
+#include "cifer/internal/big.h"
+#include "cifer/internal/common.h"
 #include "cifer/innerprod/fullysec/dmcfe.h"
 #include "cifer/internal/keygen.h"
 #include "cifer/internal/dlog.h"
 #include "cifer/internal/hash.h"
 #include "cifer/sample/uniform.h"
 
-// TODO: hash functions need to be chosen
 void cfe_dmcfe_client_init(cfe_dmcfe_client *c, size_t idx) {
     mpz_t client_sec_key;
     mpz_inits(c->order, client_sec_key, NULL);
@@ -78,7 +77,7 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
 
         mhashit(SHA256, -1, &tmp_oct, &tmp_hash);
 
-        cfe_uniform_sample_mat_det(&add, c->order, ((unsigned char*) tmp_hash.val));
+        cfe_uniform_sample_mat_det(&add, c->order, ((unsigned char *) tmp_hash.val));
 
         if (k > c->idx) {
             cfe_mat_neg(&add, &add);
@@ -150,13 +149,13 @@ void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_vec *y, cfe_dmcfe_c
 }
 
 cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_shares,
-        char *label, cfe_vec *y, mpz_t bound, size_t num_clients) {
+                            char *label, cfe_vec *y, mpz_t bound) {
     cfe_vec_G2 keys_sum;
     cfe_vec_G2_init(&keys_sum, 2);
     for (size_t i = 0; i < 2; i++) {
         ECP2_BN254_inf(&(keys_sum.vec[i]));
     }
-    for (size_t k = 0; k < num_clients; k++) {
+    for (size_t k = 0; k < y->size; k++) {
         for (size_t i = 0; i < 2; i++) {
             ECP2_BN254_add(&(keys_sum.vec[i]), &(key_shares[k].vec[i]));
         }
@@ -168,7 +167,7 @@ cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_share
     ECP2_BN254_generator(&gen2);
     ECP_BN254_inf(&ciphers_sum);
     BIG_256_56 y_i;
-    for (size_t i = 0; i < num_clients; i++) {
+    for (size_t i = 0; i < y->size; i++) {
         ECP_BN254_copy(&cipher_i, &(ciphers[i]));
         BIG_256_56_from_mpz(y_i, y->vec[i]);
         ECP_BN254_mul(&cipher_i, y_i);
@@ -199,7 +198,7 @@ cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_share
     mpz_t res_bound;
     mpz_init(res_bound);
     mpz_pow_ui(res_bound, bound, 2);
-    mpz_mul_ui(res_bound, res_bound, num_clients);
+    mpz_mul_ui(res_bound, res_bound, y->size);
 
     cfe_error err;
     err = cfe_baby_giant_FP12_BN256_with_neg(res, &s, &pair, res_bound);

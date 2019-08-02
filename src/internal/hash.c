@@ -22,13 +22,12 @@
 #include "cifer/internal/common.h"
 #include "cifer/internal/hash.h"
 
-
 // cfe_hash_G1 hashes a string of length MODBYTES_256_56
 // into the elliptic group element represented by ECP_BN254.
 void cfe_hash_G1(ECP_BN254 *g, char *str) {
     octet tmp_str;
     char h[MODBYTES_256_56];
-    octet tmp_hash = {0,sizeof(h),h};
+    octet tmp_hash = {0, sizeof(h), h};
     tmp_str.val = str;
     tmp_str.len = (int) strlen(str);
     mhashit(SHA256, -1, &tmp_str, &tmp_hash);
@@ -40,7 +39,7 @@ void cfe_hash_G1(ECP_BN254 *g, char *str) {
 void cfe_hash_G2(ECP2_BN254 *g, char *str) {
     octet tmp_str;
     char h[MODBYTES_256_56];
-    octet tmp_hash = {0,sizeof(h),h};
+    octet tmp_hash = {0, sizeof(h), h};
     tmp_str.val = str;
     tmp_str.len = (int) strlen(str);
     mhashit(SHA256, -1, &tmp_str, &tmp_hash);
