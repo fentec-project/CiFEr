@@ -30,8 +30,7 @@
  */
 
 /**
- * cfe_dmcfe_client represents a client in a decentralized multi-client scheme
- * scheme.
+ * cfe_dmcfe_client represents a client in a decentralized multi-client scheme.
  */
 typedef struct cfe_dmcfe_client {
     size_t idx;
@@ -78,12 +77,12 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
  *
  * @param cipher A pointer to ECP_BN254 struct (the resulting ciphertext will be
  * stored here)
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_dmcfe_client
  * @param x The input value
  * @param label A string label of the encrypted vector
- * @param c A pointer to an instance of the scheme (*initialized* cfe_dmcfe_client
  * struct)
  */
-void cfe_dmcfe_encrypt(ECP_BN254 *cipher, mpz_t x, char *label, cfe_dmcfe_client *c);
+void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label);
 
 /**
  * Sets a share of a decryption key needed for the decryption of an inner product
@@ -91,10 +90,10 @@ void cfe_dmcfe_encrypt(ECP_BN254 *cipher, mpz_t x, char *label, cfe_dmcfe_client
  *
  * @param key_share A pointer to initialized cfe_vec_G2 of size 2 (the key share will
  * be save here)
- * @param y A pointer to the inner-product vector
  * @param c A pointer to an initialized struct representing the scheme
+ * @param y A pointer to the inner-product vector
  */
-void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_vec *y, cfe_dmcfe_client *c);
+void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y);
 
 /**
  * Accepts an array of ciphers, i.e. the encrypted vector, an array of key shares for the

@@ -51,9 +51,9 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     cfe_vec_G2 key_shares[num_clients];
 
     for (size_t i = 0; i < num_clients; i++) {
-        cfe_dmcfe_encrypt(&(ciphers[i]), x.vec[i], label, &(clients[i]));
+        cfe_dmcfe_encrypt(&(ciphers[i]), &(clients[i]), x.vec[i], label);
         cfe_vec_G2_init(&(key_shares[i]), 2);
-        cfe_dmcfe_generate_key_share(&(key_shares[i]), &y, &(clients[i]));
+        cfe_dmcfe_generate_key_share(&(key_shares[i]), &(clients[i]), &y);
     }
 
     // decrypt the inner product

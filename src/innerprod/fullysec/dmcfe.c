@@ -80,7 +80,7 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
     cfe_mat_free(&add);
 }
 
-void cfe_dmcfe_encrypt(ECP_BN254 *cipher, mpz_t x, char *label, cfe_dmcfe_client *c) {
+void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label) {
     char *label_for_hash, *str_i;
     ECP_BN254 h;
     BIG_256_56 tmp_big;
@@ -102,7 +102,7 @@ void cfe_dmcfe_encrypt(ECP_BN254 *cipher, mpz_t x, char *label, cfe_dmcfe_client
     ECP_BN254_add(cipher, &h);
 }
 
-void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_vec *y, cfe_dmcfe_client *c) {
+void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y) {
     char *str, *str_i, *for_hash;
     str = cfe_vec_to_string(y);
     ECP2_BN254 hash[2];
