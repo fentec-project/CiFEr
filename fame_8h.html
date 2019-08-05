@@ -108,12 +108,6 @@ Functions</h2></td></tr>
 <tr class="separator:a8ceb339a1ed6336ee1a6cfd914207294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a740d53955478a2863f1e981386b07b"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fame_8h.html#a1a740d53955478a2863f1e981386b07b">cfe_fame_decrypt</a> (FP12_BN254 *res, <a class="el" href="structcfe__fame__cipher.html">cfe_fame_cipher</a> *cipher, <a class="el" href="structcfe__fame__attrib__keys.html">cfe_fame_attrib_keys</a> *keys, <a class="el" href="structcfe__fame.html">cfe_fame</a> *fame)</td></tr>
 <tr class="separator:a1a740d53955478a2863f1e981386b07b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26545c9f4bd6e4fc26b2c5e51318c5af"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fame_8h.html#a26545c9f4bd6e4fc26b2c5e51318c5af">cfe_strings_concat_for_hash</a> (char *str,...)</td></tr>
-<tr class="separator:a26545c9f4bd6e4fc26b2c5e51318c5af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a907c65676e69f263d8ec5a8ddb817c37"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fame_8h.html#a907c65676e69f263d8ec5a8ddb817c37">cfe_int_to_str</a> (int i)</td></tr>
-<tr class="separator:a907c65676e69f263d8ec5a8ddb817c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c2251b9ade6143f49604fb432450cc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fame_8h.html#a5c2251b9ade6143f49604fb432450cc4">cfe_hash_G1</a> (ECP_BN254 *g, char *str)</td></tr>
-<tr class="separator:a5c2251b9ade6143f49604fb432450cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is a ciphertext policy (CP) attribute based (ABE) scheme based on Shashank Agrawal and Melissa Chase: "FAME: Fast Attribute-based Message
@@ -622,83 +616,6 @@ Encryption" This scheme enables encrypting a message based on a boolean expressi
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Error code </dd></dl>
-
-</div>
-</div>
-<a id="a26545c9f4bd6e4fc26b2c5e51318c5af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26545c9f4bd6e4fc26b2c5e51318c5af">&#9670;&nbsp;</a></span>cfe_strings_concat_for_hash()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* cfe_strings_concat_for_hash </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>str</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>A helping function used in cfe_fame_encrypt and cfe_fame_generate_attrib_keys. </p>
-
-</div>
-</div>
-<a id="a907c65676e69f263d8ec5a8ddb817c37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a907c65676e69f263d8ec5a8ddb817c37">&#9670;&nbsp;</a></span>cfe_int_to_str()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* cfe_int_to_str </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>A helping function used in cfe_fame_encrypt and cfe_fame_generate_attrib_keys. </p>
-
-</div>
-</div>
-<a id="a5c2251b9ade6143f49604fb432450cc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c2251b9ade6143f49604fb432450cc4">&#9670;&nbsp;</a></span>cfe_hash_G1()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cfe_hash_G1 </td>
-          <td>(</td>
-          <td class="paramtype">ECP_BN254 *&#160;</td>
-          <td class="paramname"><em>g</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>str</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>A helping function used in cfe_fame_encrypt and cfe_fame_generate_attrib_keys. </p>
 
 </div>
 </div>

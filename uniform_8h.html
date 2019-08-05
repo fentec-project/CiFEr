@@ -75,6 +75,10 @@ Functions</h2></td></tr>
 <tr class="separator:a12bb9eec3bba5abf1fb58ee29745b8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7afab1c903344ae72250a8160dbe86c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="uniform_8h.html#af7afab1c903344ae72250a8160dbe86c">cfe_bit_sample</a> (void)</td></tr>
 <tr class="separator:af7afab1c903344ae72250a8160dbe86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6139ec48c4e73d64af6cfc8032f86fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="uniform_8h.html#ae6139ec48c4e73d64af6cfc8032f86fd">cfe_uniform_sample_vec_det</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *res, mpz_t max, unsigned char *key)</td></tr>
+<tr class="separator:ae6139ec48c4e73d64af6cfc8032f86fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc10cf83c3cd6f41e45e01f30c13af7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="uniform_8h.html#afc10cf83c3cd6f41e45e01f30c13af7b">cfe_uniform_sample_mat_det</a> (<a class="el" href="structcfe__mat.html">cfe_mat</a> *res, mpz_t max, unsigned char *key)</td></tr>
+<tr class="separator:afc10cf83c3cd6f41e45e01f30c13af7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Uniform samplers. </p>
@@ -402,6 +406,92 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns a random boolean value.</p>
 <dl class="section return"><dt>Returns</dt><dd>Random boolean value </dd></dl>
+
+</div>
+</div>
+<a id="ae6139ec48c4e73d64af6cfc8032f86fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6139ec48c4e73d64af6cfc8032f86fd">&#9670;&nbsp;</a></span>cfe_uniform_sample_vec_det()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_uniform_sample_vec_det </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the elements of a vector to pseudo-uniform random integers &lt; max, completely determined by the given key.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>A pointer to a vector, the result will be saved here </td></tr>
+    <tr><td class="paramname">max</td><td>Maximum value of elements of the sampled vector </td></tr>
+    <tr><td class="paramname">key</td><td>A key to generate pseudo-random values; it should be a string of length 32, i.e. 256 bit value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afc10cf83c3cd6f41e45e01f30c13af7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc10cf83c3cd6f41e45e01f30c13af7b">&#9670;&nbsp;</a></span>cfe_uniform_sample_mat_det()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_uniform_sample_mat_det </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the elements of a matrix to pseudo-uniform random integers &lt; max, completely determined by the given key.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>A pointer to a matrix, the result will be saved here </td></tr>
+    <tr><td class="paramname">max</td><td>Maximum value of elements of the sampled matrix </td></tr>
+    <tr><td class="paramname">key</td><td>A key to generate pseudo-random values; it should be a string of length 32, i.e. 256 bit value </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
