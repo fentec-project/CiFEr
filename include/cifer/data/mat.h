@@ -102,6 +102,11 @@ void cfe_mat_print(cfe_mat *m);
 void cfe_mat_add(cfe_mat *res, cfe_mat *m1, cfe_mat *m2);
 
 /**
+ * Negative of a matrix.
+ */
+void cfe_mat_neg(cfe_mat *res, cfe_mat *m);
+
+/**
  * Calculates the dot (inner) product of matrices.
  */
 void cfe_mat_dot(mpz_t res, cfe_mat *m1, cfe_mat *m2);

@@ -36,6 +36,7 @@ set(library_SOURCES
         src/internal/big.c
         src/internal/common.c
         src/internal/dlog.c
+        src/internal/hash.c
         src/internal/keygen.c
         src/internal/prime.c
         src/innerprod/simple/ddh.c
@@ -46,6 +47,7 @@ set(library_SOURCES
         src/innerprod/fullysec/damgard_multi.c
         src/innerprod/fullysec/lwe_fs.c
         src/innerprod/fullysec/paillier.c
+        src/innerprod/fullysec/dmcfe.c
         src/sample/normal.c
         src/sample/normal_cumulative.c
         src/sample/normal_double.c
@@ -83,6 +85,7 @@ set(binary_SOURCES
         test/innerprod/fullysec/damgard_multi.c
         test/innerprod/fullysec/lwe_fs.c
         test/innerprod/fullysec/paillier.c
+        test/innerprod/fullysec/dmcfe.c
         test/sample/normal_cumulative.c
         test/sample/normal_double.c
         test/sample/normal_negative.c

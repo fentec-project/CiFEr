@@ -71,6 +71,15 @@ void cfe_mat_add(cfe_mat *res, cfe_mat *m1, cfe_mat *m2) {
     }
 }
 
+// Sets res to -m.
+void cfe_mat_neg(cfe_mat *res, cfe_mat *m) {
+    assert(res->rows == m->rows);
+
+    for (size_t i = 0; i < m->rows; i++) {
+        cfe_vec_neg(&res->mat[i], &m->mat[i]);
+    }
+}
+
 // Multiplication of a matrix by a vector.
 void cfe_mat_mul_vec(cfe_vec *res, cfe_mat *m, cfe_vec *v) {
     assert(m->rows == res->size);
