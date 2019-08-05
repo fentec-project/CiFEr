@@ -25,7 +25,7 @@
 /**
  * \file
  * \ingroup internal
- * \brief Definitions of functions related to hashing
+ * \brief Definitions of functions related to hashing.
  */
 
 /**
@@ -39,7 +39,7 @@ void cfe_hash_G1(ECP_BN254 *g, char *str);
 
 /**
  * This function hashes a string into an element of the elliptic
- * group G2 represented by ECP_BN254.
+ * group G2 represented by ECP2_BN254.
  *
  * @param g Hash will be saved here
  * @param str A string to be hashed

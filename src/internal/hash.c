@@ -22,32 +22,22 @@
 #include "cifer/internal/common.h"
 #include "cifer/internal/hash.h"
 
-// cfe_hash_G1 hashes a string of length MODBYTES_256_56
-// into the elliptic group element represented by ECP_BN254.
 void cfe_hash_G1(ECP_BN254 *g, char *str) {
-    octet tmp_str;
+    octet tmp_str = {sizeof(str), 0, str};
     char h[MODBYTES_256_56];
     octet tmp_hash = {0, sizeof(h), h};
-    tmp_str.val = str;
-    tmp_str.len = (int) strlen(str);
     mhashit(SHA256, -1, &tmp_str, &tmp_hash);
     ECP_BN254_mapit(g, &tmp_hash);
 }
 
-// cfe_hash_G2 hashes a string of length MODBYTES_256_56
-// into the elliptic group element represented by ECP2_BN254.
 void cfe_hash_G2(ECP2_BN254 *g, char *str) {
-    octet tmp_str;
+    octet tmp_str = {sizeof(str), 0, str};
     char h[MODBYTES_256_56];
     octet tmp_hash = {0, sizeof(h), h};
-    tmp_str.val = str;
-    tmp_str.len = (int) strlen(str);
     mhashit(SHA256, -1, &tmp_str, &tmp_hash);
     ECP2_BN254_mapit(g, &tmp_hash);
 }
 
-// cfe_vec_to_string outputs a string needed for hashing
-// representing the vector
 char *cfe_vec_to_string(cfe_vec *v) {
     size_t alloc_len = 0;
     char *tmp_string;
@@ -78,7 +68,6 @@ char *cfe_vec_to_string(cfe_vec *v) {
     return res;
 }
 
-// cfe_strings_concat concatenates given strings
 char *cfe_strings_concat(char *start, ...) {
     // find the length of all the strings
     va_list ap;

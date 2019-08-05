@@ -25,7 +25,7 @@
  * \file
  * \ingroup fullysec
  * \brief Decentralized multi-client inner-product scheme based on the paper
- * "Decentralized Multi-Client Functional Encryption for InnerProduct" by
+ * "Decentralized Multi-Client Functional Encryption for Inner Product" by
  * Chotard, Dufour Sans, Gay, Phan, and Pointcheval.
  */
 
@@ -47,16 +47,16 @@ typedef struct cfe_dmcfe_client {
  * Configures a new client for the dmcfe scheme.
  *
  * @param c A pointer to an uninitialized struct representing the scheme
- * @param idx Identification value of the client; it is assumed that if there is
+ * @param idx Identification value of the client; it is assumed that if there are
  * n clients, their identifications are from [0,n)
  */
 void cfe_dmcfe_client_init(cfe_dmcfe_client *c, size_t idx);
 
 /**
- * Frees the memory occupied by the struct members. It does not free
+ * Frees the memory occupied by the struct members. It does not free the
  * memory occupied by the struct itself.
  *
- * @param s A pointer to an instance of the scheme (*initialized* cfe_dmcfe_client
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_dmcfe_client
  * struct)
  */
 void cfe_dmcfe_client_free(cfe_dmcfe_client *c);
@@ -68,7 +68,7 @@ void cfe_dmcfe_client_free(cfe_dmcfe_client *c);
  *
  * @param c A pointer to an initialized struct representing the scheme
  * @param pub_keys An array of public keys
- * @param size_t num_clients Number of clients
+ * @param num_clients Number of clients
  */
 void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_clients);
 

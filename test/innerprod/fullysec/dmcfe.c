@@ -26,6 +26,7 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
 
+    // create clients and make an array of their public keys
     cfe_dmcfe_client clients[num_clients];
     ECP_BN254 pub_keys[num_clients];
     for (size_t i = 0; i < num_clients; i++) {
@@ -33,10 +34,14 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
         pub_keys[i] = clients[i].client_pub_key;
     }
 
+    // based on public values of each client create private matrices T_i summing to 0
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_set_share(&(clients[i]), pub_keys, num_clients);
     }
 
+    // now that the clients have agreed on secret keys they can encrypt a vector in
+    // a decentralized way and create partial keys such that only with all of them
+    // the decryption of the inner product is possible
     cfe_vec x, y;
     cfe_vec_inits(num_clients, &x, &y, NULL);
     cfe_uniform_sample_vec(&x, bound);
@@ -51,11 +56,14 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
         cfe_dmcfe_generate_key_share(&(key_shares[i]), &y, &(clients[i]));
     }
 
+    // decrypt the inner product
     cfe_dmcfe_decrypt(xy, ciphers, key_shares, label, &y, bound);
 
+    // check correctness
     cfe_vec_dot(xy_check, &x, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
+    // free the memory
     mpz_clears(bound, bound_neg, key1, key2, xy_check, xy, NULL);
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_client_free(&(clients[i]));

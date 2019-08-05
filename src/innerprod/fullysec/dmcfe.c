@@ -50,8 +50,6 @@ void cfe_dmcfe_client_free(cfe_dmcfe_client *c) {
 }
 
 void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_clients) {
-    mpz_t el1, el2, el3;
-    mpz_inits(el1, el2, el3, NULL);
     cfe_mat add;
     cfe_mat_init(&add, 2, 2);
     ECP_BN254 shared_g1;
@@ -80,7 +78,6 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
     }
 
     cfe_mat_free(&add);
-    mpz_clears(el1, el2, el3, NULL);
 }
 
 void cfe_dmcfe_encrypt(ECP_BN254 *cipher, mpz_t x, char *label, cfe_dmcfe_client *c) {

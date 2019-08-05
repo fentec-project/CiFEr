@@ -90,12 +90,22 @@ bool cfe_bit_sample(void);
 /**
  * Sets the elements of a vector to pseudo-uniform random integers < max, completely
  * determined by the given key.
+ *
+ * @param res A pointer to a vector, the result will be saved her
+ * @param max Maximum value of elements of the sampled vector
+ * @param key A key to generate pseudo-random values; it should be a string of
+ * length 32, i.e. 256 bit value
  */
 void cfe_uniform_sample_vec_det(cfe_vec *res, mpz_t max, unsigned char *key);
 
 /**
  * Sets the elements of a matrix to pseudo-uniform random integers < max, completely
  * determined by the given key.
+ *
+ * @param res A pointer to a matrix, the result will be saved her
+ * @param max Maximum value of elements of the sampled matrix
+ * @param key A key to generate pseudo-random values; it should be a string of
+ * length 32, i.e. 256 bit value
  */
 void cfe_uniform_sample_mat_det(cfe_mat *res, mpz_t max, unsigned char *key);
 
