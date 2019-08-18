@@ -30,6 +30,7 @@ include_directories(
 # Library sources
 set(library_SOURCES
         src/data/mat.c
+        src/data/mat_curve.c
         src/data/vec.c
         src/data/vec_float.c
         src/data/vec_curve.c

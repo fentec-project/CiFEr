@@ -10,13 +10,16 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
 
     // Init DIPPE scheme
     cfe_dippe dippe;
-    cfe_dippe_setup(&dippe, 2);
+    cfe_dippe_init(&dippe, 2);
 
     // Setup two Authorities
     cfe_dippe_pub_key pk[2];
     cfe_dippe_sec_key sk[2];
-    cfe_dippe_authsetup(&dippe, &(pk[0]), &(sk[0]));
-    cfe_dippe_authsetup(&dippe, &(pk[1]), &(sk[1]));
+    for (int i=0; i<2; i++) {
+        cfe_dippe_pub_key_init(&(pk[i]), &dippe);
+        cfe_dippe_sec_key_init(&(sk[i]), &dippe);
+        cfe_dippe_generate_master_keys(&(pk[i]), &(sk[i]), &dippe);
+    }
 
     // Sample message
     ECP_BN254 g1;
@@ -53,35 +56,39 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
     //    x4               1
     // -> x5=(-x0-x1-x4)   1
     cfe_vec pol;
-    err = cfe_dippe_build_conjunction_policy_vector(&dippe, &pol, "11001");
+    err = cfe_dippe_build_conjunction_policy_vector(&pol, &dippe, "11001");
     munit_assert(err == CFE_ERR_NONE);
 
-    mpz_t     attrs;
+    mpz_t attrs;
     cfe_dippe_cipher cipher;
+    cfe_dippe_cipher_init(&cipher, &dippe, pol.size);
+
+    // Encrypt message under given policy vector
+    err = cfe_dippe_encrypt(&cipher, &dippe, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &pol, &msg);
+    munit_assert(err == CFE_ERR_NONE);
 
     // Decrypt message
     FP12_BN254 result;
 
     // Collection of user secret keys
-    cfe_dippe_user_secret_key usks[6];
+    cfe_dippe_user_sec_key usks[6];
+    for (int i=0; i<6; i++) {
+        cfe_dippe_user_sec_key_init(&(usks[i]), &dippe);
+    }
 
     for (int i=0; i<4; i++) {
         // Attribute vector (one additional component is added)
-        err = cfe_dippe_build_conjunction_attribute_vector(&dippe, &attrs, attr_patterns[i]);
-        munit_assert(err == CFE_ERR_NONE);
-
-        // Encrypt message under given policy vector
-        err = cfe_dippe_encrypt(&dippe, &cipher, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &pol, &msg);
+        err = cfe_dippe_build_attribute_vector(attrs, &dippe, attr_patterns[i]);
         munit_assert(err == CFE_ERR_NONE);
 
         // User secret keys
         for (int j=0; j<6; j++) {
-            err = cfe_dippe_keygen(&dippe, &(usks[j]), j, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &sk[(j & 1)], &attrs, gid);
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &sk[(j & 1)], attrs, gid);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&dippe, &result, (cfe_dippe_user_secret_key*)&usks, (sizeof(usks)/sizeof(cfe_dippe_user_secret_key)), &cipher, &attrs, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key*)&usks, (sizeof(usks)/sizeof(cfe_dippe_user_sec_key)), &cipher, attrs, gid);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption
@@ -89,19 +96,19 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
 
         // Cleanup
         mpz_clear(attrs);
-        cfe_dippe_cipher_free(&cipher);
-        for (int j=0; j<6; j++) {
-            cfe_dippe_user_secret_key_free(&(usks[j]));
-        }
     }
 
     // Cleanup
-    cfe_vec_free(&pol);
-    cfe_dippe_sec_key_free(&(sk[0]));
-    cfe_dippe_sec_key_free(&(sk[1]));
-    cfe_dippe_pub_key_free(&(pk[0]));
-    cfe_dippe_pub_key_free(&(pk[1]));
+    for (int i=0; i<2; i++) {
+        cfe_dippe_sec_key_free(&(sk[i]));
+        cfe_dippe_pub_key_free(&(pk[i]));
+    }
+    for (int i=0; i<6; i++) {
+        cfe_dippe_user_sec_key_free(&(usks[i]));
+    }
+    cfe_dippe_cipher_free(&cipher);
     cfe_dippe_free(&dippe);
+    cfe_vec_free(&pol);
 
     return MUNIT_OK;
 }
@@ -111,12 +118,14 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 
     // Init DIPPE scheme
     cfe_dippe dippe;
-    cfe_dippe_setup(&dippe, 2);
+    cfe_dippe_init(&dippe, 2);
 
     // Setup one Authority
     cfe_dippe_pub_key pk0;
+    cfe_dippe_pub_key_init(&pk0, &dippe);
     cfe_dippe_sec_key sk0;
-    cfe_dippe_authsetup(&dippe, &pk0, &sk0);
+    cfe_dippe_sec_key_init(&sk0, &dippe);
+    cfe_dippe_generate_master_keys(&pk0, &sk0, &dippe);
 
     // Sample message
     ECP_BN254 g1;
@@ -152,35 +161,39 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
     //    1                 0
     //   -t                 1
     cfe_vec pol;
-    err = cfe_dippe_build_exact_threshold_policy_vector(&dippe, &pol, "1101", 2);
+    err = cfe_dippe_build_exact_threshold_policy_vector(&pol, &dippe, "1101", 2);
     munit_assert(err == CFE_ERR_NONE);
 
-    mpz_t     attrs;
+    mpz_t attrs;
     cfe_dippe_cipher cipher;
+    cfe_dippe_cipher_init(&cipher, &dippe, pol.size);
+
+    // Encrypt message under given policy vector
+    err = cfe_dippe_encrypt(&cipher, &dippe, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &pol, &msg);
+    munit_assert(err == CFE_ERR_NONE);
 
     // Decrypt message
     FP12_BN254 result;
 
     // Collection of user secret keys
-    cfe_dippe_user_secret_key usks[5];
+    cfe_dippe_user_sec_key usks[5];
+    for (int i=0; i<5; i++) {
+        cfe_dippe_user_sec_key_init(&(usks[i]), &dippe);
+    }
 
     for (int i=0; i<6; i++) {
         // Attribute vector (one additional component is added)
-        err = cfe_dippe_build_exact_threshold_attribute_vector(&dippe, &attrs, attr_patterns[i]);
-        munit_assert(err == CFE_ERR_NONE);
-
-        // Encrypt message under given policy vector
-        err = cfe_dippe_encrypt(&dippe, &cipher, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &pol, &msg);
+        err = cfe_dippe_build_attribute_vector(attrs, &dippe, attr_patterns[i]);
         munit_assert(err == CFE_ERR_NONE);
 
         // User secret keys from Auth0
         for (int j=0; j<5; j++) {
-            err = cfe_dippe_keygen(&dippe, &(usks[j]), j, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &sk0, &attrs, gid);
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &sk0, attrs, gid);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&dippe, &result, (cfe_dippe_user_secret_key*)&usks, (sizeof(usks)/sizeof(cfe_dippe_user_secret_key)), &cipher, &attrs, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key*)&usks, (sizeof(usks)/sizeof(cfe_dippe_user_sec_key)), &cipher, attrs, gid);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption
@@ -188,17 +201,17 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 
         // Cleanup
         mpz_clear(attrs);
-        cfe_dippe_cipher_free(&cipher);
-        for (int j=0; j<5; j++) {
-            cfe_dippe_user_secret_key_free(&(usks[j]));
-        }
     }
 
     // Cleanup
-    cfe_vec_free(&pol);
+    for (int i=0; i<5; i++) {
+        cfe_dippe_user_sec_key_free(&(usks[i]));
+    }
     cfe_dippe_sec_key_free(&sk0);
     cfe_dippe_pub_key_free(&pk0);
+    cfe_dippe_cipher_free(&cipher);
     cfe_dippe_free(&dippe);
+    cfe_vec_free(&pol);
 
     return MUNIT_OK;
 }
