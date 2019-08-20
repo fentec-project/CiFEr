@@ -1,9 +1,8 @@
 
 #include <amcl/pair_BN254.h>
-
-#include "cifer/test.h"
-#include "cifer/data/vec.h"
 #include "cifer/abe/dippe.h"
+#include "cifer/data/vec.h"
+#include "cifer/test.h"
 
 MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void *data) {
     cfe_error err;
@@ -15,7 +14,7 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
     // Setup two Authorities
     cfe_dippe_pub_key pk[2];
     cfe_dippe_sec_key sk[2];
-    for (int i=0; i<2; i++) {
+    for (int i = 0; i < 2; i++) {
         cfe_dippe_pub_key_init(&(pk[i]), &dippe);
         cfe_dippe_sec_key_init(&(sk[i]), &dippe);
         cfe_dippe_generate_master_keys(&(pk[i]), &(sk[i]), &dippe);
@@ -37,13 +36,8 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
     // unique GID
     char gid[] = "TESTGID";
 
-    // Test patterns
-    char attr_patterns[4][6] = {
-        "11011", "11111",   // valid patterns
-        "01001", "11010"    // invalid patterns
-    };
-    // Test results
-    int decryption_results[] = {1, 1, 0, 0};
+    // vector length
+    size_t vlen = 6;
 
     // Policy vector (one additional component is added)
     //   ------            -----
@@ -55,60 +49,77 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
     //    0                0
     //    x4               1
     // -> x5=(-x0-x1-x4)   1
-    cfe_vec pol;
-    err = cfe_dippe_build_conjunction_policy_vector(&pol, &dippe, "11001");
+    size_t pattern[] = {0, 1, 4};
+    cfe_dippe_policy_vector pv;
+    err = cfe_dippe_conjunction_policy_vector_init(&pv, &dippe, vlen, pattern, (sizeof(pattern) / sizeof(size_t)));
     munit_assert(err == CFE_ERR_NONE);
 
-    mpz_t attrs;
+    // Test patterns
+    size_t ap0[] = {0, 1, 3, 4};     // "11011" - valid
+    size_t ap1[] = {0, 1, 2, 3, 4};  // "11111" - valid
+    size_t ap2[] = {1, 4};           // "01001" - invalid
+    size_t ap3[] = {0, 1, 3};        // "11010" - invalid
+
+    size_t *aps[] = {ap0, ap1, ap2, ap3};
+    size_t aps_len[] = {
+        sizeof(ap0) / sizeof(size_t),
+        sizeof(ap1) / sizeof(size_t),
+        sizeof(ap2) / sizeof(size_t),
+        sizeof(ap3) / sizeof(size_t)};
+
+    // Test results
+    int decryption_results[] = {1, 1, 0, 0};
+
+    cfe_dippe_attribute_vector av;
     cfe_dippe_cipher cipher;
-    cfe_dippe_cipher_init(&cipher, &dippe, pol.size);
+    cfe_dippe_cipher_init(&cipher, &dippe, pv.len);
 
     // Encrypt message under given policy vector
-    err = cfe_dippe_encrypt(&cipher, &dippe, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &pol, &msg);
+    err = cfe_dippe_encrypt(&cipher, &dippe, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &pv, &msg);
     munit_assert(err == CFE_ERR_NONE);
 
     // Decrypt message
     FP12_BN254 result;
 
     // Collection of user secret keys
-    cfe_dippe_user_sec_key usks[6];
-    for (int i=0; i<6; i++) {
+    cfe_dippe_user_sec_key usks[vlen];
+    for (size_t i = 0; i < vlen; i++) {
         cfe_dippe_user_sec_key_init(&(usks[i]), &dippe);
     }
 
-    for (int i=0; i<4; i++) {
-        // Attribute vector (one additional component is added)
-        err = cfe_dippe_build_attribute_vector(attrs, &dippe, attr_patterns[i]);
+    for (size_t i = 0; i < (sizeof(aps) / sizeof(size_t *)); i++) {
+        // Attribute vector
+        err = cfe_dippe_attribute_vector_init(&av, vlen, aps[i], aps_len[i]);
         munit_assert(err == CFE_ERR_NONE);
 
         // User secret keys
-        for (int j=0; j<6; j++) {
-            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &sk[(j & 1)], attrs, gid);
+        for (size_t j = 0; j < vlen; j++) {
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk[(j & 1)], &av, gid);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key*)&usks, (sizeof(usks)/sizeof(cfe_dippe_user_sec_key)), &cipher, attrs, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption
         munit_assert(FP12_BN254_equals(&msg, &result) == decryption_results[i]);
 
         // Cleanup
-        mpz_clear(attrs);
+        cfe_dippe_attribute_vector_free(&av);
     }
 
     // Cleanup
-    for (int i=0; i<2; i++) {
+    for (int i = 0; i < 2; i++) {
         cfe_dippe_sec_key_free(&(sk[i]));
         cfe_dippe_pub_key_free(&(pk[i]));
     }
-    for (int i=0; i<6; i++) {
+    for (size_t i = 0; i < vlen; i++) {
         cfe_dippe_user_sec_key_free(&(usks[i]));
     }
     cfe_dippe_cipher_free(&cipher);
     cfe_dippe_free(&dippe);
-    cfe_vec_free(&pol);
+    cfe_dippe_policy_vector_free(&pv);
 
     return MUNIT_OK;
 }
@@ -143,85 +154,100 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
     // unique GID
     char gid[] = "TESTGID";
 
+    // max vector length
+    size_t vlen = 5;
+
+    // Policy vector (one additional component is added)
+    // t is the threshold value
+    //    ------            -----
+    //    Policy            Attrs
+    //    ------            -----
+    //     1                 1
+    //     1                 1
+    //     0         .       0      =  (1+1+0+0-t) = 0
+    //     1                 0
+    // -> -t                 1
+    cfe_dippe_policy_vector pv;
+    size_t pattern[] = {0, 1, 3};
+    err = cfe_dippe_threshold_policy_vector_init(&pv, &dippe, vlen, pattern, (sizeof(pattern) / sizeof(size_t)), 2);
+    munit_assert(err == CFE_ERR_NONE);
+
     // Test patterns
-    char attr_patterns[6][5] = {
-        "1100", "1001", "0101", "0111", // valid patterns
-        "1101", "1111"                  // invalid patterns
-    };
+    size_t ap0[] = {0, 1};        // "1100" - valid
+    size_t ap1[] = {0, 3};        // "1001" - valid
+    size_t ap2[] = {1, 3};        // "0101" - valid
+    size_t ap3[] = {1, 2, 3};     // "0111" - valid
+    size_t ap4[] = {0, 1, 3};     // "1101" - invalid
+    size_t ap5[] = {0, 1, 3, 4};  // "1111" - invalid
+
+    size_t *aps[] = {ap0, ap1, ap2, ap3, ap4, ap5};
+    size_t aps_len[] = {
+        sizeof(ap0) / sizeof(size_t),
+        sizeof(ap1) / sizeof(size_t),
+        sizeof(ap2) / sizeof(size_t),
+        sizeof(ap3) / sizeof(size_t),
+        sizeof(ap4) / sizeof(size_t),
+        sizeof(ap5) / sizeof(size_t)};
+
     // Test results
     int decryption_results[] = {1, 1, 1, 1, 0, 0};
 
-    // Policy vector (one additional component is added)
-    //   ------            -----
-    //   Policy            Attrs
-    //   ------            -----
-    //    1                 1
-    //    1                 1
-    //    0         .       0      =  (1+1+0+0-t) = 0
-    //    1                 0
-    //   -t                 1
-    cfe_vec pol;
-    err = cfe_dippe_build_exact_threshold_policy_vector(&pol, &dippe, "1101", 2);
-    munit_assert(err == CFE_ERR_NONE);
-
-    mpz_t attrs;
+    cfe_dippe_attribute_vector av;
     cfe_dippe_cipher cipher;
-    cfe_dippe_cipher_init(&cipher, &dippe, pol.size);
+    cfe_dippe_cipher_init(&cipher, &dippe, pv.len);
 
     // Encrypt message under given policy vector
-    err = cfe_dippe_encrypt(&cipher, &dippe, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &pol, &msg);
+    err = cfe_dippe_encrypt(&cipher, &dippe, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &pv, &msg);
     munit_assert(err == CFE_ERR_NONE);
 
     // Decrypt message
     FP12_BN254 result;
 
     // Collection of user secret keys
-    cfe_dippe_user_sec_key usks[5];
-    for (int i=0; i<5; i++) {
+    cfe_dippe_user_sec_key usks[vlen];
+    for (size_t i = 0; i < vlen; i++) {
         cfe_dippe_user_sec_key_init(&(usks[i]), &dippe);
     }
 
-    for (int i=0; i<6; i++) {
-        // Attribute vector (one additional component is added)
-        err = cfe_dippe_build_attribute_vector(attrs, &dippe, attr_patterns[i]);
+    for (size_t i = 0; i < (sizeof(aps) / sizeof(size_t *)); i++) {
+        // Attribute vector
+        err = cfe_dippe_attribute_vector_init(&av, vlen, aps[i], aps_len[i]);
         munit_assert(err == CFE_ERR_NONE);
 
         // User secret keys from Auth0
-        for (int j=0; j<5; j++) {
-            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks)/sizeof(cfe_dippe_pub_key*)), &sk0, attrs, gid);
+        for (size_t j = 0; j < vlen; j++) {
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk0, &av, gid);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key*)&usks, (sizeof(usks)/sizeof(cfe_dippe_user_sec_key)), &cipher, attrs, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption
         munit_assert(FP12_BN254_equals(&msg, &result) == decryption_results[i]);
 
         // Cleanup
-        mpz_clear(attrs);
+        cfe_dippe_attribute_vector_free(&av);
     }
 
     // Cleanup
-    for (int i=0; i<5; i++) {
+    for (size_t i = 0; i < vlen; i++) {
         cfe_dippe_user_sec_key_free(&(usks[i]));
     }
     cfe_dippe_sec_key_free(&sk0);
     cfe_dippe_pub_key_free(&pk0);
     cfe_dippe_cipher_free(&cipher);
     cfe_dippe_free(&dippe);
-    cfe_vec_free(&pol);
+    cfe_dippe_policy_vector_free(&pv);
 
     return MUNIT_OK;
 }
 
 MunitTest dippe_tests[] = {
-    {(char *) "/end-to-end-conjunction",    test_dippe_end_to_end_conjunction,  NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {(char *) "/end-to-end-threshold",      test_dippe_end_to_end_threshold,    NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {NULL, NULL,                                                                NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
-};
+    {(char *)"/end-to-end-conjunction", test_dippe_end_to_end_conjunction, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/end-to-end-threshold", test_dippe_end_to_end_threshold, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}};
 
 MunitSuite dippe_suite = {
-    (char *) "/abe/dippe", dippe_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE
-};
+    (char *)"/abe/dippe", dippe_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE};
