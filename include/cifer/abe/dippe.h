@@ -62,73 +62,40 @@ void cfe_dippe_init(cfe_dippe *dippe, size_t assump_size);
 void cfe_dippe_free(cfe_dippe *dippe);
 
 /**
- * cfe_dippe_attribute_vector represents an attribute vector that is used
- * to request attributes from an authority
- */
-typedef struct cfe_dippe_attribute_vector {
-    char *s;
-    size_t len;
-    mpz_t attrs;
-} cfe_dippe_attribute_vector;
-
-/**
- * Prepares the attribute vector struct
+ * Prepares an attribute vector
  *
- * @param av A pointer to a cfe_dippe_attribute_vector struct; Represents the resulting attribute vector
- * @param vec_len Length of the resulting attribute vector
+ * @param av A pointer to a cfe_vec struct; Represents the resulting attribute vector
+ * @param num_attrib Number of attributes
  * @param pattern Array of indices to define the attribute vector
  * @param pat_len Length of the pattern array
  * @return Error code
  */
-cfe_error cfe_dippe_attribute_vector_init(cfe_dippe_attribute_vector *av, size_t vec_len, size_t pattern[], size_t pat_len);
+cfe_error cfe_dippe_attribute_vector_init(cfe_vec *av, size_t num_attrib, size_t pattern[], size_t pat_len);
 
 /**
- * Clears the attribute vector and frees allocated memory
+ * Prepares an exact threshold policy vector
  *
- * @param av A pointer to a cfe_dippe_attribute_vector struct
- */
-void cfe_dippe_attribute_vector_free(cfe_dippe_attribute_vector *av);
-
-/**
- * cfe_dippe_policy_vector represents a policy vector that is used
- * during encryption
- */
-typedef struct cfe_dippe_policy_vector {
-    size_t len;
-    cfe_vec pol;
-} cfe_dippe_policy_vector;
-
-/**
- * Prepares the policy vector struct to used as threshold policy
- *
- * @param pv A pointer to a cfe_dippe_policy_vector struct; Represents the resulting policy vector
+ * @param pv A pointer to a cfe_vec struct; Represents the resulting policy vector
  * @param dippe A pointer to a cfe_dippe struct
- * @param vec_len Length of the resulting policy vector
+ * @param num_attrib Number of attributes
  * @param pattern Array of indices to define the policy vector
  * @param pat_len Length of the pattern array
- * @param threshold Theshold value
+ * @param threshold Threshold value
  * @return Error code
  */
-cfe_error cfe_dippe_threshold_policy_vector_init(cfe_dippe_policy_vector *pv, cfe_dippe *dippe, size_t vec_len, size_t pattern[], size_t pat_len, size_t threshold);
+cfe_error cfe_dippe_exact_threshold_policy_vector_init(cfe_vec *pv, cfe_dippe *dippe, size_t num_attrib, size_t pattern[], size_t pat_len, size_t threshold);
 
 /**
- * Prepares the policy vector struct to used as conjunction policy
+ * Prepares a conjunction policy vector
  *
- * @param pv A pointer to a cfe_dippe_policy_vector struct; Represents the resulting policy vector
+ * @param pv A pointer to a cfe_vec struct; Represents the resulting policy vector
  * @param dippe A pointer to a cfe_dippe struct
- * @param vec_len Length of the resulting policy vector
+ * @param num_attrib Number of attributes
  * @param pattern Array of indices to define the policy vector
  * @param pat_len Length of the pattern array
  * @return Error code
  */
-cfe_error cfe_dippe_conjunction_policy_vector_init(cfe_dippe_policy_vector *pv, cfe_dippe *dippe, size_t vec_len, size_t pattern[], size_t pat_len);
-
-/**
- * Clears the policy vector and frees allocated memory
- *
- * @param av A pointer to a cfe_dippe_policy_vector struct
- */
-void cfe_dippe_policy_vector_free(cfe_dippe_policy_vector *pv);
+cfe_error cfe_dippe_conjunction_policy_vector_init(cfe_vec *pv, cfe_dippe *dippe, size_t num_attrib, size_t pattern[], size_t pat_len);
 
 /**
  * cfe_dippe_cipher represents the ciphertext of the DIPPE scheme
@@ -240,11 +207,11 @@ void cfe_dippe_generate_master_keys(cfe_dippe_pub_key *pk, cfe_dippe_sec_key *sk
  * @param dippe A pointer to a cfe_dippe struct
  * @param pks An array containing references to cfe_dippe_pub_key structs;
  * @param pks_len Length of the public key array
- * @param pv A reference to a cfe_dippe_policy_vector struct; Represents the policy under which the message will be encrypted
+ * @param pv A reference to a cfe_vec struct; Represents the policy under which the message will be encrypted
  * @param msg A reference to a FP12_BN254 struct; Represents the message that is about to be encrypted
  * @return Error code
  */
-cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_dippe_policy_vector *pv, FP12_BN254 *msg);
+cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_vec *pv, FP12_BN254 *msg);
 
 /**
  * Used with an authority's secret key to create a new user secret key for a given attribute vector
@@ -254,11 +221,11 @@ cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dipp
  * @param usk_id Index of the given attribute vector for which a user secret key will be created
  * @param pks An array containing references to cfe_dippe_pub_key structs
  * @param pks_len Length of the public key array
- * @param av A pointer to a cfe_dippe_attribute_vector struct; Represents the attribute vector
+ * @param av A pointer to a cfe_vec struct; Represents the attribute vector
  * @param gid String that represents a unique user; Required for collusion prevention
  * @return Error code
  */
-cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t usk_id, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_dippe_sec_key *sk, cfe_dippe_attribute_vector *av, char gid[]);
+cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t usk_id, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_dippe_sec_key *sk, cfe_vec *av, char gid[]);
 
 /**
  * Restores the underlying message of a given ciphertext
@@ -268,9 +235,9 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
  * @param usks An array containing cfe_dippe_user_sec_key structs; Represents the set of user secretes key used for decryption
  * @param usks_len Length of the user secret key array
  * @param cipher A pointer to a cfe_dippe_cipher struct; Represents the ciphertext that is about to be decrypted
- * @param av A pointer to a cfe_dippe_attribute_vector struct; Represents the attribute vector
+ * @param av A pointer to a cfe_vec struct; Represents the attribute vector
  * @param gid String that represents a unique user; Required for collusion prevention
  */
-cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user_sec_key *usks, size_t usks_len, cfe_dippe_cipher *cipher, cfe_dippe_attribute_vector *av, char gid[]);
+cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user_sec_key *usks, size_t usks_len, cfe_dippe_cipher *cipher, cfe_vec *av, char gid[]);
 
 #endif

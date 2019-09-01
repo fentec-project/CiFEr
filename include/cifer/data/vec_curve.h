@@ -133,5 +133,4 @@ void cfe_vec_G2_free(cfe_vec_G2 *v);
  */
 void cfe_vec_GT_free(cfe_vec_GT *v);
 
-
 #endif
