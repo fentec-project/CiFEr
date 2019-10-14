@@ -173,10 +173,9 @@ cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dipp
     for (size_t m = 0; m < pks_len; m++) {
         // g1^(W(T)As)
         cfe_mat_G1_mul_vec(&g1_W_A_s, &(pks[m]->g1_W_A), &s);
-
         // g1^(xU(T)As)
+        cfe_vec_G1_inf(&(g1_x_UA_s));
         for (size_t i = 0; i < (dippe->assump_size + 1); i++) {
-            ECP_BN254_inf(&(g1_x_UA_s.vec[i]));
             for (size_t k = 0; k < dippe->assump_size; k++) {
                 ECP_BN254_copy(&tmp_g1, &(dippe->g1_UA.mat[i].vec[k]));
                 BIG_256_56_from_mpz(tmp_big, s.vec[k]);
@@ -221,34 +220,40 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
     // temp vars
     BIG_256_56 tmp_big;
     ECP2_BN254 tmp_g2, hashed;
-    char *hash_str, *str_i;
+    char *hash_str, *str_vec, *ys_hex, *str_i;
 
     // attribute vector as string
-    char *str_vec = cfe_vec_to_string(av);
-
-    // buffer for hashed group element
-    char str_ele[4 * MODBYTES_256_56];
-    octet oct;
-    oct.val = (char *)&str_ele;
+    str_vec = cfe_vec_to_string(av);
+    // y^σ
+    octet ys;
+    ys.val = (char *)cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
+    ys_hex = (char *)cfe_malloc(((8 * MODBYTES_256_56) + 1) * sizeof(char));
 
     // mue
-    ECP2_BN254 mue;
-    ECP2_BN254_inf(&mue);
-    for (size_t i = 0; i < pks_len; i++) {
-        ECP2_BN254_copy(&tmp_g2, &(pks[i]->g2_sigma));
+    cfe_vec_G2 mue;
+    cfe_vec_G2_init(&mue, (dippe->assump_size + 1));
+    cfe_vec_G2_inf(&mue);
+
+    for (size_t j = 0; j < pks_len; j++) {
+        ECP2_BN254_copy(&tmp_g2, &(pks[j]->g2_sigma));
         BIG_256_56_from_mpz(tmp_big, sk->sigma);
         ECP2_BN254_mul(&tmp_g2, tmp_big);
+        ECP2_BN254_toOctet(&ys, &tmp_g2);
+        OCT_toHex(&ys, ys_hex);
 
-        ECP2_BN254_toOctet(&oct, &tmp_g2);
-        hash_str = cfe_strings_concat(str_ele, "|", gid, "|", str_vec, NULL);
-        cfe_hash_G2(&hashed, hash_str);
+        for (size_t i = 0; i < (dippe->assump_size + 1); i++) {
+            str_i = cfe_int_to_str((int)i);
+            hash_str = cfe_strings_concat(str_i, "|", ys_hex, "|", gid, "|", str_vec, NULL);
+            cfe_hash_G2(&hashed, hash_str);
 
-        if (i < usk_id) {
-            ECP2_BN254_add(&mue, &hashed);
-        } else if (i > usk_id) {
-            ECP2_BN254_sub(&mue, &hashed);
+            if (j < usk_id) {
+                ECP2_BN254_add(&(mue.vec[i]), &hashed);
+            } else if (j > usk_id) {
+                ECP2_BN254_sub(&(mue.vec[i]), &hashed);
+            }
+            free(str_i);
+            free(hash_str);
         }
-        free(hash_str);
     }
 
     // g2^h (k+1 x 1)
@@ -263,8 +268,8 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
     }
 
     // Ki = g2^(α−vWh+μ) (k+1 x 1)
+    cfe_vec_G2_inf(&(usk->Ki));
     for (size_t i = 0; i < (dippe->assump_size + 1); i++) {
-        ECP2_BN254_inf(&(usk->Ki.vec[i]));
         for (size_t k = 0; k < (dippe->assump_size + 1); k++) {
             ECP2_BN254_copy(&tmp_g2, &(g2_h.vec[k]));
             BIG_256_56_from_mpz(tmp_big, sk->W.mat[i].vec[k]);
@@ -276,19 +281,20 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
         ECP2_BN254_mul(&(usk->Ki.vec[i]), tmp_big);
         // negate
         ECP2_BN254_neg(&(usk->Ki.vec[i]));
-
         // add alpha
         BIG_256_56_from_mpz(tmp_big, sk->alpha.vec[i]);
         ECP2_BN254_generator(&tmp_g2);
         ECP2_BN254_mul(&tmp_g2, tmp_big);
         ECP2_BN254_add(&(usk->Ki.vec[i]), &tmp_g2);
-
         // add mue
-        ECP2_BN254_add(&(usk->Ki.vec[i]), &mue);
+        ECP2_BN254_add(&(usk->Ki.vec[i]), &(mue.vec[i]));
     }
 
     // cleanup
     free(str_vec);
+    free(ys.val);
+    free(ys_hex);
+    cfe_vec_G2_free(&mue);
     cfe_vec_G2_free(&g2_h);
 
     return CFE_ERR_NONE;

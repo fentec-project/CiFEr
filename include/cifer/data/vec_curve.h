@@ -61,6 +61,13 @@ typedef struct cfe_vec_GT {
 void cfe_vec_G1_init(cfe_vec_G1 *v, size_t size);
 
 /**
+ * Sets all the values of a vector to the identity element.
+ *
+ * @param v A pointer to an initialized cfe_vec_G1 vector
+ */
+void cfe_vec_G1_inf(cfe_vec_G1 *v);
+
+/**
  * Creates a vector whose i-th element equals u[i] * g,
  * where g is the generator of ECP2_BN254. The sizes of
  * v and u must match.
@@ -79,6 +86,13 @@ void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u);
 void cfe_vec_G2_init(cfe_vec_G2 *v, size_t size);
 
 /**
+ * Sets all the values of a vector to the identity element.
+ *
+ * @param v A pointer to an initialized cfe_vec_G2 vector
+ */
+void cfe_vec_G2_inf(cfe_vec_G2 *v);
+
+/**
  * Creates a vector whose i-th element equals u[i] * g,
  * where g is the generator of ECP2_BN254. The sizes of
  * v and u must match.
@@ -95,6 +109,13 @@ void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u);
  * @param size Size of the vector
  */
 void cfe_vec_GT_init(cfe_vec_GT *v, size_t size);
+
+/**
+ * Sets all the values of a vector to the identity element.
+ *
+ * @param v A pointer to an initialized cfe_vec_GT vector
+ */
+void cfe_vec_GT_inf(cfe_vec_GT *v);
 
 /**
  * Creates a vector whose i-th element equals u[i] * g,
