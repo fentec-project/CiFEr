@@ -19,6 +19,7 @@
 
 #include <amcl/ecp_BN254.h>
 #include <amcl/ecp2_BN254.h>
+#include <amcl/fp12_BN254.h>
 #include "cifer/data/vec.h"
 
 /**
@@ -44,12 +45,27 @@ typedef struct cfe_vec_G2 {
 } cfe_vec_G2;
 
 /**
+ * Vector of FP12_BN254 elements.
+ */
+typedef struct cfe_vec_GT {
+    FP12_BN254 *vec; /** A pointer to the first element */
+    size_t size; /** The size of the vector */
+} cfe_vec_GT;
+
+/**
  * Initializes a vector of ECP_BN254 elements of given size.
  *
  * @param v A pointer to an uninitialized cfe_vec_G1 vector
  * @param size Size of the vector
  */
 void cfe_vec_G1_init(cfe_vec_G1 *v, size_t size);
+
+/**
+ * Sets all the values of a vector to the identity element.
+ *
+ * @param v A pointer to an initialized cfe_vec_G1 vector
+ */
+void cfe_vec_G1_inf(cfe_vec_G1 *v);
 
 /**
  * Creates a vector whose i-th element equals u[i] * g,
@@ -70,6 +86,13 @@ void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u);
 void cfe_vec_G2_init(cfe_vec_G2 *v, size_t size);
 
 /**
+ * Sets all the values of a vector to the identity element.
+ *
+ * @param v A pointer to an initialized cfe_vec_G2 vector
+ */
+void cfe_vec_G2_inf(cfe_vec_G2 *v);
+
+/**
  * Creates a vector whose i-th element equals u[i] * g,
  * where g is the generator of ECP2_BN254. The sizes of
  * v and u must match.
@@ -78,6 +101,31 @@ void cfe_vec_G2_init(cfe_vec_G2 *v, size_t size);
  * @param u A pointer to vector of integers.
  */
 void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u);
+
+/**
+ * Initializes a vector of FP12_BN254 elements of given size.
+ *
+ * @param v A pointer to an uninitialized cfe_vec_GT vector
+ * @param size Size of the vector
+ */
+void cfe_vec_GT_init(cfe_vec_GT *v, size_t size);
+
+/**
+ * Sets all the values of a vector to the identity element.
+ *
+ * @param v A pointer to an initialized cfe_vec_GT vector
+ */
+void cfe_vec_GT_inf(cfe_vec_GT *v);
+
+/**
+ * Creates a vector whose i-th element equals u[i] * g,
+ * where g is the generator of FP12_BN254. The sizes of
+ * v and u must match.
+ *
+ * @param v A pointer to an initialized cfe_vec_GT vector
+ * @param u A pointer to vector of integers.
+ */
+void cfe_vec_mul_GT(cfe_vec_GT *v, cfe_vec *u);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -96,5 +144,14 @@ void cfe_vec_G1_free(cfe_vec_G1 *v);
  * cfe_vec_G2 struct)
  */
 void cfe_vec_G2_free(cfe_vec_G2 *v);
+
+/**
+ * Frees the memory occupied by the struct members. It does not free
+ * memory occupied by the struct itself.
+ *
+ * @param v A pointer to a vector (*initialized*
+ * cfe_vec_GT struct)
+ */
+void cfe_vec_GT_free(cfe_vec_GT *v);
 
 #endif

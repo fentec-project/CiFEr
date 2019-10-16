@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
             policy_suite,
             gpsw_suite,
             fame_suite,
+            dippe_suite,
             uniform_suite,
             normal_cumulative_suite,
             normal_negative_suite,

@@ -41,6 +41,7 @@ MunitSuite dmcfe_suite;
 MunitSuite policy_suite;
 MunitSuite gpsw_suite;
 MunitSuite fame_suite;
+MunitSuite dippe_suite;
 MunitSuite sgp_suite;
 
 #endif
