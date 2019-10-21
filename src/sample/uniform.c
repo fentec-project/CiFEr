@@ -122,6 +122,9 @@ void cfe_uniform_sample_vec_det(cfe_vec *res, mpz_t max, unsigned char *key) {
     for (size_t i = 3;; i++) {
         uint8_t *rand_bytes = (uint8_t *) cfe_malloc(i * n_bytes_for_vec * sizeof(uint8_t));
         randombytes_buf_deterministic(rand_bytes, i * n_bytes_for_vec, key);
+
+        mpz_import(num, i * n_bytes_for_vec, 1, 1, 0, 0, rand_bytes);
+
         free(rand_bytes);
 
         size_t j = 0, k = 0;

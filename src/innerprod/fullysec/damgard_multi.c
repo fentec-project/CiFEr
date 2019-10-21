@@ -29,6 +29,8 @@ cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t slots, size_t l, s
 
     m->slots = slots;
     m->scheme = s;
+    mpz_init_set(m->bound, bound);
+
     return CFE_ERR_NONE;
 }
 
@@ -43,14 +45,14 @@ void cfe_damgard_multi_copy(cfe_damgard_multi *res, cfe_damgard_multi *m) {
     res->scheme = s;
 }
 
-void cfe_damgard_multi_enc_init(cfe_damgard_multi_enc *e, cfe_damgard_multi *m) {
-    cfe_damgard e_scheme;
-    cfe_damgard_copy(&e_scheme, &m->scheme);
-    e->scheme = e_scheme;
+void cfe_damgard_multi_client_init(cfe_damgard_multi_client *e, cfe_damgard_multi *m) {
+    cfe_damgard_copy(&(e->scheme), &(m->scheme));
+    mpz_init_set(e->bound, m->bound);
 }
 
-void cfe_damgard_multi_enc_free(cfe_damgard_multi_enc *e) {
+void cfe_damgard_multi_client_free(cfe_damgard_multi_client *e) {
     cfe_damgard_free(&e->scheme);
+    mpz_clear(e->bound);
 }
 
 void cfe_damgard_multi_sec_key_free(cfe_damgard_multi_sec_key *key) {
@@ -125,20 +127,19 @@ cfe_damgard_multi_derive_key(cfe_damgard_multi_fe_key *fe_key, cfe_damgard_multi
     return err;
 }
 
-void cfe_damgard_multi_ciphertext_init(cfe_vec *ciphertext, cfe_damgard_multi_enc *e) {
+void cfe_damgard_multi_ciphertext_init(cfe_vec *ciphertext, cfe_damgard_multi_client *e) {
     cfe_damgard_ciphertext_init(ciphertext, &e->scheme);
 }
 
-cfe_error
-cfe_damgard_multi_encrypt(cfe_vec *ciphertext, cfe_damgard_multi_enc *e, cfe_vec *x, cfe_vec *pub_key, cfe_vec *otp) {
-    if (!cfe_vec_check_bound(x, e->scheme.bound)) {
+cfe_error cfe_damgard_multi_encrypt(cfe_vec *ciphertext, cfe_damgard_multi_client *e, cfe_vec *x, cfe_vec *pub_key, cfe_vec *otp) {
+    if (!cfe_vec_check_bound(x, e->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
 
     cfe_vec otp_mod;
     cfe_vec_init(&otp_mod, x->size);
     cfe_vec_add(&otp_mod, x, otp);
-    cfe_vec_mod(&otp_mod, &otp_mod, e->scheme.bound);
+    cfe_vec_mod(&otp_mod, &otp_mod, e->bound);
 
     cfe_error err = cfe_damgard_encrypt(ciphertext, &e->scheme, &otp_mod, pub_key);
 

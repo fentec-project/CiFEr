@@ -93,7 +93,7 @@ void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *la
  * @param c A pointer to an initialized struct representing the scheme
  * @param y A pointer to the inner-product vector
  */
-void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y);
+void cfe_dmcfe_derive_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y);
 
 /**
  * Accepts an array of ciphers, i.e. the encrypted vector, an array of key shares for the

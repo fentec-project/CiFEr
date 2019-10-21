@@ -29,7 +29,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     mpz_pow_ui(bound, bound, 10);
 
     cfe_damgard_multi m, decryptor;
-    cfe_damgard_multi_enc encryptors[slots];
+    cfe_damgard_multi_client encryptors[slots];
     cfe_error err = cfe_damgard_multi_init(&m, slots, l, modulus_len, bound);
     munit_assert(err == 0);
 
@@ -43,7 +43,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     cfe_damgard_multi_generate_master_keys(&mpk, &msk, &m);
 
     for (size_t i = 0; i < slots; i++) {
-        cfe_damgard_multi_enc_init(&encryptors[i], &m);
+        cfe_damgard_multi_client_init(&encryptors[i], &m);
     }
 
     cfe_damgard_multi_fe_key key;
@@ -83,7 +83,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     cfe_damgard_multi_free(&m);
     cfe_damgard_multi_free(&decryptor);
     for (size_t i = 0; i < slots; i++) {
-        cfe_damgard_multi_enc_free(&encryptors[i]);
+        cfe_damgard_multi_client_free(&encryptors[i]);
     }
 
     return MUNIT_OK;
