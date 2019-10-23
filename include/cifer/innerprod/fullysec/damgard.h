@@ -35,6 +35,7 @@ typedef struct cfe_damgard {
     mpz_t g;
     mpz_t h;
     mpz_t p;
+    mpz_t q;
 } cfe_damgard;
 
 /**

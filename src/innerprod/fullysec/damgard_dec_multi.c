@@ -61,7 +61,7 @@ void cfe_damgard_dec_multi_client_set_share(cfe_damgard_dec_multi_client *c, mpz
         mhashit(SHA256, -1, &tmp_oct, &tmp_hash);
 
         cfe_uniform_sample_mat_det(&add, c->scheme.scheme.p, ((unsigned char *) tmp_hash.val));
-//        cfe_mat_print(&add);
+        cfe_mat_print(&add);
 
         if (k > c->idx) {
             cfe_mat_neg(&add, &add);
@@ -125,24 +125,25 @@ void cfe_damgard_dec_multi_dec_init(cfe_damgard_dec_multi_dec *d, cfe_damgard_mu
     cfe_damgard_multi_copy(&d->scheme, damgard_multi);
 }
 
-void cfe_damgard_dec_multi_decrypt(mpz_t *res, cfe_vec *cipher,
-        cfe_damgard_dec_multi_derived_key_part *part_key, cfe_mat *y, cfe_damgard_dec_multi_dec *d) {
+cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *cipher,
+        cfe_damgard_dec_multi_derived_key_part *derived_key_part, cfe_mat *y, cfe_damgard_dec_multi_dec *d) {
     // TODO check bound lengths
 
     cfe_damgard_multi_fe_key key;
     cfe_damgard_multi_fe_key_init(&key, &(d->scheme));
 
     mpz_set_ui(key.z, 0);
-    cfe_damgard_fe_key keys[y->rows];
 
-    for (size_t i=0; i<y->rows; i++) {
-        mpz_add(key.z, key.z, part_key[i].otp_key_part);
-        keys[i] = part_key[i].key_part;
+    for (size_t i=0; i<d->scheme.slots; i++) {
+        mpz_add(key.z, key.z, derived_key_part[i].otp_key_part);
+//        gmp_printf("%Zd, %Zd\n", derived_key_part[i].key_part.key1, derived_key_part[i].key_part.key2);
+        (key.keys)[i] = derived_key_part[i].key_part;
+//        gmp_printf("%Zd, %Zd\n", (key.keys)[i].key1, (key.keys)[i].key2);
+
     }
     mpz_mod(key.z, key.z, d->scheme.scheme.p);
 
-
-
+    return cfe_damgard_multi_decrypt(res, &(d->scheme), cipher, &key, y);
 }
 
 

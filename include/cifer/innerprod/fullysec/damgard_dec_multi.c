@@ -87,4 +87,7 @@ void cfe_damgard_dec_multi_derive_key_share(cfe_damgard_dec_multi_derived_key_pa
 
 void cfe_damgard_dec_multi_dec_init(cfe_damgard_dec_multi_dec *d, cfe_damgard_multi *damgard_multi);
 
+cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *cipher,
+                                   cfe_damgard_dec_multi_derived_key_part *part_key, cfe_mat *y, cfe_damgard_dec_multi_dec *d);
+
 #endif

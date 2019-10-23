@@ -51,9 +51,11 @@ typedef struct cfe_damgard_multi_sec_key {
  */
 typedef struct cfe_damgard_multi_fe_key {
     // TODO change this to array
-    cfe_vec keys1;
-    cfe_vec keys2;
+    cfe_damgard_fe_key *keys;
+//    cfe_vec keys1;
+//    cfe_vec keys2;
     mpz_t z;
+    size_t slots;
 } cfe_damgard_multi_fe_key;
 
 /**
@@ -224,7 +226,7 @@ cfe_damgard_multi_encrypt(cfe_vec *ciphertext, cfe_damgard_multi_client *e, cfe_
  * @param y A pointer to the matrix comprised of plaintext vectors
  * @return Error code
  */
-cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_mat *ciphertext, cfe_damgard_multi_fe_key *key,
+cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_vec *ciphertext, cfe_damgard_multi_fe_key *key,
                                     cfe_mat *y);
 
 #endif
