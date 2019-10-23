@@ -115,8 +115,7 @@ void cfe_damgard_fe_key_init(cfe_damgard_fe_key *fe_key) {
     mpz_inits(fe_key->key1, fe_key->key2, NULL);
 }
 
-cfe_error
-cfe_damgard_derive_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
+cfe_error cfe_damgard_derive_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }

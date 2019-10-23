@@ -41,7 +41,7 @@ void cfe_damgard_multi_free(cfe_damgard_multi *m) {
     mpz_clear(m->bound);
 }
 
-void cfe_damgard_multi_copy(cfe_damgard_multi *res, cfe_damgard_multi *m) {
+void cfe_damgard_multi_copy_init(cfe_damgard_multi *res, cfe_damgard_multi *m) {
     res->slots = m->slots;
     cfe_damgard_copy(&(res->scheme), &(m->scheme));
     mpz_init_set(res->bound, m->bound);

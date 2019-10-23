@@ -19,9 +19,9 @@
 #include "cifer/sample/uniform.h"
 
 MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void *data) {
-    size_t num_clients = 1;
-    size_t l = 1;
-    size_t modulus_len = 64;
+    size_t num_clients = 4;
+    size_t l = 5;
+    size_t modulus_len = 512;
     mpz_t bound, bound_neg, key1, key2, xy_check, xy;
     mpz_inits(bound, bound_neg, key1, key2, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
@@ -66,26 +66,25 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
     for (size_t i = 0; i < num_clients; i++) {
         cfe_vec_init(&(x[i]), l);
         cfe_uniform_sample_vec(&x[i], bound);
-        cfe_vec_print(&x[i]);
 
         cfe_mat_set_vec(&X_for_check, &(x[i]), i);
 
 
         cfe_damgard_dec_multi_ciphertext_init(&ciphers[i], &clients[i]);
-        cfe_damgard_dec_multi_encrypt(&ciphers[i], &x[i], &sec_keys[i], &clients[i]);
+        err = cfe_damgard_dec_multi_encrypt(&ciphers[i], &x[i], &sec_keys[i], &clients[i]);
+        munit_assert(err == 0);
+
     }
-    cfe_mat_print(&X_for_check);
 
     cfe_mat y;
     cfe_mat_init(&y, num_clients, l);
     cfe_uniform_sample_mat(&y, bound);
-    cfe_mat_print(&y);
-
 
     cfe_damgard_dec_multi_derived_key_part derived_key_shares[num_clients];
     for (size_t i = 0; i < num_clients; i++) {
         cfe_damgard_dec_multi_derived_key_init(&derived_key_shares[i]);
-        cfe_damgard_dec_multi_derive_key_share(&(derived_key_shares[i]), &y, &(sec_keys[i]), &(clients[i]));
+        err = cfe_damgard_dec_multi_derive_key_share(&(derived_key_shares[i]), &y, &(sec_keys[i]), &(clients[i]));
+        munit_assert(err == 0);
     }
 
     cfe_damgard_dec_multi_dec decryptor;
@@ -96,7 +95,6 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
 
 
     // check correctness
-//    cfe_mat_print(&X_for_check);
     cfe_mat_dot(xy_check, &X_for_check, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 

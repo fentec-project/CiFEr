@@ -78,11 +78,11 @@ void cfe_damgard_dec_multi_generate_keys(cfe_damgard_dec_multi_sec_key *sec_key,
 
 void cfe_damgard_dec_multi_ciphertext_init(cfe_vec *ciphertext, cfe_damgard_dec_multi_client *c);
 
-void cfe_damgard_dec_multi_encrypt(cfe_vec *cipher, cfe_vec *x, cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c);
+cfe_error cfe_damgard_dec_multi_encrypt(cfe_vec *cipher, cfe_vec *x, cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c);
 
 void cfe_damgard_dec_multi_derived_key_init(cfe_damgard_dec_multi_derived_key_part *derived_key_share);
 
-void cfe_damgard_dec_multi_derive_key_share(cfe_damgard_dec_multi_derived_key_part *derived_key_share,
+cfe_error cfe_damgard_dec_multi_derive_key_share(cfe_damgard_dec_multi_derived_key_part *derived_key_share,
                                 cfe_mat *y, cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c);
 
 void cfe_damgard_dec_multi_dec_init(cfe_damgard_dec_multi_dec *d, cfe_damgard_multi *damgard_multi);
