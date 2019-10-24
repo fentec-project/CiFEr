@@ -22,8 +22,8 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
     size_t num_clients = 4;
     size_t l = 5;
     size_t modulus_len = 512;
-    mpz_t bound, bound_neg, key1, key2, xy_check, xy;
-    mpz_inits(bound, bound_neg, key1, key2, xy_check, xy, NULL);
+    mpz_t bound, bound_neg, xy_check, xy;
+    mpz_inits(bound, bound_neg, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
@@ -98,13 +98,20 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
     cfe_mat_dot(xy_check, &X_for_check, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
-//    // free the memory
-//    mpz_clears(bound, bound_neg, key1, key2, xy_check, xy, NULL);
-//    for (size_t i = 0; i < num_clients; i++) {
-//        cfe_dmcfe_client_free(&(clients[i]));
-//        cfe_vec_G2_free(&(key_shares[i]));
-//    }
-//    cfe_vec_frees(&x, &y, NULL);
+    // free the memory
+    mpz_clears(bound, bound_neg, xy_check, xy, NULL);
+    for (size_t i = 0; i < num_clients; i++) {
+        cfe_damgard_dec_multi_client_free(&(clients[i]));
+        cfe_damgard_dec_multi_derived_key_free(&(derived_key_shares[i]));
+        cfe_damgard_dec_multi_sec_key_free(&sec_keys[i]);
+        cfe_vec_free(&ciphers[i]);
+        cfe_vec_frees(&x[i], NULL);
+        mpz_clear(pub_keys[i]);
+    }
+    cfe_damgard_dec_multi_dec_free(&(decryptor));
+    cfe_damgard_multi_free(&damgard_multi);
+
+    cfe_mat_frees(&X_for_check, &y, NULL);
 
     return MUNIT_OK;
 }

@@ -49,13 +49,6 @@ void cfe_dmcfe_client_free(cfe_dmcfe_client *c) {
     cfe_vec_free(&(c->s));
 }
 
-void print_hex2(const char *s)
-{
-    while(*s)
-        printf("%02x", (unsigned int) *s++);
-    printf("\n");
-}
-
 void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_clients) {
     cfe_mat add;
     cfe_mat_init(&add, 2, 2);
@@ -74,10 +67,6 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
         ECP_BN254_toOctet(&tmp_oct, &shared_g1, true);
 
         mhashit(SHA256, -1, &tmp_oct, &tmp_hash);
-//        printf("hash %s\n", tmp_hash.val);
-        print_hex2(tmp_hash.val);
-        printf("hash \n");
-
 
         cfe_uniform_sample_mat_det(&add, c->order, ((unsigned char *) tmp_hash.val));
 

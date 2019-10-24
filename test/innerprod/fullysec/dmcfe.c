@@ -20,8 +20,8 @@
 
 MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     size_t num_clients = 10;
-    mpz_t bound, bound_neg, key1, key2, xy_check, xy;
-    mpz_inits(bound, bound_neg, key1, key2, xy_check, xy, NULL);
+    mpz_t bound, bound_neg, xy_check, xy;
+    mpz_inits(bound, bound_neg, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
@@ -64,7 +64,7 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
     // free the memory
-    mpz_clears(bound, bound_neg, key1, key2, xy_check, xy, NULL);
+    mpz_clears(bound, bound_neg, xy_check, xy, NULL);
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_client_free(&(clients[i]));
         cfe_vec_G2_free(&(key_shares[i]));

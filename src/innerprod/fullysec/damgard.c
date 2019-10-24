@@ -87,7 +87,6 @@ void cfe_damgard_derived_key_free(cfe_damgard_fe_key *key) {
     mpz_clears(key->key1, key->key2, NULL);
 }
 
-// mpk must be uninitialized!
 void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *msk, cfe_vec *mpk, cfe_damgard *s) {
     mpz_t s_i, t_i, y1, y2, r, p_min_1;
     mpz_inits(s_i, t_i, y1, y2, r, p_min_1, NULL);

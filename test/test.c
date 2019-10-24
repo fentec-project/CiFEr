@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 //            lwe_suite,
 //            ring_lwe_suite,
 //            damgard_suite,
-            damgard_multi_suite,
+//            damgard_multi_suite,
 //            lwe_fully_secure_suite,
 //            paillier_suite,
 //            dmcfe_suite,

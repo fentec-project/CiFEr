@@ -35,16 +35,10 @@ void cfe_damgard_dec_multi_client_init(cfe_damgard_dec_multi_client *c, cfe_damg
     cfe_mat_init(&(c->share), c->scheme.slots, c->scheme.scheme.l);
 }
 
-void cfe_damgard_client_free(cfe_damgard_dec_multi_client *c) {
+void cfe_damgard_dec_multi_client_free(cfe_damgard_dec_multi_client *c) {
     mpz_clears(c->client_sec_key, c->client_pub_key, NULL);
     cfe_mat_free(&(c->share));
-}
-
-void print_hex(const char *s)
-{
-    while(*s)
-        printf("%02x", (unsigned int) *s++);
-    printf("\n");
+    cfe_damgard_multi_free(&c->scheme);
 }
 
 void cfe_damgard_dec_multi_client_set_share(cfe_damgard_dec_multi_client *c, mpz_t *pub_keys) {
@@ -63,11 +57,10 @@ void cfe_damgard_dec_multi_client_set_share(cfe_damgard_dec_multi_client *c, mpz
 
         int num_size = (int) mpz_sizeinbase (shared_num, 16) + 2;
         char *num_str = (char *) cfe_malloc(num_size * sizeof(char));
-
         mpz_get_str(num_str, 16, shared_num);
-
         octet tmp_oct = {(int) strlen(num_str), (int) strlen(num_str), num_str};
         mhashit(SHA256, -1, &tmp_oct, &tmp_hash);
+        free(num_str);
 
         cfe_uniform_sample_mat_det(&add, c->scheme.scheme.q, ((unsigned char *) tmp_hash.val));
 
@@ -79,12 +72,18 @@ void cfe_damgard_dec_multi_client_set_share(cfe_damgard_dec_multi_client *c, mpz
     }
 
     cfe_mat_free(&add);
+    mpz_clear(shared_num);
 }
 
 void cfe_damgard_dec_multi_sec_key_init(cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c) {
     cfe_damgard_sec_key_init(&(sec_key->dam_sec_key), &(c->scheme.scheme));
     cfe_damgard_pub_key_init(&(sec_key->dam_pub_key), &(c->scheme.scheme));
     cfe_vec_init(&(sec_key->otp_key), c->scheme.scheme.l);
+}
+
+void cfe_damgard_dec_multi_sec_key_free(cfe_damgard_dec_multi_sec_key *sec_key) {
+    cfe_damgard_sec_key_free(&(sec_key->dam_sec_key));
+    cfe_vec_frees(&(sec_key->dam_pub_key), &(sec_key->otp_key), NULL);
 }
 
 void cfe_damgard_dec_multi_generate_keys(cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c) {
@@ -103,12 +102,20 @@ cfe_error cfe_damgard_dec_multi_encrypt(cfe_vec *cipher, cfe_vec *x, cfe_damgard
     cfe_vec_add(&x_add_otp, x, &(sec_key->otp_key));
     cfe_vec_mod(&x_add_otp, &x_add_otp, c->scheme.scheme.q);
 
-    return cfe_damgard_encrypt(cipher, &(c->scheme.scheme), &x_add_otp, &(sec_key->dam_pub_key));
+    cfe_error err = cfe_damgard_encrypt(cipher, &(c->scheme.scheme), &x_add_otp, &(sec_key->dam_pub_key));
+    cfe_vec_free(&x_add_otp);
+
+    return err;
 }
 
 void cfe_damgard_dec_multi_derived_key_init(cfe_damgard_dec_multi_derived_key_part *derived_key_share) {
     cfe_damgard_fe_key_init(&(derived_key_share->key_part));
     mpz_init(derived_key_share->otp_key_part);
+}
+
+void cfe_damgard_dec_multi_derived_key_free(cfe_damgard_dec_multi_derived_key_part *derived_key_share) {
+    cfe_damgard_derived_key_free(&(derived_key_share->key_part));
+    mpz_clear(derived_key_share->otp_key_part);
 }
 
 cfe_error cfe_damgard_dec_multi_derive_key_share(cfe_damgard_dec_multi_derived_key_part *derived_key_share,
@@ -127,11 +134,20 @@ cfe_error cfe_damgard_dec_multi_derive_key_share(cfe_damgard_dec_multi_derived_k
     mpz_add(derived_key_share->otp_key_part, z_1, z_2);
     mpz_mod(derived_key_share->otp_key_part, derived_key_share->otp_key_part, c->scheme.scheme.q);
 
-    return cfe_damgard_derive_key(&(derived_key_share->key_part), &(c->scheme.scheme), &(sec_key->dam_sec_key), &y_part);
+    cfe_error err = cfe_damgard_derive_key(&(derived_key_share->key_part), &(c->scheme.scheme), &(sec_key->dam_sec_key), &y_part);
+
+    mpz_clears(z_1, z_2, NULL);
+    cfe_vec_free(&y_part);
+
+    return err;
 }
 
 void cfe_damgard_dec_multi_dec_init(cfe_damgard_dec_multi_dec *d, cfe_damgard_multi *damgard_multi) {
     cfe_damgard_multi_copy_init(&d->scheme, damgard_multi);
+}
+
+void cfe_damgard_dec_multi_dec_free(cfe_damgard_dec_multi_dec *d) {
+    cfe_damgard_multi_free(&d->scheme);
 }
 
 cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *cipher,
@@ -139,24 +155,24 @@ cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *cipher,
     // TODO check bound lengths
 
     cfe_damgard_multi_fe_key key;
-    cfe_damgard_multi_fe_key_init(&key, &(d->scheme));
+    key.slots = d->scheme.slots;
+    mpz_init(key.z);
+    key.keys = (cfe_damgard_fe_key *) cfe_malloc(sizeof(cfe_damgard_fe_key) * d->scheme.slots);
+//    cfe_damgard_multi_fe_key_init(&key, &(d->scheme));
 
     mpz_set_ui(key.z, 0);
 
     for (size_t i=0; i<d->scheme.slots; i++) {
         mpz_add(key.z, key.z, derived_key_part[i].otp_key_part);
-//        gmp_printf("%Zd, %Zd\n", derived_key_part[i].key_part.key1, derived_key_part[i].key_part.key2);
-        (key.keys)[i] = derived_key_part[i].key_part;
-//        gmp_printf("%Zd, %Zd\n", (key.keys)[i].key1, (key.keys)[i].key2);
+        key.keys[i] = derived_key_part[i].key_part;
 
     }
     mpz_mod(key.z, key.z, d->scheme.scheme.q);
 
-    return cfe_damgard_multi_decrypt(res, &(d->scheme), cipher, &key, y);
+    cfe_error err = cfe_damgard_multi_decrypt(res, &(d->scheme), cipher, &key, y);
+
+    mpz_clear(key.z);
+    free(key.keys);
+
+    return err;
 }
-
-
-
-
-
-
