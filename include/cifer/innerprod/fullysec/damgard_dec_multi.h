@@ -21,8 +21,6 @@
 #include "cifer/internal/errors.h"
 #include "cifer/innerprod/fullysec/damgard_multi.h"
 
-
-
 /**
  * \file
  * \ingroup fullysec
@@ -160,8 +158,8 @@ void cfe_damgard_dec_multi_ciphertext_init(cfe_vec *ciphertext,
  * stored here)
  * @param x The input value
  * @param sec_key A pointer to client's secret key
- * @param s A pointer to a struct representing a decryptor
- * (*initialized* cfe_damgard_dec_multi_dec)
+ * @param c A pointer to a struct representing a client
+ * (*initialized* cfe_damgard_dec_multi_client)
  * @return Error code
  */
 cfe_error cfe_damgard_dec_multi_encrypt(cfe_vec *cipher, cfe_vec *x,
@@ -230,7 +228,7 @@ void cfe_damgard_dec_multi_dec_free(cfe_damgard_dec_multi_dec *d);
  *
  * @param res The result of the decryption (the value will be stored here)
  * @param ciphers An array of the encrypted coordinates of the vector
- * @param key_parts An array of the decryption key shares
+ * @param fe_key_parts An array of the decryption key shares
  * @param y A pointer to the inner-product matrix
  * @param d A pointer to an instance of the decryptor.(*initialized* cfe_damgard_dec_multi_dec
  * struct)

@@ -109,8 +109,9 @@ typedef struct cfe_dippe_cipher {
 /**
  * Prepares a cipher struct
  *
- * @param pk A pointer to a cfe_dippe_cipher struct
+ * @param cipher A pointer to a cfe_dippe_cipher struct
  * @param dippe A pointer to a cfe_dippe struct
+ * @param pol_size Length of the cypher
  */
 void cfe_dippe_cipher_init(cfe_dippe_cipher *cipher, cfe_dippe *dippe, size_t pol_size);
 
@@ -157,7 +158,7 @@ typedef struct cfe_dippe_sec_key {
 /**
  * Prepares a secret key struct
  *
- * @param pk A pointer to a cfe_dippe_sec_key struct
+ * @param sk A pointer to a cfe_dippe_sec_key struct
  * @param dippe A pointer to a cfe_dippe struct
  */
 void cfe_dippe_sec_key_init(cfe_dippe_sec_key *sk, cfe_dippe *dippe);
@@ -221,6 +222,7 @@ cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dipp
  * @param usk_id Index of the given attribute vector for which a user secret key will be created
  * @param pks An array containing references to cfe_dippe_pub_key structs
  * @param pks_len Length of the public key array
+ * @param sk Secret key
  * @param av A pointer to a cfe_vec struct; Represents the attribute vector
  * @param gid String that represents a unique user; Required for collusion prevention
  * @return Error code
