@@ -102,7 +102,11 @@ void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *la
     ECP_BN254_add(cipher, &h);
 }
 
-void cfe_dmcfe_derive_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y) {
+void cfe_dmcfe_fe_key_share_init(cfe_vec_G2 *key_share) {
+    cfe_vec_G2_init(key_share, 2);
+}
+
+void cfe_dmcfe_derive_fe_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y) {
     char *str, *str_i, *for_hash;
     str = cfe_vec_to_string(y);
     ECP2_BN254 hash[2];

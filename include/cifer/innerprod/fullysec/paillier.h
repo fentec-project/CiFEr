@@ -106,7 +106,7 @@ cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_pail
  * Takes master secret key and input vector y, and returns the functional
  * encryption key. In case the key could not be derived, it returns an error.
  *
- * @param derived_key The resulting functional encryption key (the value will be
+ * @param fe_key The resulting functional encryption key (the value will be
  * stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_paillier
  * struct)
@@ -114,7 +114,7 @@ cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_pail
  * @param y A pointer to the inner product vector
  * @return Error code
  */
-cfe_error cfe_paillier_derive_key(mpz_t derived_key, cfe_paillier *s, cfe_vec *msk, cfe_vec *y);
+cfe_error cfe_paillier_derive_fe_key(mpz_t fe_key, cfe_paillier *s, cfe_vec *msk, cfe_vec *y);
 
 /**
  * Initializes the vector which represents the ciphertext.

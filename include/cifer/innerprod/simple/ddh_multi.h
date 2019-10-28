@@ -184,7 +184,7 @@ void cfe_ddh_multi_generate_master_keys(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk
  * @param y A pointer to the matrix comprised of input vectors
  * @return Error code
  */
-cfe_error cfe_ddh_multi_derive_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, cfe_ddh_multi_sec_key *msk, cfe_mat *y);
+cfe_error cfe_ddh_multi_derive_fe_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, cfe_ddh_multi_sec_key *msk, cfe_mat *y);
 
 /**
  * Generates a ciphertext from the input vector x with the provided public key

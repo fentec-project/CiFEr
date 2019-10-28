@@ -69,7 +69,7 @@ void cfe_sgp_generate_sec_key(cfe_sgp_sec_key *msk, cfe_sgp *sgp) {
     cfe_uniform_sample_vec(&(msk->t), sgp->bound);
 }
 
-cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f) {
+cfe_error cfe_sgp_derive_fe_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f) {
     if (cfe_mat_check_bound(f, sgp->bound) == false) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     };

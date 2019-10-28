@@ -31,7 +31,7 @@
  * scheme.
  */
 typedef struct cfe_damgard_multi {
-    size_t slots;
+    size_t num_clients;
     mpz_t bound;
     cfe_damgard scheme;
 } cfe_damgard_multi;
@@ -50,12 +50,9 @@ typedef struct cfe_damgard_multi_sec_key {
  * input scheme.
  */
 typedef struct cfe_damgard_multi_fe_key {
-    // TODO change this to array
     cfe_damgard_fe_key *keys;
-//    cfe_vec keys1;
-//    cfe_vec keys2;
     mpz_t z;
-    size_t slots;
+    size_t num_clients;
 } cfe_damgard_multi_fe_key;
 
 /**
@@ -67,20 +64,20 @@ typedef struct cfe_damgard_multi_client {
 } cfe_damgard_multi_client;
 
 /**
- * Configures a new instance of the scheme. It accepts the number of slots
+ * Configures a new instance of the scheme. It accepts the number of clients
  * (encryptors), the length of input vectors l, the bit length of the modulus
  * (we are operating in the Z_p group), and a bound by which coordinates of
  * input vectors are bounded.
  *
  * @param m A pointer to an uninitialized struct representing the scheme
- * @param slots The number of slots (encryptors)
+ * @param num_clients The number of clients (encryptors)
  * @param l The length of input vectors
  * @param modulus_len The bit length of the modulus (we are operating in the Z_p
  * group)
  * @param bound The bound by which coordinates of input vectors are bounded.
  * @return Error code
  */
-cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound);
+cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t num_clients, size_t l, size_t modulus_len, mpz_t bound);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -184,7 +181,7 @@ void cfe_damgard_multi_fe_key_init(cfe_damgard_multi_fe_key *fe_key, cfe_damgard
  * @return Error code
  */
 cfe_error
-cfe_damgard_multi_derive_key(cfe_damgard_multi_fe_key *fe_key, cfe_damgard_multi *m, cfe_damgard_multi_sec_key *msk,
+cfe_damgard_multi_derive_fe_key(cfe_damgard_multi_fe_key *fe_key, cfe_damgard_multi *m, cfe_damgard_multi_sec_key *msk,
                              cfe_mat *y);
 
 /**

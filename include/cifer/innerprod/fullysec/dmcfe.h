@@ -85,6 +85,13 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
 void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label);
 
 /**
+ * Configures a new functional encryption key share for the dmcfe scheme.
+ *
+ * @param key_share A pointer to an uninitialized cfe_vec_G2 vec representing the share
+ */
+void cfe_dmcfe_fe_key_share_init(cfe_vec_G2 *key_share);
+
+/**
  * Sets a share of a decryption key needed for the decryption of an inner product
  * of encrypted vector and y.
  *
@@ -93,7 +100,7 @@ void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *la
  * @param c A pointer to an initialized struct representing the scheme
  * @param y A pointer to the inner-product vector
  */
-void cfe_dmcfe_derive_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y);
+void cfe_dmcfe_derive_fe_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y);
 
 /**
  * Accepts an array of ciphers, i.e. the encrypted vector, an array of key shares for the

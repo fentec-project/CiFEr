@@ -21,7 +21,7 @@
 
 MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 2;
-    size_t slots = 6;
+    size_t num_clients = 6;
     size_t modulus_len = 512;
     mpz_t bound, xy_check, xy;
     mpz_inits(bound, xy_check, xy, NULL);
@@ -30,27 +30,27 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
 
     cfe_damgard_multi m;
 
-    cfe_error err = cfe_damgard_multi_init(&m, slots, l, modulus_len, bound);
+    cfe_error err = cfe_damgard_multi_init(&m, num_clients, l, modulus_len, bound);
     munit_assert(err == 0);
 
 
     cfe_mat x, y, mpk;
-    cfe_mat_inits(slots, l, &x, &y, NULL);
+    cfe_mat_inits(num_clients, l, &x, &y, NULL);
     cfe_damgard_multi_sec_key msk;
 
     cfe_damgard_multi_master_keys_init(&mpk, &msk, &m);
     cfe_damgard_multi_generate_master_keys(&mpk, &msk, &m);
 
-    cfe_damgard_multi_fe_key key;
-    cfe_damgard_multi_fe_key_init(&key, &m);
+    cfe_damgard_multi_fe_key fe_key;
+    cfe_damgard_multi_fe_key_init(&fe_key, &m);
     cfe_uniform_sample_mat(&y, bound);
-    err = cfe_damgard_multi_derive_key(&key, &m, &msk, &y);
+    err = cfe_damgard_multi_derive_fe_key(&fe_key, &m, &msk, &y);
     munit_assert(err == 0);
 
-    cfe_vec ciphertext[slots];
+    cfe_vec ciphertext[num_clients];
 
-    cfe_damgard_multi_client encryptors[slots];
-    for (size_t i = 0; i < slots; i++) {
+    cfe_damgard_multi_client encryptors[num_clients];
+    for (size_t i = 0; i < num_clients; i++) {
         cfe_vec *x_vec = cfe_mat_get_row_ptr(&x, i);
         cfe_uniform_sample_vec(x_vec, bound);
 
@@ -66,7 +66,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
 
     cfe_damgard_multi decryptor;
     cfe_damgard_multi_copy_init(&decryptor, &m);
-    err = cfe_damgard_multi_decrypt(xy, &m, ciphertext, &key, &y);
+    err = cfe_damgard_multi_decrypt(xy, &m, ciphertext, &fe_key, &y);
     munit_assert(err == 0);
 
     cfe_mat_dot(xy_check, &x, &y);
@@ -76,10 +76,10 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     cfe_mat_frees(&x, &y, &mpk, NULL);
 
     cfe_damgard_multi_sec_key_free(&msk);
-    cfe_damgard_multi_fe_key_free(&key);
+    cfe_damgard_multi_fe_key_free(&fe_key);
     cfe_damgard_multi_free(&m);
     cfe_damgard_multi_free(&decryptor);
-    for (size_t i = 0; i < slots; i++) {
+    for (size_t i = 0; i < num_clients; i++) {
         cfe_damgard_multi_client_free(&encryptors[i]);
         cfe_vec_free(&ciphertext[i]);
     }

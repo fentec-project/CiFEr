@@ -24,8 +24,8 @@ MunitResult test_paillier_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 50;
     size_t lambda = 128;
     size_t bit_len = 512;
-    mpz_t bound_x, bound_y, derived_key, xy_check, xy, bound_x_neg, bound_y_neg;
-    mpz_inits(bound_x, bound_y, derived_key, xy_check, xy, bound_x_neg, bound_y_neg, NULL);
+    mpz_t bound_x, bound_y, fe_key, xy_check, xy, bound_x_neg, bound_y_neg;
+    mpz_inits(bound_x, bound_y, fe_key, xy_check, xy, bound_x_neg, bound_y_neg, NULL);
     mpz_set_ui(bound_x, 2);
     mpz_pow_ui(bound_x, bound_x, 10);
     mpz_set(bound_y, bound_x);
@@ -48,7 +48,7 @@ MunitResult test_paillier_end_to_end(const MunitParameter *params, void *data) {
     err = cfe_paillier_generate_master_keys(&msk, &mpk, &s);
     munit_assert(err == 0);
 
-    err = cfe_paillier_derive_key(derived_key, &s, &msk, &y);
+    err = cfe_paillier_derive_fe_key(fe_key, &s, &msk, &y);
     munit_assert(err == 0);
 
     cfe_paillier_copy(&encryptor, &s);
@@ -56,12 +56,12 @@ MunitResult test_paillier_end_to_end(const MunitParameter *params, void *data) {
     err = cfe_paillier_encrypt(&ciphertext, &encryptor, &x, &mpk);
     munit_assert(err == 0);
 
-    err = cfe_paillier_decrypt(xy, &s, &ciphertext, derived_key, &y);
+    err = cfe_paillier_decrypt(xy, &s, &ciphertext, fe_key, &y);
     munit_assert(err == 0);
 
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
-    mpz_clears(bound_x, bound_y, derived_key, xy_check, xy, bound_x_neg, bound_y_neg, NULL);
+    mpz_clears(bound_x, bound_y, fe_key, xy_check, xy, bound_x_neg, bound_y_neg, NULL);
     cfe_vec_frees(&x, &y, &msk, &mpk, &ciphertext, NULL);
 
     cfe_paillier_free(&s);

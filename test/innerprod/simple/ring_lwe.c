@@ -35,7 +35,7 @@ MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
     mpf_t sigma;
     mpf_init_set_ui(sigma, 20);
 
-    // Create some mesage and vector for the product
+    // Create some message and vector for the product
     cfe_vec y;
     cfe_mat X;
     cfe_vec_init(&y, l);
@@ -64,9 +64,9 @@ MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
     cfe_ring_lwe_pub_key_init(&PK, &s);
     cfe_ring_lwe_generate_pub_key(&PK, &s, &SK);
 
-    cfe_vec sk_y;
-    cfe_ring_lwe_fe_key_init(&sk_y, &s);
-    err = cfe_ring_lwe_derive_key(&sk_y, &s, &SK, &y);
+    cfe_vec fe_key;
+    cfe_ring_lwe_fe_key_init(&fe_key, &s);
+    err = cfe_ring_lwe_derive_fe_key(&fe_key, &s, &SK, &y);
     munit_assert(!err);
 
     // encrypt the full mesage
@@ -77,7 +77,7 @@ MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
 
     // decrypt the product y*X
     cfe_ring_lwe_decrypted_init(&res, &s);
-    err = cfe_ring_lwe_decrypt(&res, &s, &CT, &sk_y, &y);
+    err = cfe_ring_lwe_decrypt(&res, &s, &CT, &fe_key, &y);
     munit_assert(!err);
 
     // check if the result is correct
@@ -86,7 +86,7 @@ MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
     }
 
     cfe_mat_frees(&X, &CT, &SK, &PK, NULL);
-    cfe_vec_frees(&y, &sk_y, &expect, &res, NULL);
+    cfe_vec_frees(&y, &fe_key, &expect, &res, NULL);
     mpz_clears(B, B_neg, p, q, NULL);
     mpf_clear(sigma);
     cfe_ring_lwe_free(&s);

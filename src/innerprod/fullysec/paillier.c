@@ -141,12 +141,12 @@ cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_pail
     return CFE_ERR_NONE;
 }
 
-cfe_error cfe_paillier_derive_key(mpz_t derived_key, cfe_paillier *s, cfe_vec *msk, cfe_vec *y) {
+cfe_error cfe_paillier_derive_fe_key(mpz_t fe_key, cfe_paillier *s, cfe_vec *msk, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound_y)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
 
-    cfe_vec_dot(derived_key, msk, y);
+    cfe_vec_dot(fe_key, msk, y);
     return CFE_ERR_NONE;
 }
 

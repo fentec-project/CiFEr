@@ -306,7 +306,7 @@ cfe_vec_set(&y, el, 0);
 mpz_set_ui(el, 2);
 cfe_vec_set(&y, el, 1); // y is [1, 2]
 
-cfe_ddh_derive_key(fe_key, &s, &msk, &y);
+cfe_ddh_derive_fe_key(fe_key, &s, &msk, &y);
 
 // Simulate instantiation of encryptor 
 // Encryptor wants to hide x and should be given
@@ -370,7 +370,7 @@ cfe_ddh_multi_master_keys_init(&mpk, &msk, &m);
 cfe_ddh_multi_generate_master_keys(&mpk, &msk, &m);
 cfe_ddh_multi_fe_key fe_key;
 cfe_ddh_multi_fe_key_init(&fe_key, &m);
-cfe_ddh_multi_derive_key(&fe_key, &m, &msk, &Y);
+cfe_ddh_multi_derive_fe_key(&fe_key, &m, &msk, &Y);
 
 // Different encryptors may reside on different machines.
 // We simulate this with the for loop below, where numClients
@@ -438,7 +438,7 @@ cfe_mat m;
 cfe_mat_init(&m, l, l);
 cfe_uniform_sample_mat(&m, b);
 ECP2_BN254 key;
-cfe_sgp_derive_key(&key, &s, &msk, &m);
+cfe_sgp_derive_fe_key(&key, &s, &msk, &m);
 mpz_t dec;
 mpz_init(dec);
 cfe_sgp_decrypt(dec, &s, &cipher, &key, &m);

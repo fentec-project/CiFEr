@@ -63,10 +63,10 @@ typedef struct cfe_damgard_dec_multi_sec_key {
  * cfe_damgard_multi represents a multi input variant of the underlying Damgard
  * scheme.
  */
-typedef struct cfe_damgard_dec_multi_derived_key_part {
+typedef struct cfe_damgard_dec_multi_fe_key_part {
     cfe_damgard_fe_key key_part;
     mpz_t otp_key_part;
-} cfe_damgard_dec_multi_derived_key_part;
+} cfe_damgard_dec_multi_fe_key_part;
 
 void cfe_damgard_dec_multi_client_init(cfe_damgard_dec_multi_client *c, cfe_damgard_multi *damgard_multi, size_t idx);
 
@@ -84,18 +84,18 @@ void cfe_damgard_dec_multi_ciphertext_init(cfe_vec *ciphertext, cfe_damgard_dec_
 
 cfe_error cfe_damgard_dec_multi_encrypt(cfe_vec *cipher, cfe_vec *x, cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c);
 
-void cfe_damgard_dec_multi_derived_key_init(cfe_damgard_dec_multi_derived_key_part *derived_key_share);
+void cfe_damgard_dec_multi_fe_key_share_init(cfe_damgard_dec_multi_fe_key_part *fe_key_share);
 
-void cfe_damgard_dec_multi_derived_key_free(cfe_damgard_dec_multi_derived_key_part *derived_key_share);
+void cfe_damgard_dec_multi_fe_key_free(cfe_damgard_dec_multi_fe_key_part *fe_key_share);
 
-cfe_error cfe_damgard_dec_multi_derive_key_share(cfe_damgard_dec_multi_derived_key_part *derived_key_share,
-                                cfe_mat *y, cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c);
+cfe_error cfe_damgard_dec_multi_client_derive_fe_key_share(cfe_damgard_dec_multi_fe_key_part *fe_key_share,
+                                                        cfe_mat *y, cfe_damgard_dec_multi_sec_key *sec_key, cfe_damgard_dec_multi_client *c);
 
 void cfe_damgard_dec_multi_dec_init(cfe_damgard_dec_multi_dec *d, cfe_damgard_multi *damgard_multi);
 
 void cfe_damgard_dec_multi_dec_free(cfe_damgard_dec_multi_dec *d);
 
 cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *cipher,
-                                   cfe_damgard_dec_multi_derived_key_part *part_key, cfe_mat *y, cfe_damgard_dec_multi_dec *d);
+                                        cfe_damgard_dec_multi_fe_key_part *part_key, cfe_mat *y, cfe_damgard_dec_multi_dec *d);
 
 #endif

@@ -26,7 +26,7 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
 
-    // create clients and make an array of their public keys
+    // create num_clients and make an array of their public keys
     cfe_dmcfe_client clients[num_clients];
     ECP_BN254 pub_keys[num_clients];
     for (size_t i = 0; i < num_clients; i++) {
@@ -39,7 +39,7 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
         cfe_dmcfe_set_share(&(clients[i]), pub_keys, num_clients);
     }
 
-    // now that the clients have agreed on secret keys they can encrypt a vector in
+    // now that the num_clients have agreed on secret keys they can encrypt a vector in
     // a decentralized way and create partial keys such that only with all of them
     // the decryption of the inner product is possible
     cfe_vec x, y;
@@ -48,16 +48,16 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     cfe_uniform_sample_vec(&y, bound);
     char label[] = "some label";
     ECP_BN254 ciphers[num_clients];
-    cfe_vec_G2 key_shares[num_clients];
+    cfe_vec_G2 fe_key_shares[num_clients];
 
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_encrypt(&(ciphers[i]), &(clients[i]), x.vec[i], label);
-        cfe_vec_G2_init(&(key_shares[i]), 2);
-        cfe_dmcfe_derive_key_share(&(key_shares[i]), &(clients[i]), &y);
+        cfe_dmcfe_fe_key_share_init(&(fe_key_shares[i]));
+        cfe_dmcfe_derive_fe_key_share(&(fe_key_shares[i]), &(clients[i]), &y);
     }
 
     // decrypt the inner product
-    cfe_dmcfe_decrypt(xy, ciphers, key_shares, label, &y, bound);
+    cfe_dmcfe_decrypt(xy, ciphers, fe_key_shares, label, &y, bound);
 
     // check correctness
     cfe_vec_dot(xy_check, &x, &y);
@@ -67,7 +67,7 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     mpz_clears(bound, bound_neg, xy_check, xy, NULL);
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_client_free(&(clients[i]));
-        cfe_vec_G2_free(&(key_shares[i]));
+        cfe_vec_G2_free(&(fe_key_shares[i]));
     }
     cfe_vec_frees(&x, &y, NULL);
 

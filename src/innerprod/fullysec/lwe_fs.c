@@ -190,7 +190,7 @@ void cfe_lwe_fs_fe_key_init(cfe_vec *z_y, cfe_lwe_fs *s) {
 }
 
 // generates a key (vector) z_y that only decrypts the inner product with y
-cfe_error cfe_lwe_fs_derive_key(cfe_vec *z_y, cfe_lwe_fs *s, cfe_vec *y, cfe_mat *SK) {
+cfe_error cfe_lwe_fs_derive_fe_key(cfe_vec *z_y, cfe_lwe_fs *s, cfe_vec *y, cfe_mat *SK) {
     if (!cfe_vec_check_bound(y, s->bound_y)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }

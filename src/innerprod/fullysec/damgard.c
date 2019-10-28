@@ -83,10 +83,6 @@ void cfe_damgard_sec_key_free(cfe_damgard_sec_key *key) {
     cfe_vec_frees(&key->s, &key->t, NULL);
 }
 
-void cfe_damgard_derived_key_free(cfe_damgard_fe_key *key) {
-    mpz_clears(key->key1, key->key2, NULL);
-}
-
 void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *msk, cfe_vec *mpk, cfe_damgard *s) {
     mpz_t s_i, t_i, y1, y2, r, p_min_1;
     mpz_inits(s_i, t_i, y1, y2, r, p_min_1, NULL);
@@ -114,7 +110,11 @@ void cfe_damgard_fe_key_init(cfe_damgard_fe_key *fe_key) {
     mpz_inits(fe_key->key1, fe_key->key2, NULL);
 }
 
-cfe_error cfe_damgard_derive_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
+void cfe_damgard_fe_key_free(cfe_damgard_fe_key *key) {
+    mpz_clears(key->key1, key->key2, NULL);
+}
+
+cfe_error cfe_damgard_derive_fe_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }

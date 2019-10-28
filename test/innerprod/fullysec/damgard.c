@@ -48,7 +48,7 @@ MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
 
     cfe_damgard_fe_key key;
     cfe_damgard_fe_key_init(&key);
-    err = cfe_damgard_derive_key(&key, &s, &msk, &y);
+    err = cfe_damgard_derive_fe_key(&key, &s, &msk, &y);
     munit_assert(err == 0);
 
     cfe_damgard_copy(&encryptor, &s);
@@ -66,7 +66,7 @@ MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
     cfe_vec_frees(&x, &y, &mpk, &ciphertext, NULL);
 
     cfe_damgard_sec_key_free(&msk);
-    cfe_damgard_derived_key_free(&key);
+    cfe_damgard_fe_key_free(&key);
     cfe_damgard_free(&s);
     cfe_damgard_free(&encryptor);
     cfe_damgard_free(&decryptor);

@@ -70,7 +70,7 @@ MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
     cfe_mat_init(&m, l, l);
     cfe_uniform_sample_range_mat(&m, b_neg, b);
     ECP2_BN254 key;
-    err = cfe_sgp_derive_key(&key, &s, &msk, &m);
+    err = cfe_sgp_derive_fe_key(&key, &s, &msk, &m);
     munit_assert(err == 0);
     mpz_t dec, xy;
     mpz_inits(dec, xy , NULL);
