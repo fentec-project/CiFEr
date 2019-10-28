@@ -33,7 +33,7 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
     cfe_error err = cfe_damgard_multi_init(&damgard_multi, num_clients, l, modulus_len, bound);
     munit_assert(err == 0);
 
-    // create num_clients and make an array of their public keys
+    // create clients and make an array of their public keys
     cfe_damgard_dec_multi_client clients[num_clients];
     mpz_t pub_keys[num_clients];
     for (size_t i = 0; i < num_clients; i++) {
@@ -54,7 +54,7 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
         cfe_damgard_dec_multi_generate_keys(&(sec_keys[i]), &(clients[i]));
     }
 
-    // now that the num_clients have  generated secret keys and agreed on shared secret
+    // now that the clients have  generated secret keys and agreed on shared secret
     // they can encrypt a vector in a decentralized way and create partial keys such
     // that only with all of them the decryption of the inner product is possible
     cfe_vec x[num_clients];
@@ -80,17 +80,17 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
     cfe_mat_init(&y, num_clients, l);
     cfe_uniform_sample_mat(&y, bound);
 
-    cfe_damgard_dec_multi_fe_key_part fe_key_shares[num_clients];
+    cfe_damgard_dec_multi_fe_key_part fe_key[num_clients];
     for (size_t i = 0; i < num_clients; i++) {
-        cfe_damgard_dec_multi_fe_key_share_init(&fe_key_shares[i]);
-        err = cfe_damgard_dec_multi_client_derive_fe_key_share(&(fe_key_shares[i]), &y, &(sec_keys[i]), &(clients[i]));
+        cfe_damgard_dec_multi_fe_key_share_init(&fe_key[i]);
+        err = cfe_damgard_dec_multi_client_derive_fe_key_part(&(fe_key[i]), &y, &(sec_keys[i]), &(clients[i]));
         munit_assert(err == 0);
     }
 
     cfe_damgard_dec_multi_dec decryptor;
     cfe_damgard_dec_multi_dec_init(&decryptor, &damgard_multi);
 
-    err = cfe_damgard_dec_multi_decrypt(xy, ciphers, fe_key_shares, &y, &decryptor);
+    err = cfe_damgard_dec_multi_decrypt(xy, ciphers, fe_key, &y, &decryptor);
     munit_assert(err == 0);
 
 
@@ -102,7 +102,7 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
     mpz_clears(bound, bound_neg, xy_check, xy, NULL);
     for (size_t i = 0; i < num_clients; i++) {
         cfe_damgard_dec_multi_client_free(&(clients[i]));
-        cfe_damgard_dec_multi_fe_key_free(&(fe_key_shares[i]));
+        cfe_damgard_dec_multi_fe_key_free(&(fe_key[i]));
         cfe_damgard_dec_multi_sec_key_free(&sec_keys[i]);
         cfe_vec_free(&ciphers[i]);
         cfe_vec_frees(&x[i], NULL);

@@ -96,7 +96,7 @@ void cfe_damgard_multi_free(cfe_damgard_multi *m);
 * @param m A pointer to an instance of the scheme (*initialized* cfe_damgard_multi
  * struct)
 */
-void cfe_damgard_multi_copy_init(cfe_damgard_multi *res, cfe_damgard_multi *m);
+void cfe_damgard_multi_copy(cfe_damgard_multi *res, cfe_damgard_multi *m);
 
 /**
  * Takes configuration parameters of a scheme instance,

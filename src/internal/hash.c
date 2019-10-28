@@ -23,7 +23,7 @@
 #include "cifer/internal/hash.h"
 
 void cfe_hash_G1(ECP_BN254 *g, char *str) {
-    octet tmp_str = {sizeof(str), 0, str};
+    octet tmp_str = {(int) strlen(str), 0, str};
     char h[MODBYTES_256_56];
     octet tmp_hash = {0, sizeof(h), h};
     mhashit(SHA256, -1, &tmp_str, &tmp_hash);
@@ -31,7 +31,7 @@ void cfe_hash_G1(ECP_BN254 *g, char *str) {
 }
 
 void cfe_hash_G2(ECP2_BN254 *g, char *str) {
-    octet tmp_str = {sizeof(str), 0, str};
+    octet tmp_str = {(int) strlen(str), 0, str};
     char h[MODBYTES_256_56];
     octet tmp_hash = {0, sizeof(h), h};
     mhashit(SHA256, -1, &tmp_str, &tmp_hash);

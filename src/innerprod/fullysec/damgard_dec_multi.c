@@ -27,7 +27,7 @@ void cfe_damgard_dec_multi_client_init(cfe_damgard_dec_multi_client *c,
                                        cfe_damgard_multi *damgard_multi, size_t idx) {
     mpz_inits(c->client_sec_key, c->client_pub_key, NULL);
 
-    cfe_damgard_multi_copy_init(&c->scheme, damgard_multi);
+    cfe_damgard_multi_copy(&c->scheme, damgard_multi);
     c->idx = idx;
 
     cfe_uniform_sample(c->client_sec_key, c->scheme.scheme.q);
@@ -128,14 +128,14 @@ void cfe_damgard_dec_multi_fe_key_share_init(cfe_damgard_dec_multi_fe_key_part *
     mpz_init(fe_key_share->otp_key_part);
 }
 
-void cfe_damgard_dec_multi_fe_key_free(cfe_damgard_dec_multi_fe_key_part *fe_key_share) {
-    cfe_damgard_fe_key_free(&(fe_key_share->key_part));
-    mpz_clear(fe_key_share->otp_key_part);
+void cfe_damgard_dec_multi_fe_key_free(cfe_damgard_dec_multi_fe_key_part *fe_key_part) {
+    cfe_damgard_fe_key_free(&(fe_key_part->key_part));
+    mpz_clear(fe_key_part->otp_key_part);
 }
 
-cfe_error cfe_damgard_dec_multi_client_derive_fe_key_share(cfe_damgard_dec_multi_fe_key_part *fe_key_share,
-                                                 cfe_mat *y, cfe_damgard_dec_multi_sec_key *sec_key,
-                                                 cfe_damgard_dec_multi_client *c) {
+cfe_error cfe_damgard_dec_multi_client_derive_fe_key_part(cfe_damgard_dec_multi_fe_key_part *fe_key_part,
+                                                          cfe_mat *y, cfe_damgard_dec_multi_sec_key *sec_key,
+                                                          cfe_damgard_dec_multi_client *c) {
     if (!cfe_mat_check_bound(y, c->scheme.bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
@@ -150,11 +150,11 @@ cfe_error cfe_damgard_dec_multi_client_derive_fe_key_share(cfe_damgard_dec_multi
     cfe_vec_dot(z_1, &(sec_key->otp_key), &y_part);
     cfe_mat_dot(z_2, &(c->share), y);
 
-    mpz_add(fe_key_share->otp_key_part, z_1, z_2);
-    mpz_mod(fe_key_share->otp_key_part, fe_key_share->otp_key_part,
+    mpz_add(fe_key_part->otp_key_part, z_1, z_2);
+    mpz_mod(fe_key_part->otp_key_part, fe_key_part->otp_key_part,
             c->scheme.scheme.q);
 
-    cfe_error err = cfe_damgard_derive_fe_key(&(fe_key_share->key_part),
+    cfe_error err = cfe_damgard_derive_fe_key(&(fe_key_part->key_part),
                                               &(c->scheme.scheme), &(sec_key->dam_sec_key), &y_part);
 
     mpz_clears(z_1, z_2, NULL);
@@ -165,15 +165,15 @@ cfe_error cfe_damgard_dec_multi_client_derive_fe_key_share(cfe_damgard_dec_multi
 
 void cfe_damgard_dec_multi_dec_init(cfe_damgard_dec_multi_dec *d,
                                     cfe_damgard_multi *damgard_multi) {
-    cfe_damgard_multi_copy_init(&d->scheme, damgard_multi);
+    cfe_damgard_multi_copy(&d->scheme, damgard_multi);
 }
 
 void cfe_damgard_dec_multi_dec_free(cfe_damgard_dec_multi_dec *d) {
     cfe_damgard_multi_free(&d->scheme);
 }
 
-cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *cipher,
-                                        cfe_damgard_dec_multi_fe_key_part *fe_key_part,
+cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *ciphers,
+                                        cfe_damgard_dec_multi_fe_key_part *fe_key_parts,
                                         cfe_mat *y, cfe_damgard_dec_multi_dec *d) {
     if (!cfe_mat_check_bound(y, d->scheme.bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
@@ -187,13 +187,13 @@ cfe_error cfe_damgard_dec_multi_decrypt(mpz_t res, cfe_vec *cipher,
     mpz_set_ui(key.z, 0);
 
     for (size_t i = 0; i < d->scheme.num_clients; i++) {
-        mpz_add(key.z, key.z, fe_key_part[i].otp_key_part);
-        key.keys[i] = fe_key_part[i].key_part;
+        mpz_add(key.z, key.z, fe_key_parts[i].otp_key_part);
+        key.keys[i] = fe_key_parts[i].key_part;
 
     }
     mpz_mod(key.z, key.z, d->scheme.scheme.q);
 
-    cfe_error err = cfe_damgard_multi_decrypt(res, &(d->scheme), cipher, &key, y);
+    cfe_error err = cfe_damgard_multi_decrypt(res, &(d->scheme), ciphers, &key, y);
 
     mpz_clear(key.z);
     free(key.keys);

@@ -49,7 +49,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
 
     cfe_vec ciphertext[num_clients];
 
-    cfe_damgard_multi_client encryptors[num_clients];
+    cfe_damgard_multi_client clients[num_clients];
     for (size_t i = 0; i < num_clients; i++) {
         cfe_vec *x_vec = cfe_mat_get_row_ptr(&x, i);
         cfe_uniform_sample_vec(x_vec, bound);
@@ -57,15 +57,15 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
         cfe_vec *pub_key = cfe_mat_get_row_ptr(&mpk, i);
         cfe_vec *otp = cfe_mat_get_row_ptr(&msk.otp, i);
 
-        cfe_damgard_multi_client_init(&encryptors[i], &m);
-        cfe_damgard_multi_ciphertext_init(&(ciphertext[i]), &encryptors[0]);
+        cfe_damgard_multi_client_init(&clients[i], &m);
+        cfe_damgard_multi_ciphertext_init(&(ciphertext[i]), &clients[0]);
 
-        err = cfe_damgard_multi_encrypt(&(ciphertext[i]), &encryptors[i], x_vec, pub_key, otp);
+        err = cfe_damgard_multi_encrypt(&(ciphertext[i]), &clients[i], x_vec, pub_key, otp);
         munit_assert(err == 0);
     }
 
     cfe_damgard_multi decryptor;
-    cfe_damgard_multi_copy_init(&decryptor, &m);
+    cfe_damgard_multi_copy(&decryptor, &m);
     err = cfe_damgard_multi_decrypt(xy, &m, ciphertext, &fe_key, &y);
     munit_assert(err == 0);
 
@@ -80,7 +80,7 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     cfe_damgard_multi_free(&m);
     cfe_damgard_multi_free(&decryptor);
     for (size_t i = 0; i < num_clients; i++) {
-        cfe_damgard_multi_client_free(&encryptors[i]);
+        cfe_damgard_multi_client_free(&clients[i]);
         cfe_vec_free(&ciphertext[i]);
     }
 
