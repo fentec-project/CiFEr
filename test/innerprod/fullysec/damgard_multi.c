@@ -28,8 +28,8 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
 
+    // create a multi-client scheme
     cfe_damgard_multi m;
-
     cfe_error err = cfe_damgard_multi_init(&m, num_clients, l, modulus_len, bound);
     munit_assert(err == 0);
 
@@ -38,15 +38,20 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
     cfe_mat_inits(num_clients, l, &x, &y, NULL);
     cfe_damgard_multi_sec_key msk;
 
+    // generate secret an public key
     cfe_damgard_multi_master_keys_init(&mpk, &msk, &m);
     cfe_damgard_multi_generate_master_keys(&mpk, &msk, &m);
 
+    // sample an inner product key and derive a corresponding
+    // functional encryption key
     cfe_damgard_multi_fe_key fe_key;
     cfe_damgard_multi_fe_key_init(&fe_key, &m);
     cfe_uniform_sample_mat(&y, bound);
     err = cfe_damgard_multi_derive_fe_key(&fe_key, &m, &msk, &y);
     munit_assert(err == 0);
 
+    // simulate clients so that each client encrypts its
+    // vector x; collect encryptions in an array
     cfe_vec ciphertext[num_clients];
 
     cfe_damgard_multi_client clients[num_clients];
@@ -64,14 +69,18 @@ MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *da
         munit_assert(err == 0);
     }
 
+    // simulate decrytor that using FE key an an array of ciphertexts
+    // decrypts a value Σ_i <x_i, y_i> (sum of inner products)
     cfe_damgard_multi decryptor;
     cfe_damgard_multi_copy(&decryptor, &m);
     err = cfe_damgard_multi_decrypt(xy, &m, ciphertext, &fe_key, &y);
     munit_assert(err == 0);
 
+    // check correctness
     cfe_mat_dot(xy_check, &x, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
+    // clear up
     mpz_clears(bound, xy_check, xy, NULL);
     cfe_mat_frees(&x, &y, &mpk, NULL);
 

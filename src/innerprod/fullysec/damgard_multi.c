@@ -147,7 +147,7 @@ cfe_error cfe_damgard_multi_encrypt(cfe_vec *ciphertext, cfe_damgard_multi_clien
     return err;
 }
 
-cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_vec *ciphertext, cfe_damgard_multi_fe_key *key,
+cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_vec *ciphertext, cfe_damgard_multi_fe_key *fe_key,
                                     cfe_mat *y) {
     if (!cfe_mat_check_bound(y, m->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
@@ -166,8 +166,8 @@ cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_vec *ci
             mpz_mod(num, num, m->scheme.p);
         }
 
-        mpz_powm(t1, ciphertext[i].vec[0], key->keys[i].key1, m->scheme.p);
-        mpz_powm(t2, ciphertext[i].vec[1], key->keys[i].key2, m->scheme.p);
+        mpz_powm(t1, ciphertext[i].vec[0], fe_key->keys[i].key1, m->scheme.p);
+        mpz_powm(t2, ciphertext[i].vec[1], fe_key->keys[i].key2, m->scheme.p);
         mpz_mul(denom, t1, t2);
         mpz_mod(denom, denom, m->scheme.p);
 
@@ -178,7 +178,7 @@ cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_vec *ci
         mpz_mod(r, r, m->scheme.p);
     }
 
-    mpz_powm(z_exp, m->scheme.g, key->z, m->scheme.p);
+    mpz_powm(z_exp, m->scheme.g, fe_key->z, m->scheme.p);
     mpz_invert(z_exp_inv, z_exp, m->scheme.p);
 
     mpz_mul(r, r, z_exp_inv);

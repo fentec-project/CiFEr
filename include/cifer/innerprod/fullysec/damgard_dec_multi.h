@@ -31,7 +31,7 @@
  * They interactively generate private keys for each client so that client i
  * can encrypt vector x_i. The scheme allows the clients to interactively
  * generate a key_Y, depending on a matrix Y with rows y_i, so that
- * given key_y and the ciphertext the decryptor can compute value
+ * given key_Y and the ciphertexts the decryptor can compute value
  * Σ_i <x_i, y_i> (sum of dot products).
  */
 
@@ -60,7 +60,7 @@ typedef struct cfe_damgard_dec_multi_dec {
 
 /**
  * cfe_damgard_dec_multi_sec_key represents a secret key that each client posses
- * and needed for encrypting and derivation of functional encryption keys. This key
+ * and is needed for encryption, and derivation of functional encryption keys. This key
  * should be different for each new encryption.
  */
 typedef struct cfe_damgard_dec_multi_sec_key {
@@ -100,9 +100,10 @@ void cfe_damgard_dec_multi_client_init(cfe_damgard_dec_multi_client *c,
 void cfe_damgard_dec_multi_client_free(cfe_damgard_dec_multi_client *c);
 
 /**
- * Sets a secret key share for the client based on the public keys of all the
+ * Sets a secret share for the client based on the public keys of all the
  * participant. Note that the function assumes that if there are n clients,
- * their identifications are from [0,n).
+ * their identifications are from [0,n) and their public keys are given
+ * by an array in the corresponding order.
  *
  * @param c A pointer to an initialized struct representing the scheme
  * @param pub_keys An array of public keys
@@ -142,7 +143,7 @@ void cfe_damgard_dec_multi_generate_keys(cfe_damgard_dec_multi_sec_key *sec_key,
                                          cfe_damgard_dec_multi_client *c);
 
 /**
- * Initializes the struct which represent the ciphertext of each client.
+ * Initializes the struct which represents the ciphertext of each client.
  *
  * @param ciphertext A pointer to an uninitialized cfe_vec struct
  * @param c A pointer to an instance of the scheme (*initialized*
@@ -201,7 +202,7 @@ cfe_error cfe_damgard_dec_multi_client_derive_fe_key_part(cfe_damgard_dec_multi_
                                                           cfe_damgard_dec_multi_client *c);
 
 /**
- * Initializes the struct which represent a decryptor in a
+ * Initializes the struct which represents a decryptor in a
  * in a decentralized multi input Damgard style scheme.
  *
  * @param d A pointer to an uninitialized cfe_damgard_dec_multi_dec struct

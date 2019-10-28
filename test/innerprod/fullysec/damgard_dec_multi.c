@@ -54,9 +54,8 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
         cfe_damgard_dec_multi_generate_keys(&(sec_keys[i]), &(clients[i]));
     }
 
-    // now that the clients have  generated secret keys and agreed on shared secret
-    // they can encrypt a vector in a decentralized way and create partial keys such
-    // that only with all of them the decryption of the inner product is possible
+    // now that the clients have generated secret keys and agreed on shared secret
+    // they can encrypt vectors in a decentralized way
     cfe_vec x[num_clients];
     cfe_mat X_for_check;
     cfe_mat_init(&X_for_check, num_clients, l);
@@ -69,13 +68,15 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
 
         cfe_mat_set_vec(&X_for_check, &(x[i]), i);
 
-
         cfe_damgard_dec_multi_ciphertext_init(&ciphers[i], &clients[i]);
         err = cfe_damgard_dec_multi_encrypt(&ciphers[i], &x[i], &sec_keys[i], &clients[i]);
         munit_assert(err == 0);
-
     }
 
+    // independently of the encryption the clients in decentralized way
+    // derive partial functional encryption keys such that only with
+    // all of them the decryption of the inner product is possible
+    // in particular functional encryption key for matrix y is derived
     cfe_mat y;
     cfe_mat_init(&y, num_clients, l);
     cfe_uniform_sample_mat(&y, bound);
@@ -87,12 +88,12 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
         munit_assert(err == 0);
     }
 
+    // a decryptor is given FE keys and can decrypt Σ_i <x_i, y_i> (sum of inner products)
     cfe_damgard_dec_multi_dec decryptor;
     cfe_damgard_dec_multi_dec_init(&decryptor, &damgard_multi);
 
     err = cfe_damgard_dec_multi_decrypt(xy, ciphers, fe_key, &y, &decryptor);
     munit_assert(err == 0);
-
 
     // check correctness
     cfe_mat_dot(xy_check, &X_for_check, &y);

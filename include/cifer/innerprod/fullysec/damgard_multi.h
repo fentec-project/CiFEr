@@ -218,12 +218,13 @@ cfe_damgard_multi_encrypt(cfe_vec *ciphertext, cfe_damgard_multi_client *e, cfe_
  * @param res The result of the decryption (the value will be stored here)
  * @param m A pointer to an instance of the scheme (*initialized* cfe_damgard_multi
  * struct)
- * @param ciphertext A pointer to the matrix comprised of encrypted vectors
- * @param key A pointer to the functional encryption key
- * @param y A pointer to the matrix comprised of plaintext vectors
+ * @param ciphertext An array comprised of encrypted vectors
+ * @param fe_key An functional encryption key represented as an array of
+ * the parts of functional encryption keys.
+ * @param y A pointer to the matrix comprised of plaintext inner product vectors
  * @return Error code
  */
-cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_vec *ciphertext, cfe_damgard_multi_fe_key *key,
-                                    cfe_mat *y);
+cfe_error cfe_damgard_multi_decrypt(mpz_t res, cfe_damgard_multi *m, cfe_vec *ciphertext,
+                                    cfe_damgard_multi_fe_key *fe_key, cfe_mat *y);
 
 #endif

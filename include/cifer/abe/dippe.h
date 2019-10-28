@@ -111,7 +111,7 @@ typedef struct cfe_dippe_cipher {
  *
  * @param cipher A pointer to a cfe_dippe_cipher struct
  * @param dippe A pointer to a cfe_dippe struct
- * @param pol_size Length of the cypher
+ * @param pol_size Length of the cipher
  */
 void cfe_dippe_cipher_init(cfe_dippe_cipher *cipher, cfe_dippe *dippe, size_t pol_size);
 

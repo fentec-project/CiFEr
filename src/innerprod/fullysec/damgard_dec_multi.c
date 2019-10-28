@@ -18,7 +18,6 @@
 #include <sodium.h>
 #include <amcl/pbc_support.h>
 
-#include "cifer/internal/big.h"
 #include "cifer/innerprod/fullysec/damgard_dec_multi.h"
 #include "cifer/sample/uniform.h"
 #include "cifer/internal/common.h"
