@@ -472,24 +472,83 @@ MunitResult test_matrix_from_vec(const MunitParameter params[], void *data) {
     return MUNIT_OK;
 }
 
+MunitResult test_matrix_inverse(const MunitParameter params[], void *data) {
+    mpz_t p, det;
+    mpz_init(det);
+    mpz_init_set_ui(p, 7);
+
+    cfe_mat m, m_inv, m_inv_gauss;
+    cfe_mat_inits(5, 5, &m, &m_inv, &m_inv_gauss, NULL);
+    cfe_uniform_sample_mat(&m, p);
+
+    cfe_error err1 = cfe_mat_inverse_mod(&m_inv, &m, p);
+
+    cfe_error err2 = cfe_mat_inverse_mod_gauss(&m_inv_gauss, det, &m, p);
+    munit_assert(err1 == err2);
+
+    for (size_t i = 0; i < m.rows; i++) {
+        for (size_t j = 0; j < m.cols; j++) {
+            munit_assert(mpz_cmp(m_inv.mat[i].vec[j], m_inv_gauss.mat[i].vec[j]) == 0);
+        }
+    }
+
+    cfe_mat_frees(&m, &m_inv, &m_inv_gauss, NULL);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_gaussian_elimination(const MunitParameter params[], void *data) {
+    // define parameters
+    mpz_t p;
+    mpz_init_set_ui(p, 17);
+    cfe_mat mat;
+    cfe_mat_init(&mat, 100, 50);
+    cfe_vec x_test, x, vec;
+    cfe_vec_init(&x_test, 50);
+    cfe_vec_init(&vec, 100);
+
+    // sample random mat, x_test and calculate vec = mat * x_test
+    cfe_uniform_sample_vec(&x_test, p);
+    cfe_uniform_sample_mat(&mat, p);
+    cfe_mat_mul_vec(&vec, &mat, &x_test);
+    cfe_vec_mod(&vec, &vec, p);
+
+    // use gaussian elimination to get x solving the equation vec = mat * x
+    cfe_error err = cfe_gaussian_elimination_solver(&x, &mat, &vec, p);
+    munit_assert(err == 0);
+
+    // check if the result is correct, i.e. x_test = x
+    for (size_t i = 0; i < x.size; i++) {
+        munit_assert(mpz_cmp(x.vec[i], x_test.vec[i]) == 0);
+    }
+
+    // clear up
+    mpz_clear(p);
+    cfe_vec_frees(&x_test, &x, &vec, NULL);
+    cfe_mat_free(&mat);
+    return MUNIT_OK;
+}
+
 MunitTest matrix_tests[] = {
-        {(char *) "/test-init-free",   test_matrix_init_free,   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-inits-frees", test_matrix_inits_frees, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-get-set",     test_matrix_get_set,     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-get-set-vec", test_matrix_get_set_vec, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-get-row",     test_matrix_get_row,     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-get-row-ptr", test_matrix_get_row_ptr, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-get-col",     test_matrix_get_col,     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-add",         test_matrix_add,         NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-mod",         test_matrix_mod,         NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-transpose",   test_matrix_transpose,   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-check-bound", test_matrix_check_bound, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-mul",         test_matrix_mul,         NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-mul-vec",     test_matrix_mul_vec,     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-dot",         test_matrix_dot,         NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-to-vec",      test_matrix_to_vec,      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-from-vec",    test_matrix_from_vec,    NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {NULL, NULL,                                            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
+        {(char *) "/test-init-free",            test_matrix_init_free,     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-inits-frees",          test_matrix_inits_frees,   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-get-set",              test_matrix_get_set,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-get-set-vec",          test_matrix_get_set_vec,   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-get-row",              test_matrix_get_row,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-get-row-ptr",          test_matrix_get_row_ptr,   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-get-col",              test_matrix_get_col,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-add",                  test_matrix_add,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-mod",                  test_matrix_mod,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-transpose",            test_matrix_transpose,     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-check-bound",          test_matrix_check_bound,   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-mul",                  test_matrix_mul,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-mul-vec",              test_matrix_mul_vec,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-dot",                  test_matrix_dot,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-to-vec",               test_matrix_to_vec,        NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-from-vec",             test_matrix_from_vec,      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-inverse",             test_matrix_inverse,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/test-gaussian-elimination", test_gaussian_elimination, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {NULL, NULL,                                                       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 MunitSuite matrix_suite = {

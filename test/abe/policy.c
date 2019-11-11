@@ -47,7 +47,7 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     cfe_vec_set_const(&one_vec, one);
 
     mpz_init_set_ui(p, 17);
-    check = cfe_gaussian_elimination(&x, &sub_mat_transpose, &one_vec, p);
+    check = cfe_gaussian_elimination_solver(&x, &sub_mat_transpose, &one_vec, p);
     munit_assert(check == CFE_ERR_NONE);
 
     // define a faulty boolean expression and check for error
@@ -61,38 +61,6 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     cfe_vec_frees(&one_vec, &x, NULL);
     mpz_clears(one, p, NULL);
 
-    return MUNIT_OK;
-}
-
-MunitResult test_gaussian_elimination(const MunitParameter params[], void *data) {
-    // define parameters
-    mpz_t p;
-    mpz_init_set_ui(p, 17);
-    cfe_mat mat;
-    cfe_mat_init(&mat, 100, 50);
-    cfe_vec x_test, x, vec;
-    cfe_vec_init(&x_test, 50);
-    cfe_vec_init(&vec, 100);
-
-    // sample random mat, x_test and calculate vec = mat * x_test
-    cfe_uniform_sample_vec(&x_test, p);
-    cfe_uniform_sample_mat(&mat, p);
-    cfe_mat_mul_vec(&vec, &mat, &x_test);
-    cfe_vec_mod(&vec, &vec, p);
-
-    // use gaussian elimination to get x solving the equation vec = mat * x
-    cfe_error err = cfe_gaussian_elimination(&x, &mat, &vec, p);
-    munit_assert(err == 0);
-
-    // check if the result is correct, i.e. x_test = x
-    for (size_t i = 0; i < x.size; i++) {
-        munit_assert(mpz_cmp(x.vec[i], x_test.vec[i]) == 0);
-    }
-
-    // clear up
-    mpz_clear(p);
-    cfe_vec_frees(&x_test, &x, &vec, NULL);
-    cfe_mat_free(&mat);
     return MUNIT_OK;
 }
 
@@ -112,7 +80,6 @@ MunitResult test_str_to_int(const MunitParameter params[], void *data) {
 
 MunitTest policy_tests[] = {
         {(char *) "/test-boolean_to_msp",       test_boolean_to_msp,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-gaussian-elimination", test_gaussian_elimination, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/test-str-to-int",           test_str_to_int,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                                       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };

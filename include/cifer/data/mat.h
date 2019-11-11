@@ -201,4 +201,25 @@ cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod);
  */
 void cfe_mat_mul_x_mat_y(mpz_t res, cfe_mat *mat, cfe_vec *x, cfe_vec *y);
 
+cfe_error cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p);
+
+cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p);
+
+cfe_error cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p);
+
+/**
+ * cfe_gaussian_elimination solves a matrix vector equation mat * x = v and finds
+ * vector x, using Gaussian elimination. Arithmetic operations are considered
+ * to be over Z_p, where p should be a prime number. If such x does not exist,
+ * then the function returns an 1, else 0.
+ *
+ * @param res A pointer to an uninitialized vector where the result will be saved
+ * @param mat A pointer to the matrix for the equation
+ * @param vec A pointer to the right-hand side vector in the equation
+ * @param p Modulus for the computations
+ * @return Returns CFE_ERR_NO_SOLUTION_EXISTS error if the solution does not
+ * exist, else CFE_ERR_NONE for no error
+ */
+cfe_error cfe_gaussian_elimination_solver(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p);
+
 #endif

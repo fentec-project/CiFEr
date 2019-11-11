@@ -383,3 +383,267 @@ void cfe_mat_mul_x_mat_y(mpz_t res, cfe_mat *mat, cfe_vec *x, cfe_vec *y) {
     cfe_vec_dot(res, &t, x);
     cfe_vec_free(&t);
 }
+
+cfe_error cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p) {
+    cfe_error ret_error = CFE_ERR_NONE;
+
+    cfe_mat_copy(res, mat);
+    cfe_mat_mod(res, res, p);
+
+    mpz_t min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv;
+    mpz_inits(min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
+    cfe_vec vec_tmp;
+
+    mpz_set_si(min_one, -1);
+    mpz_set_ui(zero, 0);
+    size_t h = 0, k = 0;
+    while (h < mat->rows && k < mat->cols) {
+        bool is_zero = true;
+        for (size_t i = h; i < mat->rows; i++) {
+            cfe_mat_get(tmp, res, i, k);
+            if (mpz_cmp_ui(tmp, 0) != 0) {
+                vec_tmp = res->mat[i];
+                res->mat[i] = res->mat[h];
+                res->mat[h] = vec_tmp;
+
+                is_zero = false;
+                break;
+            }
+        }
+
+        if (is_zero) {
+            k++;
+            continue;
+        }
+        cfe_mat_get(tmp, res, h, k);
+        mpz_invert(mhk_inv, tmp, p);
+        for (size_t i = h + 1; i < res->rows; i++) {
+            cfe_mat_get(tmp, res, i, k);
+            mpz_mul(lead_mul_inv, mhk_inv, tmp);
+            cfe_mat_set(res, zero, i, k);
+            for (size_t j = k + 1; j < res->cols; j++) {
+                cfe_mat_get(tmp, res, i, j);
+                cfe_mat_get(tmp2, res, h, j);
+
+                mpz_mul(tmp2, tmp2, lead_mul_inv);
+                mpz_sub(tmp, tmp, tmp2);
+                mpz_mod(tmp, tmp, p);
+
+                cfe_mat_set(res, tmp, i, j);
+            }
+        }
+        k++;
+        h++;
+    }
+
+    mpz_clears(min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
+
+    return ret_error;
+}
+
+cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p) {
+    cfe_mat m_ext;
+    cfe_mat_init(&m_ext, m->rows, 2*m->cols);
+
+    mpz_t tmp, tmp_sum, one, zero;
+    mpz_inits(tmp, tmp_sum, one, zero, NULL);
+    mpz_set_ui(one, 1);
+    mpz_set_ui(zero, 0);
+
+    // we copy matrix m into m_ext and extend it with identity
+    for (size_t i = 0; i < m->rows; i++) {
+        for (size_t j = 0; j < m->cols; j++) {
+            cfe_mat_get(tmp, m, i, j);
+            cfe_mat_set(&m_ext, tmp, i, j);
+
+        }
+        for (size_t j = m->cols; j < 2 * m->cols; j++) {
+            if (i+m->cols == j) {
+                cfe_mat_set(&m_ext, one, i, j);
+            } else {
+                cfe_mat_set(&m_ext, zero, i, j);
+            }
+        }
+    }
+
+    // transform m into upper triangular matrix
+    cfe_mat triang;
+    cfe_mat_init(&triang, m->rows, 2*m->cols);
+    cfe_error ret_error = cfe_mat_gaussian_elimination(&triang, &m_ext, p);
+    if (ret_error != CFE_ERR_NONE) {
+        return ret_error;
+    }
+
+    // check if the inverse can be computed
+    mpz_set(det, one);
+    for (size_t i = 0; i < m->rows; i++) {
+        cfe_mat_get(tmp, &triang, i, i);
+        mpz_mul(det, det, tmp);
+        mpz_mod(det, det, p);
+    }
+    if (mpz_cmp(det, zero) == 0) {
+        return CFE_ERR_NO_INVERSE;
+    }
+
+    // use the upper triangular form to obtain the solution
+    for (size_t k = 0; k < m->rows; k++) {
+        size_t i = m->rows - 1;
+        while (true) {
+            mpz_set(tmp_sum, zero);
+            for (size_t l = i + 1; l < m->cols; l++) {
+                mpz_mul(tmp, triang.mat[i].vec[l], res->mat[l].vec[k]);
+                mpz_add(tmp_sum, tmp_sum, tmp);
+            }
+
+            mpz_sub(res->mat[i].vec[k], triang.mat[i].vec[m->cols + k], tmp_sum);
+            mpz_invert(tmp, triang.mat[i].vec[i], p);
+            mpz_mul(res->mat[i].vec[k], res->mat[i].vec[k], tmp);
+            mpz_mod(res->mat[i].vec[k], res->mat[i].vec[k], p);
+
+            if (i == 0) {
+                break;
+            }
+            i--;
+        }
+    }
+
+    return CFE_ERR_NONE;
+}
+
+cfe_error cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p) {
+    mpz_t tmp;
+    mpz_init(tmp);
+
+    // transform m into upper triangular matrix
+    cfe_mat triang;
+    cfe_mat_init(&triang, m->rows, m->cols);
+    cfe_error ret_error = cfe_mat_gaussian_elimination(&triang, m, p);
+    if (ret_error != CFE_ERR_NONE) {
+        return ret_error;
+    }
+
+    // compute the determinant
+    mpz_set_ui(det, 1);
+    for (size_t i = 0; i < m->rows; i++) {
+        cfe_mat_get(tmp, &triang, i, i);
+        mpz_mul(det, det, tmp);
+        mpz_mod(det, det, p);
+    }
+
+    return CFE_ERR_NONE;
+
+}
+
+cfe_error cfe_gaussian_elimination_solver(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p) {
+    cfe_error ret_error = CFE_ERR_NONE;
+
+    cfe_mat m;
+    cfe_vec v, vec_tmp;
+    cfe_mat_init(&m, mat->rows, mat->cols);
+    cfe_mat_copy(&m, mat);
+    cfe_vec_init(&v, vec->size);
+    cfe_vec_copy(&v, vec);
+    cfe_mat_mod(&m, &m, p);
+    cfe_vec_mod(&v, &v, p);
+
+    mpz_t min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv;
+    mpz_inits(min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
+
+    mpz_set_si(min_one, -1);
+    mpz_set_ui(zero, 0);
+    cfe_vec_init(res, mat->cols);
+    cfe_vec_set_const(res, min_one);
+    size_t h = 0, k = 0;
+    while (h < m.rows && k < m.cols) {
+        bool is_zero = true;
+        for (size_t i = h; i < m.rows; i++) {
+            cfe_mat_get(tmp, &m, i, k);
+            if (mpz_cmp_ui(tmp, 0) != 0) {
+                vec_tmp = m.mat[i];
+                m.mat[i] = m.mat[h];
+                m.mat[h] = vec_tmp;
+
+                mpz_set(tmp, v.vec[i]);
+                mpz_set(v.vec[i], v.vec[h]);
+                mpz_set(v.vec[h], tmp);
+                is_zero = false;
+                break;
+            }
+        }
+
+        if (is_zero) {
+            cfe_vec_set(res, zero, k);
+            k++;
+            continue;
+        }
+        cfe_mat_get(tmp, &m, h, k);
+        mpz_invert(mhk_inv, tmp, p);
+        for (size_t i = h + 1; i < m.rows; i++) {
+            cfe_mat_get(tmp, &m, i, k);
+            mpz_mul(lead_mul_inv, mhk_inv, tmp);
+            cfe_mat_set(&m, zero, i, k);
+            for (size_t j = k + 1; j < m.cols; j++) {
+                cfe_mat_get(tmp, &m, i, j);
+                cfe_mat_get(tmp2, &m, h, j);
+
+                mpz_mul(tmp2, tmp2, lead_mul_inv);
+                mpz_sub(tmp, tmp, tmp2);
+                mpz_mod(tmp, tmp, p);
+
+                cfe_mat_set(&m, tmp, i, j);
+            }
+            cfe_vec_get(tmp2, &v, h);
+            cfe_vec_get(tmp, &v, i);
+
+            mpz_mul(tmp2, tmp2, lead_mul_inv);
+            mpz_sub(tmp, tmp, tmp2);
+            mpz_mod(tmp, tmp, p);
+
+            cfe_vec_set(&v, tmp, i);
+        }
+        k++;
+        h++;
+    }
+
+    for (size_t i = h; i < m.rows; i++) {
+        if (mpz_cmp_ui(v.vec[i], 0) != 0) {
+            ret_error = CFE_ERR_NO_SOLUTION_EXISTS;
+            cfe_vec_free(res);
+            goto cleanup;
+        }
+    }
+
+    for (size_t j = k; j < m.cols; j++) {
+        cfe_vec_set(res, zero, j);
+    }
+
+    h--;
+    k--;
+    while (true) {
+        if (mpz_cmp_si(res->vec[k], -1) == 0) {
+            mpz_set_ui(tmp, 0);
+            for (size_t l = k + 1; l < m.cols; l++) {
+                cfe_mat_get(tmp2, &m, h, l);
+                mpz_mul(tmp2, tmp2, res->vec[l]);
+                mpz_add(tmp, tmp, tmp2);
+            }
+            mpz_sub(tmp, v.vec[h], tmp);
+            cfe_mat_get(tmp2, &m, h, k);
+            mpz_invert(tmp2, tmp2, p);
+            mpz_mul(tmp, tmp, tmp2);
+            mpz_mod(tmp, tmp, p);
+            cfe_vec_set(res, tmp, k);
+            h--;
+        }
+        if (k == 0) {
+            break;
+        }
+        k--;
+    }
+    cleanup:
+    mpz_clears(min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
+    cfe_vec_free(&v);
+    cfe_mat_free(&m);
+
+    return ret_error;
+}

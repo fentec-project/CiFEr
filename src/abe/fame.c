@@ -350,7 +350,7 @@ cfe_error cfe_fame_decrypt(FP12_BN254 *res, cfe_fame_cipher *cipher,
     cfe_vec_set_const(&one_vec, zero);
     mpz_set_ui(one_vec.vec[0], 1);
 
-    cfe_error check = cfe_gaussian_elimination(&alpha, &mat_for_keys_trans, &one_vec, fame->p);
+    cfe_error check = cfe_gaussian_elimination_solver(&alpha, &mat_for_keys_trans, &one_vec, fame->p);
     if (check) {
         return CFE_ERR_INSUFFICIENT_KEYS;
     }

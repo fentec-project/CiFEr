@@ -100,19 +100,4 @@ char *cfe_remove_spaces(char *source);
  */
 void cfe_msp_free(cfe_msp *msp);
 
-/**
- * cfe_gaussian_elimination solves a matrix vector equation mat * x = v and finds
- * vector x, using Gaussian elimination. Arithmetic operations are considered
- * to be over Z_p, where p should be a prime number. If such x does not exist,
- * then the function returns an 1, else 0.
- *
- * @param res A pointer to an uninitialized vector where the result will be saved
- * @param mat A pointer to the matrix for the equation
- * @param vec A pointer to the right-hand side vector in the equation
- * @param p Modulus for the computations
- * @return Returns CFE_ERR_NO_SOLUTION_EXISTS error if the solution does not
- * exist, else CFE_ERR_NONE for no error
- */
-cfe_error cfe_gaussian_elimination(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p);
-
 #endif
