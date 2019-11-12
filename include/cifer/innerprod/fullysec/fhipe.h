@@ -22,6 +22,7 @@
 #include <amcl/ecp_BN254.h>
 #include <cifer/data/mat.h>
 #include <amcl/ecp2_BN254.h>
+#include <cifer/data/vec_curve.h>
 
 
 /**
@@ -58,8 +59,28 @@ void cfe_fhipe_init(cfe_fhipe *c, size_t l, mpz_t bound_x, mpz_t bound_y);
 typedef struct cfe_fhipe_sec_key {
     ECP_BN254 g1;
     ECP2_BN254 g2;
-    cfe_mat   B;
-    cfe_mat   B_star;
+    cfe_mat B;
+    cfe_mat B_star;
 } cfe_fhipe_sec_key;
+
+void cfe_fhipe_master_key_init(cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+
+
+void cfe_fhipe_master_key_free(cfe_fhipe_sec_key *sec_key);
+
+cfe_error cfe_fhipe_generate_master_key(cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+
+/**
+ * cfe_dmcfe_client represents a client in a decentralized multi-client scheme.
+ */
+typedef struct cfe_fhipe_FE_key {
+    ECP_BN254 k1;
+    cfe_vec_G1 k2;
+} cfe_fhipe_FE_key;
+
+void cfe_fhipe_FE_key_init(cfe_fhipe_FE_key *fe_key, cfe_fhipe *c);
+
+void cfe_fhipe_derive_FE_key(cfe_fhipe_FE_key *fe_key, cfe_vec *y, cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+
 
 #endif

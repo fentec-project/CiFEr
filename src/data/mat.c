@@ -384,6 +384,15 @@ void cfe_mat_mul_x_mat_y(mpz_t res, cfe_mat *mat, cfe_vec *x, cfe_vec *y) {
     cfe_vec_free(&t);
 }
 
+void cfe_mat_mul_scalar(cfe_mat *res, cfe_mat *mat, mpz_t s) {
+    assert(res->rows == mat->rows);
+    assert(res->cols == mat->cols);
+    for (size_t j = 0; j < mat->cols; j++) {
+        cfe_vec_mul_scalar(&(res->mat[j]), &(mat->mat[j]), s);
+    }
+}
+
+
 cfe_error cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p) {
     cfe_error ret_error = CFE_ERR_NONE;
 

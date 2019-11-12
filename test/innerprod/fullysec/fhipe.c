@@ -29,6 +29,21 @@ MunitResult test_fhipe_end_to_end(const MunitParameter *params, void *data) {
     cfe_fhipe fhipe;
     cfe_fhipe_init(&fhipe, l, bound, bound);
 
+    cfe_fhipe_sec_key sec_key;
+    cfe_fhipe_master_key_init(&sec_key, &fhipe);
+    cfe_fhipe_generate_master_key(&sec_key, &fhipe);
+
+    cfe_fhipe_FE_key FE_key;
+    cfe_fhipe_FE_key_init(&FE_key, &fhipe);
+
+    cfe_vec x, y;
+    cfe_vec_inits(l, &x, &y, NULL);
+    cfe_uniform_sample_range_vec(&x, bound_neg, bound);
+    cfe_uniform_sample_range_vec(&y, bound_neg, bound);
+    cfe_vec_dot(xy_check, &x, &y);
+
+    cfe_fhipe_derive_FE_key(&FE_key, &y, &sec_key, &fhipe);
+
     return MUNIT_OK;
 }
 

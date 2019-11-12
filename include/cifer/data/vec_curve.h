@@ -77,6 +77,8 @@ void cfe_vec_G1_inf(cfe_vec_G1 *v);
  */
 void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u);
 
+void cfe_vec_mul_vec_G1(cfe_vec_G1 *res, cfe_vec *u, cfe_vec_G1 *v);
+
 /**
  * Initializes a vector of ECP2_BN254 elements of given size.
  *

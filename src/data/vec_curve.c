@@ -45,6 +45,18 @@ void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u) {
     }
 }
 
+void cfe_vec_mul_vec_G1(cfe_vec_G1 *res, cfe_vec *u, cfe_vec_G1 *v) {
+    assert(v->size == u->size);
+    assert(v->size == res->size);
+
+    BIG_256_56 x;
+    for (size_t i = 0; i < u->size; i++) {
+        ECP_BN254_copy(&(res->vec[i]), &(v->vec[i]));
+        BIG_256_56_from_mpz(x, u->vec[i]);
+        ECP_BN254_mul(&(res->vec[i]), x);
+    }
+}
+
 void cfe_vec_G2_init(cfe_vec_G2 *v, size_t size) {
     v->size = size;
     v->vec = (ECP2_BN254 *) cfe_malloc(size * sizeof(ECP2_BN254));
