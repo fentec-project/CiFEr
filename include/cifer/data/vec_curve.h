@@ -104,6 +104,8 @@ void cfe_vec_G2_inf(cfe_vec_G2 *v);
  */
 void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u);
 
+void cfe_vec_mul_vec_G2(cfe_vec_G2 *res, cfe_vec *u, cfe_vec_G2 *v);
+
 /**
  * Initializes a vector of FP12_BN254 elements of given size.
  *

@@ -393,17 +393,14 @@ void cfe_mat_mul_scalar(cfe_mat *res, cfe_mat *mat, mpz_t s) {
 }
 
 
-cfe_error cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p) {
-    cfe_error ret_error = CFE_ERR_NONE;
-
+void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p) {
     cfe_mat_copy(res, mat);
     cfe_mat_mod(res, res, p);
 
-    mpz_t min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv;
-    mpz_inits(min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
+    mpz_t zero, tmp, tmp2, mhk_inv, lead_mul_inv;
+    mpz_inits(zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
     cfe_vec vec_tmp;
 
-    mpz_set_si(min_one, -1);
     mpz_set_ui(zero, 0);
     size_t h = 0, k = 0;
     while (h < mat->rows && k < mat->cols) {
@@ -445,12 +442,11 @@ cfe_error cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p) {
         h++;
     }
 
-    mpz_clears(min_one, zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
-
-    return ret_error;
+    mpz_clears(zero, tmp, tmp2, mhk_inv, lead_mul_inv, NULL);
 }
 
 cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p) {
+    cfe_error err = CFE_ERR_NONE;
     cfe_mat m_ext;
     cfe_mat_init(&m_ext, m->rows, 2*m->cols);
 
@@ -478,10 +474,7 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
     // transform m into upper triangular matrix
     cfe_mat triang;
     cfe_mat_init(&triang, m->rows, 2*m->cols);
-    cfe_error ret_error = cfe_mat_gaussian_elimination(&triang, &m_ext, p);
-    if (ret_error != CFE_ERR_NONE) {
-        return ret_error;
-    }
+    cfe_mat_gaussian_elimination(&triang, &m_ext, p);
 
     // check if the inverse can be computed
     mpz_set(det, one);
@@ -491,7 +484,8 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
         mpz_mod(det, det, p);
     }
     if (mpz_cmp(det, zero) == 0) {
-        return CFE_ERR_NO_INVERSE;
+        err = CFE_ERR_NO_INVERSE;
+        goto cleanup;
     }
 
     // use the upper triangular form to obtain the solution
@@ -516,20 +510,21 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
         }
     }
 
-    return CFE_ERR_NONE;
+    cleanup:
+    cfe_mat_frees(&m_ext, &triang, NULL);
+    mpz_clears(tmp, tmp_sum, one, zero, NULL);
+
+    return err;
 }
 
-cfe_error cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p) {
+void cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p) {
     mpz_t tmp;
     mpz_init(tmp);
 
     // transform m into upper triangular matrix
     cfe_mat triang;
     cfe_mat_init(&triang, m->rows, m->cols);
-    cfe_error ret_error = cfe_mat_gaussian_elimination(&triang, m, p);
-    if (ret_error != CFE_ERR_NONE) {
-        return ret_error;
-    }
+    cfe_mat_gaussian_elimination(&triang, m, p);
 
     // compute the determinant
     mpz_set_ui(det, 1);
@@ -539,8 +534,8 @@ cfe_error cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p) {
         mpz_mod(det, det, p);
     }
 
-    return CFE_ERR_NONE;
-
+    cfe_mat_free(&triang);
+    mpz_clear(tmp);
 }
 
 cfe_error cfe_gaussian_elimination_solver(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p) {

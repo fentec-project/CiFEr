@@ -474,8 +474,8 @@ MunitResult test_matrix_from_vec(const MunitParameter params[], void *data) {
 
 MunitResult test_matrix_inverse(const MunitParameter params[], void *data) {
     mpz_t p, det;
-    mpz_init(det);
-    mpz_init_set_ui(p, 7);
+    mpz_inits(det, p, NULL);
+    mpz_set_ui(p, 7);
 
     cfe_mat m, m_inv, m_inv_gauss;
     cfe_mat_inits(5, 5, &m, &m_inv, &m_inv_gauss, NULL);
@@ -493,6 +493,7 @@ MunitResult test_matrix_inverse(const MunitParameter params[], void *data) {
     }
 
     cfe_mat_frees(&m, &m_inv, &m_inv_gauss, NULL);
+    mpz_clears(det, p, NULL);
 
     return MUNIT_OK;
 }

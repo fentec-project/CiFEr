@@ -203,11 +203,11 @@ void cfe_mat_mul_x_mat_y(mpz_t res, cfe_mat *mat, cfe_vec *x, cfe_vec *y);
 
 void cfe_mat_mul_scalar(cfe_mat *res, cfe_mat *mat, mpz_t s);
 
-cfe_error cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p);
+void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p);
 
 cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p);
 
-cfe_error cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p);
+void cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p);
 
 /**
  * cfe_gaussian_elimination solves a matrix vector equation mat * x = v and finds

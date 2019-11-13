@@ -50,7 +50,7 @@ void cfe_vec_mul_vec_G1(cfe_vec_G1 *res, cfe_vec *u, cfe_vec_G1 *v) {
     assert(v->size == res->size);
 
     BIG_256_56 x;
-    for (size_t i = 0; i < u->size; i++) {
+    for (size_t i = 0; i < res->size; i++) {
         ECP_BN254_copy(&(res->vec[i]), &(v->vec[i]));
         BIG_256_56_from_mpz(x, u->vec[i]);
         ECP_BN254_mul(&(res->vec[i]), x);
@@ -76,6 +76,18 @@ void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u) {
         ECP2_BN254_generator(&(v->vec[i]));
         BIG_256_56_from_mpz(x, u->vec[i]);
         ECP2_BN254_mul(&(v->vec[i]), x);
+    }
+}
+
+void cfe_vec_mul_vec_G2(cfe_vec_G2 *res, cfe_vec *u, cfe_vec_G2 *v) {
+    assert(v->size == u->size);
+    assert(v->size == res->size);
+
+    BIG_256_56 x;
+    for (size_t i = 0; i < u->size; i++) {
+        ECP2_BN254_copy(&(res->vec[i]), &(v->vec[i]));
+        BIG_256_56_from_mpz(x, u->vec[i]);
+        ECP2_BN254_mul(&(res->vec[i]), x);
     }
 }
 
