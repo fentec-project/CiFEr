@@ -40,6 +40,7 @@ MunitSuite paillier_suite;
 MunitSuite dmcfe_suite;
 MunitSuite damgard_dec_multi_suite;
 MunitSuite fhipe_suite;
+MunitSuite fh_multi_ipe_suite;
 MunitSuite policy_suite;
 MunitSuite gpsw_suite;
 MunitSuite fame_suite;

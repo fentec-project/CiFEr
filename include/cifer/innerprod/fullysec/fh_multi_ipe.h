@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef CIFER_FHIPE_H
-#define CIFER_FHIPE_H
+#ifndef CIFER_FH_MULTI_IPE_H
+#define CIFER_FH_MULTI_IPE_H
 
 #include "cifer/data/mat.h"
-#include "cifer/data/vec_curve.h"
+#include "cifer/data/mat_curve.h"
 
 /**
  * \file
@@ -31,16 +31,20 @@
  * inner product <x,y> without revealing x or y.
  */
 
+
 /**
- * cfe_fhipe contains the shared choice for parameters on which
+ * cfe_fh_multi_ipe contains the shared choice for parameters on which
  * the functionality of the scheme depend.
  */
-typedef struct cfe_fhipe {
-    size_t l;
+typedef struct cfe_fh_multi_ipe {
+    size_t sec_level;
+    size_t num_clients;
+    size_t vec_len;
     mpz_t bound_x;
     mpz_t bound_y;
     mpz_t order;
-} cfe_fhipe;
+} cfe_fh_multi_ipe;
+
 
 /**
  * Configures a new client for the fhipe scheme. It returns an error if
@@ -53,90 +57,74 @@ typedef struct cfe_fhipe {
  * the functional keys will be generated.
  * @return Error code
  */
-cfe_error cfe_fhipe_init(cfe_fhipe *c, size_t l, mpz_t bound_x, mpz_t bound_y);
+cfe_error cfe_fh_multi_ipe_init(cfe_fh_multi_ipe *c, size_t sec_level, size_t num_clients, size_t vec_len, mpz_t bound_x, mpz_t bound_y);
 
 /**
  * Reconstructs the scheme with the same configuration parameters from
- * an already existing fhipe scheme instance.
+ * an already existing fh_multi_ipe scheme instance.
  *
- * @param res A pointer to an uninitialized cfe_fhipe struct
- * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
+ * @param res A pointer to an uninitialized cfe_fh_multi_ipe struct
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  */
-void cfe_fhipe_copy(cfe_fhipe *res, cfe_fhipe *c);
+void cfe_fh_multi_ipe_copy(cfe_fh_multi_ipe *res, cfe_fh_multi_ipe *c);
 
 /**
  * Frees the memory occupied by the struct members. It does not free the
  * memory occupied by the struct itself.
  *
- * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  */
-void cfe_fhipe_free(cfe_fhipe *c);
+void cfe_fh_multi_ipe_free(cfe_fh_multi_ipe *c);
 
 /**
- * cfe_fhipe_sec_key represents a master secret key in fhipe scheme.
+ * cfe_fh_multi_ipe_sec_key represents a master secret key in fh_multi_ipe scheme.
  */
-typedef struct cfe_fhipe_sec_key {
-    ECP_BN254 g1;
-    ECP2_BN254 g2;
-    cfe_mat B;
-    cfe_mat B_star;
-} cfe_fhipe_sec_key;
+typedef struct cfe_fh_multi_ipe_sec_key {
+    cfe_mat *B_hat;
+    cfe_mat *B_star_hat;
+    size_t num_clients;
+} cfe_fh_multi_ipe_sec_key;
 
 /**
- * Initializes the struct which represents the master secret key in fhipe.
+ * Initializes the struct which represents the master secret key in fh_multi_ipe.
  *
- * @param sec_key A pointer to an uninitialized cfe_fhipe_sec_key struct
- * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
+ * @param sec_key A pointer to an uninitialized cfe_fh_multi_ipe_sec_key struct
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  */
-void cfe_fhipe_master_key_init(cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+void cfe_fh_multi_ipe_master_key_init(cfe_fh_multi_ipe_sec_key *sec_key, cfe_fh_multi_ipe *c);
 
 /**
  * Frees the memory occupied by the struct members. It does
  * not free the memory occupied by the struct itself.
  *
- * @param sec_key A pointer to an *initialized* cfe_fhipe_sec_key struct
+ * @param sec_key A pointer to an *initialized* cfe_fh_multi_ipe_sec_key struct
  */
-void cfe_fhipe_master_key_free(cfe_fhipe_sec_key *sec_key);
+void cfe_fh_multi_ipe_master_key_free(cfe_fh_multi_ipe_sec_key *sec_key);
 
 /**
  * Generates a master secret key for the scheme. It returns an error if generating
  * one of the parts of the secret key failed.
  *
- * @param sec_key A pointer to a cfe_fhipe_sec_key struct (the master secret key will
+ * @param sec_key A pointer to a cfe_fh_multi_ipe_sec_key struct (the master secret key will
  * be stored here)
  * @param c A pointer to an instance of the scheme (*initialized* cfe_damgard
  * struct)
  * @return Error code
  */
-cfe_error cfe_fhipe_generate_master_key(cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+cfe_error cfe_fh_multi_ipe_generate_keys(cfe_fh_multi_ipe_sec_key *sec_key, FP12_BN254 *pub_key, cfe_fh_multi_ipe *c);
 
 /**
- * cfe_fhipe_FE_key represents a functional encryption key in fhipe scheme.
- */
-typedef struct cfe_fhipe_fe_key {
-    ECP_BN254 k1;
-    cfe_vec_G1 k2;
-} cfe_fhipe_fe_key;
-
-/**
- * Initializes the struct which represents the functional encryption key in fhipe.
+ * Initializes the struct which represents the functional encryption key in fh_multi_ipe.
  *
- * @param fe_key A pointer to an uninitialized cfe_fhipe_FE_key struct
- * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
+ * @param fe_key A pointer to an uninitialized cfe_fh_multi_ipe_FE_key struct
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  */
-void cfe_fhipe_fe_key_init(cfe_fhipe_fe_key *fe_key, cfe_fhipe *c);
+void cfe_fh_multi_ipe_fe_key_init(cfe_mat_G2 *fe_key, cfe_fh_multi_ipe *c);
 
-/**
- * Frees the memory occupied by the struct members. It does
- * not free the memory occupied by the struct itself.
- *
- * @param fe_key A pointer to an *initialized* cfe_fhipe_FE_key struct
- */
-void cfe_fhipe_fe_key_free(cfe_fhipe_fe_key *fe_key);
 
 /**
  * Takes a master secret key and input vector y, and derives the functional
@@ -146,50 +134,35 @@ void cfe_fhipe_fe_key_free(cfe_fhipe_fe_key *fe_key);
  * encryption key will be stored here)
  * @param y A pointer to the inner product vector
  * @param sec_key A pointer to the master secret key
- * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  * @return Error code
  */
-cfe_error cfe_fhipe_derive_fe_key(cfe_fhipe_fe_key *fe_key, cfe_vec *y, cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
-
-/**
- * cfe_fhipe_ciphertext represents a ciphertext in fhipe scheme.
- */
-typedef struct cfe_fhipe_ciphertext {
-    ECP2_BN254 c1;
-    cfe_vec_G2 c2;
-} cfe_fhipe_ciphertext;
+cfe_error cfe_fh_multi_ipe_derive_fe_key(cfe_mat_G2 *fe_key, cfe_mat *y, cfe_fh_multi_ipe_sec_key *sec_key, cfe_fh_multi_ipe *c);
 
 /**
  * Initializes the struct which represents the ciphertext.
  *
- * @param cipher A pointer to an uninitialized cfe_fhipe_ciphertext struct
- * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
+ * @param cipher A pointer to an uninitialized cfe_fh_multi_ipe_ciphertext struct
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  */
-void cfe_fhipe_ciphertext_init(cfe_fhipe_ciphertext *cipher, cfe_fhipe *c);
+void cfe_fh_multi_ipe_ciphertext_init(cfe_vec_G1 *cipher, cfe_fh_multi_ipe *c);
 
-/**
- * Frees the memory occupied by the struct members. It does
- * not free the memory occupied by the struct itself.
- *
- * @param cipher A pointer to an *initialized* cfe_fhipe_ciphertext struct
- */
-void cfe_fhipe_ciphertext_free(cfe_fhipe_ciphertext *cipher);
 
 /**
  * Encrypts input vector x with the provided master secret key. It returns a
  * ciphertext struct. If encryption failed, an error is returned.
  *
- * @param cipher A pointer to an initialized cfe_fhipe_ciphertext struct
+ * @param cipher A pointer to an initialized cfe_fh_multi_ipe_ciphertext struct
  * (the resulting ciphertext will be stored here)
  * @param x A pointer to the plaintext vector
  * @param sec_key A pointer to the master secret key
- * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  * @return Error code
  */
-cfe_error cfe_fhipe_encrypt(cfe_fhipe_ciphertext *cipher, cfe_vec *x, cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+cfe_error cfe_fh_multi_ipe_encrypt(cfe_vec_G1 *cipher, cfe_vec *x, cfe_mat *part_sec_key, cfe_fh_multi_ipe *c);
 
 /**
  * Accepts the encrypted vector and functional encryption key. It returns the
@@ -202,6 +175,6 @@ cfe_error cfe_fhipe_encrypt(cfe_fhipe_ciphertext *cipher, cfe_vec *x, cfe_fhipe_
  * struct)
  * @return Error code
  */
-cfe_error cfe_fhipe_decrypt(mpz_t res, cfe_fhipe_ciphertext *cipher, cfe_fhipe_fe_key *fe_key, cfe_fhipe *c);
+cfe_error cfe_fh_multi_ipe_decrypt(mpz_t res, cfe_vec_G1 *cipher, cfe_mat_G2 *fe_key, FP12_BN254 *pub_key, cfe_fh_multi_ipe *c);
 
 #endif
