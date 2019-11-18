@@ -107,7 +107,7 @@ void cfe_fhipe_master_key_free(cfe_fhipe_sec_key *sec_key);
  *
  * @param sec_key A pointer to a cfe_fhipe_sec_key struct (the master secret key will
  * be stored here)
- * @param c A pointer to an instance of the scheme (*initialized* cfe_damgard
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
  * struct)
  * @return Error code
  */
@@ -142,7 +142,7 @@ void cfe_fhipe_fe_key_free(cfe_fhipe_fe_key *fe_key);
  * Takes a master secret key and input vector y, and derives the functional
  * encryption key. In case the key could not be derived, it returns an error.
  *
- * @param fe_key A pointer to a cfe_damgard_fe_key struct (the functional
+ * @param fe_key A pointer to a cfe_fhipe_fe_key struct (the functional
  * encryption key will be stored here)
  * @param y A pointer to the inner product vector
  * @param sec_key A pointer to the master secret key
@@ -198,7 +198,7 @@ cfe_error cfe_fhipe_encrypt(cfe_fhipe_ciphertext *cipher, cfe_vec *x, cfe_fhipe_
  * @param res The result of the decryption (the value will be stored here)
  * @param cipher A pointer to the ciphertext vector
  * @param fe_key The functional encryption key
- * @param c A pointer to an instance of the scheme (*initialized* cfe_damgard
+ * @param c A pointer to an instance of the scheme (*initialized* cfe_fhipe
  * struct)
  * @return Error code
  */

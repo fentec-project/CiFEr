@@ -22,7 +22,8 @@
 #include "cifer/sample/uniform.h"
 #include "cifer/internal/dlog.h"
 
-cfe_error cfe_fh_multi_ipe_init(cfe_fh_multi_ipe *c, size_t sec_level, size_t num_clients, size_t vec_len, mpz_t bound_x, mpz_t bound_y) {
+cfe_error cfe_fh_multi_ipe_init(cfe_fh_multi_ipe *c, size_t sec_level, size_t num_clients,
+                                size_t vec_len, mpz_t bound_x, mpz_t bound_y) {
     cfe_error err = CFE_ERR_NONE;
     mpz_t check, order;
     mpz_inits(check, order, NULL);
@@ -69,8 +70,8 @@ void cfe_fh_multi_ipe_master_key_init(cfe_fh_multi_ipe_sec_key *sec_key, cfe_fh_
     sec_key->B_hat = (cfe_mat *) cfe_malloc(sizeof(cfe_mat) * c->num_clients);
     sec_key->B_star_hat = (cfe_mat *) cfe_malloc(sizeof(cfe_mat) * c->num_clients);
     for (size_t i = 0; i < c->num_clients; i++) {
-        cfe_mat_init(&sec_key->B_hat[i], c->vec_len + c->sec_level + 1, 2*c->vec_len + 2*c->sec_level + 1);
-        cfe_mat_init(&(sec_key->B_star_hat)[i], c->vec_len + c->sec_level, 2*c->vec_len + 2*c->sec_level + 1);
+        cfe_mat_init(&sec_key->B_hat[i], c->vec_len + c->sec_level + 1, 2 * c->vec_len + 2 * c->sec_level + 1);
+        cfe_mat_init(&(sec_key->B_star_hat)[i], c->vec_len + c->sec_level, 2 * c->vec_len + 2 * c->sec_level + 1);
     }
     sec_key->num_clients = c->num_clients;
 }
@@ -83,7 +84,9 @@ void cfe_fh_multi_ipe_master_key_free(cfe_fh_multi_ipe_sec_key *sec_key) {
     free(sec_key->B_star_hat);
 }
 
-cfe_error random_OB(cfe_mat *B, cfe_mat *B_star, mpz_t mu, mpz_t p) {
+// cfe_fh_multi_ipe_random_OB is a helping function used
+// in cfe_fh_multi_ipe_generate_keys.
+cfe_error cfe_fh_multi_ipe_random_OB(cfe_mat *B, cfe_mat *B_star, mpz_t mu, mpz_t p) {
     cfe_uniform_sample_mat(B, p);
     cfe_mat B_inv;
     cfe_mat_init(&B_inv, B->rows, B->cols);
@@ -120,7 +123,7 @@ cfe_error cfe_fh_multi_ipe_generate_keys(cfe_fh_multi_ipe_sec_key *sec_key, FP12
     ECP2_BN254_generator(&g2);
     PAIR_BN254_ate(pub_key, &g2, &g1);
     PAIR_BN254_fexp(pub_key);
-    FP12_BN254_pow(pub_key, pub_key, mu_big); //TODO is working?
+    FP12_BN254_pow(pub_key, pub_key, mu_big);
 
     cfe_mat *B = (cfe_mat *) cfe_malloc(sizeof(cfe_mat) * c->num_clients);
     cfe_mat *B_star = (cfe_mat *) cfe_malloc(sizeof(cfe_mat) * c->num_clients);
@@ -130,7 +133,7 @@ cfe_error cfe_fh_multi_ipe_generate_keys(cfe_fh_multi_ipe_sec_key *sec_key, FP12
     }
 
     for (size_t i = 0; i < c->num_clients; i++) {
-        err = random_OB(&B[i], &B_star[i], mu, c->order);
+        err = cfe_fh_multi_ipe_random_OB(&B[i], &B_star[i], mu, c->order);
         if (err != CFE_ERR_NONE) {
             goto cleanup;
         }
@@ -166,7 +169,9 @@ void cfe_fh_multi_ipe_fe_key_init(cfe_mat_G2 *fe_key, cfe_fh_multi_ipe *c) {
     cfe_mat_G2_init(fe_key, c->num_clients, 2 * c->vec_len + 2 * c->sec_level + 1);
 }
 
-cfe_error cfe_fh_multi_ipe_derive_fe_key(cfe_mat_G2 *fe_key, cfe_mat *y, cfe_fh_multi_ipe_sec_key *sec_key, cfe_fh_multi_ipe *c) {
+cfe_error cfe_fh_multi_ipe_derive_fe_key(cfe_mat_G2 *fe_key, cfe_mat *y,
+                                        cfe_fh_multi_ipe_sec_key *sec_key,
+                                        cfe_fh_multi_ipe *c) {
     if (!cfe_mat_check_bound(y, c->bound_y)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
@@ -206,7 +211,7 @@ cfe_error cfe_fh_multi_ipe_derive_fe_key(cfe_mat_G2 *fe_key, cfe_mat *y, cfe_fh_
     cfe_mat_mul_G2(fe_key, &key_mat);
 
     cfe_vec_free(&tmp_vec);
-    cfe_mat_free(&key_mat);
+    cfe_mat_frees(&key_mat, &gamma, NULL);
     mpz_clears(zero, s, NULL);
 
     return CFE_ERR_NONE;
@@ -249,19 +254,20 @@ cfe_error cfe_fh_multi_ipe_encrypt(cfe_vec_G1 *cipher, cfe_vec *x, cfe_mat *part
 
     cfe_vec_mul_G1(cipher, &key_vec);
 
-    cfe_vec_frees(&tmp_vec, &key_vec, NULL);
+    cfe_vec_frees(&tmp_vec, &key_vec, &phi, NULL);
     mpz_clears(zero, s, NULL);
 
     return CFE_ERR_NONE;
 }
 
-cfe_error cfe_fh_multi_ipe_decrypt(mpz_t res, cfe_vec_G1 *cipher, cfe_mat_G2 *fe_key, FP12_BN254 *pub_key, cfe_fh_multi_ipe *c) {
+cfe_error cfe_fh_multi_ipe_decrypt(mpz_t res, cfe_vec_G1 *ciphers, cfe_mat_G2 *fe_key,
+                                   FP12_BN254 *pub_key, cfe_fh_multi_ipe *c) {
     FP12_BN254 sum, paired;
     FP12_BN254_one(&sum);
 
     for (size_t i = 0; i < c->num_clients; i++) {
-        for (size_t j = 0; j < 2*c->vec_len + 2*c->sec_level + 1; j++) {
-            PAIR_BN254_ate(&paired, &fe_key->mat[i].vec[j], &cipher[i].vec[j]);
+        for (size_t j = 0; j < 2 * c->vec_len + 2 * c->sec_level + 1; j++) {
+            PAIR_BN254_ate(&paired, &fe_key->mat[i].vec[j], &ciphers[i].vec[j]);
             PAIR_BN254_fexp(&paired);
             FP12_BN254_mul(&sum, &paired);
         }
@@ -278,4 +284,3 @@ cfe_error cfe_fh_multi_ipe_decrypt(mpz_t res, cfe_vec_G1 *cipher, cfe_mat_G2 *fe
 
     return err;
 }
-

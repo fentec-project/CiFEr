@@ -20,13 +20,13 @@
 
 MunitResult test_fh_multi_ipe_end_to_end(const MunitParameter *params, void *data) {
     // choose the parameters for the encryption and build the scheme
-    size_t sec_level = 3;
+    size_t sec_level = 2;
     size_t num_clients = 10;
-    size_t vec_len = 3;
+    size_t vec_len = 5;
     mpz_t bound, bound_neg, xy_check, xy;
     mpz_inits(bound, bound_neg, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
-    mpz_pow_ui(bound, bound, 7);
+    mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
 
     cfe_fh_multi_ipe fh_multi_ipe;
@@ -45,14 +45,14 @@ MunitResult test_fh_multi_ipe_end_to_end(const MunitParameter *params, void *dat
     cfe_mat_init(&y, num_clients, vec_len);
     cfe_uniform_sample_range_mat(&y, bound_neg, bound);
 
-    // derive a functional key for vector y
+    // derive a functional key for matrix y
     cfe_mat_G2 FE_key;
     cfe_fh_multi_ipe_fe_key_init(&FE_key, &fh_multi_ipe);
     err = cfe_fh_multi_ipe_derive_fe_key(&FE_key, &y, &sec_key, &fh_multi_ipe);
     munit_assert(err == 0);
 
-    // we simulate the clients encrypting vectors; each client is given his
-    // part of the secret key
+    // we simulate the clients encrypting vectors; each client is given its part
+    // of the secret key (B_hat), it samples a random vector and encrypts it
     cfe_fh_multi_ipe clients[num_clients];
     cfe_vec x[num_clients];
     cfe_mat X_for_check;
@@ -77,23 +77,30 @@ MunitResult test_fh_multi_ipe_end_to_end(const MunitParameter *params, void *dat
     // simulate a decryptor
     cfe_fh_multi_ipe decryptor;
     cfe_fh_multi_ipe_copy(&decryptor, &fh_multi_ipe);
-    // decryptor decrypts the inner-product without knowing
-    // vectors x and y
+
+    // decryptor collects the ciphertexts and decrypts th value of Σ_i <x_i, y_i>
+    // (sum of inner products) where x_i is the i-th encrypted vector and y_i the
+    // i-th inner product vector (i-th row of y); note that decryptor decrypts using
+    // the FE key without knowing vectors x_i or an inner product matrix y
     err = cfe_fh_multi_ipe_decrypt(xy, ciphers, &FE_key, &pub_key, &decryptor);
     munit_assert(err == 0);
 
     // check correctness
     cfe_mat_dot(xy_check, &X_for_check, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
-//
-//    // clean up
-//    mpz_clears(bound, bound_neg, xy_check, xy, NULL);
-//    cfe_vec_frees(&x, &y, NULL);
+
+    // clean up
+    mpz_clears(bound, bound_neg, xy_check, xy, NULL);
+    for (size_t i = 0; i < num_clients; i++) {
+        cfe_vec_free(&x[i]);
+        cfe_vec_G1_free(&ciphers[i]);
+        cfe_fh_multi_ipe_free(&clients[i]);
+    }
+    cfe_mat_frees(&X_for_check, &y, NULL);
+    cfe_mat_G2_free(&FE_key);
     cfe_fh_multi_ipe_free(&fh_multi_ipe);
     cfe_fh_multi_ipe_free(&decryptor);
     cfe_fh_multi_ipe_master_key_free(&sec_key);
-//    cfe_fh_multi_ipe_fe_key_free(&FE_key);
-//    cfe_fh_multi_ipe_ciphertext_free(&cipher);
 
     return MUNIT_OK;
 }
