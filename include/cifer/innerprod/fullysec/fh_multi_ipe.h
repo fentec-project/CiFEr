@@ -38,7 +38,6 @@
  * curves operations with matrix multiplications.
  */
 
-
 /**
  * cfe_fh_multi_ipe contains the shared choice for parameters on which
  * the functionality of the scheme depend.
@@ -51,7 +50,6 @@ typedef struct cfe_fh_multi_ipe {
     mpz_t bound_y;
     mpz_t order;
 } cfe_fh_multi_ipe;
-
 
 /**
  * Configures a new client for the fh_multi_ipe scheme. It returns an error if
@@ -105,7 +103,8 @@ typedef struct cfe_fh_multi_ipe_sec_key {
  * @param c A pointer to an instance of the scheme (*initialized* cfe_fh_multi_ipe
  * struct)
  */
-void cfe_fh_multi_ipe_master_key_init(cfe_fh_multi_ipe_sec_key *sec_key, cfe_fh_multi_ipe *c);
+void cfe_fh_multi_ipe_master_key_init(cfe_fh_multi_ipe_sec_key *sec_key,
+                                      cfe_fh_multi_ipe *c);
 
 /**
  * Frees the memory occupied by the struct members. It does
@@ -181,7 +180,8 @@ void cfe_fh_multi_ipe_ciphertext_init(cfe_vec_G1 *cipher, cfe_fh_multi_ipe *c);
  * cfe_fh_multi_ipe struct)
  * @return Error code
  */
-cfe_error cfe_fh_multi_ipe_encrypt(cfe_vec_G1 *cipher, cfe_vec *x, cfe_mat *part_sec_key, cfe_fh_multi_ipe *c);
+cfe_error cfe_fh_multi_ipe_encrypt(cfe_vec_G1 *cipher, cfe_vec *x,
+                                   cfe_mat *part_sec_key, cfe_fh_multi_ipe *c);
 
 /**
  * Accepts the encrypted vectors and functional encryption key. It returns the
@@ -197,6 +197,7 @@ cfe_error cfe_fh_multi_ipe_encrypt(cfe_vec_G1 *cipher, cfe_vec *x, cfe_mat *part
  * cfe_fh_multi_ipe struct)
  * @return Error code
  */
-cfe_error cfe_fh_multi_ipe_decrypt(mpz_t res, cfe_vec_G1 *ciphers, cfe_mat_G2 *fe_key, FP12_BN254 *pub_key, cfe_fh_multi_ipe *c);
+cfe_error cfe_fh_multi_ipe_decrypt(mpz_t res, cfe_vec_G1 *ciphers, cfe_mat_G2 *fe_key,
+                                   FP12_BN254 *pub_key, cfe_fh_multi_ipe *c);
 
 #endif

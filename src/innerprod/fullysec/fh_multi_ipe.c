@@ -22,8 +22,9 @@
 #include "cifer/sample/uniform.h"
 #include "cifer/internal/dlog.h"
 
-cfe_error cfe_fh_multi_ipe_init(cfe_fh_multi_ipe *c, size_t sec_level, size_t num_clients,
-                                size_t vec_len, mpz_t bound_x, mpz_t bound_y) {
+cfe_error cfe_fh_multi_ipe_init(cfe_fh_multi_ipe *c, size_t sec_level,
+                                size_t num_clients, size_t vec_len,
+                                mpz_t bound_x, mpz_t bound_y) {
     cfe_error err = CFE_ERR_NONE;
     mpz_t check, order;
     mpz_inits(check, order, NULL);
@@ -66,7 +67,8 @@ void cfe_fh_multi_ipe_free(cfe_fh_multi_ipe *c) {
     mpz_clears(c->bound_x, c->bound_y, c->order, NULL);
 }
 
-void cfe_fh_multi_ipe_master_key_init(cfe_fh_multi_ipe_sec_key *sec_key, cfe_fh_multi_ipe *c) {
+void cfe_fh_multi_ipe_master_key_init(cfe_fh_multi_ipe_sec_key *sec_key,
+                                      cfe_fh_multi_ipe *c) {
     sec_key->B_hat = (cfe_mat *) cfe_malloc(sizeof(cfe_mat) * c->num_clients);
     sec_key->B_star_hat = (cfe_mat *) cfe_malloc(sizeof(cfe_mat) * c->num_clients);
     for (size_t i = 0; i < c->num_clients; i++) {
@@ -90,10 +92,8 @@ cfe_error cfe_fh_multi_ipe_random_OB(cfe_mat *B, cfe_mat *B_star, mpz_t mu, mpz_
     cfe_uniform_sample_mat(B, p);
     cfe_mat B_inv;
     cfe_mat_init(&B_inv, B->rows, B->cols);
-    mpz_t det;
-    mpz_init(det);
 
-    cfe_error err = cfe_mat_inverse_mod_gauss(&B_inv, det, B, p);
+    cfe_error err = cfe_mat_inverse_mod_gauss(&B_inv, NULL, B, p);
     if (err != CFE_ERR_NONE) {
         goto cleanup;
     }
@@ -104,12 +104,12 @@ cfe_error cfe_fh_multi_ipe_random_OB(cfe_mat *B, cfe_mat *B_star, mpz_t mu, mpz_
 
     cleanup:
     cfe_mat_free(&B_inv);
-    mpz_clear(det);
 
     return err;
 }
 
-cfe_error cfe_fh_multi_ipe_generate_keys(cfe_fh_multi_ipe_sec_key *sec_key, FP12_BN254 *pub_key, cfe_fh_multi_ipe *c) {
+cfe_error cfe_fh_multi_ipe_generate_keys(cfe_fh_multi_ipe_sec_key *sec_key,
+                                         FP12_BN254 *pub_key, cfe_fh_multi_ipe *c) {
     cfe_error err = CFE_ERR_NONE;
     mpz_t mu;
     BIG_256_56 mu_big;
@@ -221,7 +221,8 @@ void cfe_fh_multi_ipe_ciphertext_init(cfe_vec_G1 *cipher, cfe_fh_multi_ipe *c) {
     cfe_vec_G1_init(cipher, 2 * c->vec_len + 2 * c->sec_level + 1);
 }
 
-cfe_error cfe_fh_multi_ipe_encrypt(cfe_vec_G1 *cipher, cfe_vec *x, cfe_mat *part_sec_key, cfe_fh_multi_ipe *c) {
+cfe_error cfe_fh_multi_ipe_encrypt(cfe_vec_G1 *cipher, cfe_vec *x,
+                                   cfe_mat *part_sec_key, cfe_fh_multi_ipe *c) {
     if (!cfe_vec_check_bound(x, c->bound_x)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }

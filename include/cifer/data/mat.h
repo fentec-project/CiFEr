@@ -201,12 +201,42 @@ cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod);
  */
 void cfe_mat_mul_x_mat_y(mpz_t res, cfe_mat *mat, cfe_vec *x, cfe_vec *y);
 
+/**
+ * Multiplication of a matrix mat and a scalar s.
+ */
 void cfe_mat_mul_scalar(cfe_mat *res, cfe_mat *mat, mpz_t s);
 
+/**
+ * cfe_gaussian_elimination transforms a matrix to an equivalent upper
+ * triangular matrix over field Z_p, where p should be a prime number.
+ *
+ * @param res A pointer to an initialized matrix where the result will be saved
+ * @param mat A pointer to a matrix to be transformed
+ * @param p Modulus for the computations
+ */
 void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p);
 
+/**
+ * cfe_mat_inverse_mod_gauss calculates in inverse of a matrix over field
+ * Z_p, using Gaussian elimination. The latter is faster than the naive (analytic)
+ * algorithm. Additionally the determinant of the matrix is returned.
+ *
+ * @param res A pointer to an initialized matrix where the result will be saved
+ * @param det Determinant will be saved here; if not needed this should be NULL
+ * @param mat A pointer to a matrix
+ * @param p Modulus for the computations
+ */
 cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p);
 
+/**
+ * cfe_mat_inverse_mod_gauss calculates the determinant of a matrix over field
+ * Z_p, using Gaussian elimination. The latter is faster than the naive (analytic)
+ * algorithm.
+ *
+ * @param res The result will be saved
+ * @param mat A pointer to a matrix
+ * @param p Modulus for the computations
+ */
 void cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p);
 
 /**

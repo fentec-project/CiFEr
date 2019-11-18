@@ -150,7 +150,8 @@ void cfe_fhipe_fe_key_free(cfe_fhipe_fe_key *fe_key);
  * struct)
  * @return Error code
  */
-cfe_error cfe_fhipe_derive_fe_key(cfe_fhipe_fe_key *fe_key, cfe_vec *y, cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+cfe_error cfe_fhipe_derive_fe_key(cfe_fhipe_fe_key *fe_key, cfe_vec *y,
+                                  cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
 
 /**
  * cfe_fhipe_ciphertext represents a ciphertext in fhipe scheme.
@@ -189,7 +190,8 @@ void cfe_fhipe_ciphertext_free(cfe_fhipe_ciphertext *cipher);
  * struct)
  * @return Error code
  */
-cfe_error cfe_fhipe_encrypt(cfe_fhipe_ciphertext *cipher, cfe_vec *x, cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
+cfe_error cfe_fhipe_encrypt(cfe_fhipe_ciphertext *cipher, cfe_vec *x,
+                            cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
 
 /**
  * Accepts the encrypted vector and functional encryption key. It returns the
@@ -202,6 +204,7 @@ cfe_error cfe_fhipe_encrypt(cfe_fhipe_ciphertext *cipher, cfe_vec *x, cfe_fhipe_
  * struct)
  * @return Error code
  */
-cfe_error cfe_fhipe_decrypt(mpz_t res, cfe_fhipe_ciphertext *cipher, cfe_fhipe_fe_key *fe_key, cfe_fhipe *c);
+cfe_error cfe_fhipe_decrypt(mpz_t res, cfe_fhipe_ciphertext *cipher,
+                            cfe_fhipe_fe_key *fe_key, cfe_fhipe *c);
 
 #endif

@@ -283,7 +283,7 @@ void cfe_mat_mul(cfe_mat *res, cfe_mat *m1, cfe_mat *m2) {
 
 void cfe_mat_extract_submatrix(cfe_mat *min, cfe_mat *m, size_t i, size_t j) {
     assert(i < m->rows && j < m->cols);
-    assert(min->rows == m->rows -1 && min->cols == m->cols -1);
+    assert(min->rows == m->rows - 1 && min->cols == m->cols - 1);
 
     size_t ind1 = 0;
     mpz_t val;
@@ -342,7 +342,7 @@ cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod) {
     mpz_inits(det, det_inv, sign, minus, minor, val, NULL);
     cfe_mat_determinant(det, m);
     mpz_mod(det, det, mod);
-    if(mpz_cmp_si(det, 0) == 0) {
+    if (mpz_cmp_si(det, 0) == 0) {
         err = CFE_ERR_NO_INVERSE;
         goto cleanup;
     }
@@ -358,7 +358,7 @@ cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod) {
             cfe_mat_determinant(minor, &min);
 
             mpz_mod(minor, minor, mod);
-            mpz_pow_ui(sign, minus, i+j);
+            mpz_pow_ui(sign, minus, i + j);
 
             mpz_mul(val, minor, det_inv);
             mpz_mul(val, val, sign);
@@ -391,7 +391,6 @@ void cfe_mat_mul_scalar(cfe_mat *res, cfe_mat *mat, mpz_t s) {
         cfe_vec_mul_scalar(&(res->mat[j]), &(mat->mat[j]), s);
     }
 }
-
 
 void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p) {
     cfe_mat_copy(res, mat);
@@ -448,10 +447,10 @@ void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p) {
 cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p) {
     cfe_error err = CFE_ERR_NONE;
     cfe_mat m_ext;
-    cfe_mat_init(&m_ext, m->rows, 2*m->cols);
+    cfe_mat_init(&m_ext, m->rows, 2 * m->cols);
 
-    mpz_t tmp, tmp_sum, one, zero;
-    mpz_inits(tmp, tmp_sum, one, zero, NULL);
+    mpz_t tmp, tmp_sum, one, zero, determinant;
+    mpz_inits(tmp, tmp_sum, one, zero, determinant, NULL);
     mpz_set_ui(one, 1);
     mpz_set_ui(zero, 0);
 
@@ -463,7 +462,7 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
 
         }
         for (size_t j = m->cols; j < 2 * m->cols; j++) {
-            if (i+m->cols == j) {
+            if (i + m->cols == j) {
                 cfe_mat_set(&m_ext, one, i, j);
             } else {
                 cfe_mat_set(&m_ext, zero, i, j);
@@ -471,21 +470,25 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
         }
     }
 
-    // transform m into upper triangular matrix
+    // transform m into an upper triangular matrix
     cfe_mat triang;
-    cfe_mat_init(&triang, m->rows, 2*m->cols);
+    cfe_mat_init(&triang, m->rows, 2 * m->cols);
     cfe_mat_gaussian_elimination(&triang, &m_ext, p);
 
     // check if the inverse can be computed
-    mpz_set(det, one);
+    mpz_set(determinant, one);
     for (size_t i = 0; i < m->rows; i++) {
         cfe_mat_get(tmp, &triang, i, i);
-        mpz_mul(det, det, tmp);
-        mpz_mod(det, det, p);
+        mpz_mul(determinant, determinant, tmp);
+        mpz_mod(determinant, determinant, p);
     }
-    if (mpz_cmp(det, zero) == 0) {
+    if (mpz_cmp(determinant, zero) == 0) {
         err = CFE_ERR_NO_INVERSE;
         goto cleanup;
+    }
+
+    if (det != NULL) {
+        mpz_set(det, determinant);
     }
 
     // use the upper triangular form to obtain the solution
@@ -512,7 +515,7 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
 
     cleanup:
     cfe_mat_frees(&m_ext, &triang, NULL);
-    mpz_clears(tmp, tmp_sum, one, zero, NULL);
+    mpz_clears(tmp, tmp_sum, one, zero, determinant, NULL);
 
     return err;
 }
@@ -521,7 +524,7 @@ void cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p) {
     mpz_t tmp;
     mpz_init(tmp);
 
-    // transform m into upper triangular matrix
+    // transform m into an upper triangular matrix
     cfe_mat triang;
     cfe_mat_init(&triang, m->rows, m->cols);
     cfe_mat_gaussian_elimination(&triang, m, p);
@@ -538,7 +541,8 @@ void cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p) {
     mpz_clear(tmp);
 }
 
-cfe_error cfe_gaussian_elimination_solver(cfe_vec *res, cfe_mat *mat, cfe_vec *vec, mpz_t p) {
+cfe_error cfe_gaussian_elimination_solver(cfe_vec *res, cfe_mat *mat,
+                                          cfe_vec *vec, mpz_t p) {
     cfe_error ret_error = CFE_ERR_NONE;
 
     cfe_mat m;
