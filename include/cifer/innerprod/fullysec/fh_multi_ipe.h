@@ -23,7 +23,7 @@
 /**
  * \file
  * \ingroup fullysec
- * \brief // FH-Multi-IPE represents a Function Hiding Multi-input Inner
+ * \brief // FH-Multi-IPE represents a Function Hiding Multi-client Inner
  * Product Encryption scheme based on the paper by P. Datta, T. Okamoto, and
  * J. Tomida:
  * "Full-Hiding (Unbounded) Multi-Input Inner Product Functional Encryption
