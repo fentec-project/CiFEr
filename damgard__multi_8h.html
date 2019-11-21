@@ -63,7 +63,7 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -74,21 +74,21 @@ Typedefs</h2></td></tr>
 <tr class="separator:a100229ee19862daccfbf85a483b9fd27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adea3270bf7219444349bec0952b7927c"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#adea3270bf7219444349bec0952b7927c">cfe_damgard_multi_fe_key</a></td></tr>
 <tr class="separator:adea3270bf7219444349bec0952b7927c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1efa51bc34f92f69b8f55e5a9617b5fe"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a1efa51bc34f92f69b8f55e5a9617b5fe">cfe_damgard_multi_enc</a></td></tr>
-<tr class="separator:a1efa51bc34f92f69b8f55e5a9617b5fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64069814b0eb114a1308e7fec6817e28"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a64069814b0eb114a1308e7fec6817e28">cfe_damgard_multi_client</a></td></tr>
+<tr class="separator:a64069814b0eb114a1308e7fec6817e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9c29e897c7457171b599149776fe8db0"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a9c29e897c7457171b599149776fe8db0">cfe_damgard_multi_init</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound)</td></tr>
-<tr class="separator:a9c29e897c7457171b599149776fe8db0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1baa4ad5bf0ab203f89dfae26b0f58d3"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a1baa4ad5bf0ab203f89dfae26b0f58d3">cfe_damgard_multi_init</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, size_t num_clients, size_t l, size_t modulus_len, mpz_t bound)</td></tr>
+<tr class="separator:a1baa4ad5bf0ab203f89dfae26b0f58d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9026a06fbce5e2d7bbee8cfb309bc125"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a9026a06fbce5e2d7bbee8cfb309bc125">cfe_damgard_multi_free</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m)</td></tr>
 <tr class="separator:a9026a06fbce5e2d7bbee8cfb309bc125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5aaaa9609d92550ce32cab0c0b5c6e56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a5aaaa9609d92550ce32cab0c0b5c6e56">cfe_damgard_multi_copy</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *res, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m)</td></tr>
 <tr class="separator:a5aaaa9609d92550ce32cab0c0b5c6e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba1a1d6ec1746c7e61426a20e1c453db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#aba1a1d6ec1746c7e61426a20e1c453db">cfe_damgard_multi_enc_init</a> (<a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *e, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m)</td></tr>
-<tr class="separator:aba1a1d6ec1746c7e61426a20e1c453db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a286be3c060b36e40f82c9cb8282c2e38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a286be3c060b36e40f82c9cb8282c2e38">cfe_damgard_multi_enc_free</a> (<a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *e)</td></tr>
-<tr class="separator:a286be3c060b36e40f82c9cb8282c2e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa0040aabd5a4b8c96ec81db867c82df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#afa0040aabd5a4b8c96ec81db867c82df">cfe_damgard_multi_client_init</a> (<a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *e, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m)</td></tr>
+<tr class="separator:afa0040aabd5a4b8c96ec81db867c82df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36279083fe4ce48d6c1c8f37d0e3c4d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a36279083fe4ce48d6c1c8f37d0e3c4d5">cfe_damgard_multi_client_free</a> (<a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *e)</td></tr>
+<tr class="separator:a36279083fe4ce48d6c1c8f37d0e3c4d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac167de05d7d36f58e1b02e4e579f9b50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#ac167de05d7d36f58e1b02e4e579f9b50">cfe_damgard_multi_sec_key_free</a> (<a class="el" href="structcfe__damgard__multi__sec__key.html">cfe_damgard_multi_sec_key</a> *key)</td></tr>
 <tr class="separator:ac167de05d7d36f58e1b02e4e579f9b50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2234f78409338dd7626d1681b1414b59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a2234f78409338dd7626d1681b1414b59">cfe_damgard_multi_fe_key_free</a> (<a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *key)</td></tr>
@@ -99,14 +99,14 @@ Functions</h2></td></tr>
 <tr class="separator:a0b2bb790fb3eb9bfc5e177dc9ebf7612"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1234402af7ed4c56be0ab0cf52ea640a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a1234402af7ed4c56be0ab0cf52ea640a">cfe_damgard_multi_fe_key_init</a> (<a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *fe_key, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m)</td></tr>
 <tr class="separator:a1234402af7ed4c56be0ab0cf52ea640a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b7665bbd0f1734618a898db56fdbda2"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a0b7665bbd0f1734618a898db56fdbda2">cfe_damgard_multi_derive_key</a> (<a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *fe_key, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, <a class="el" href="structcfe__damgard__multi__sec__key.html">cfe_damgard_multi_sec_key</a> *msk, <a class="el" href="structcfe__mat.html">cfe_mat</a> *y)</td></tr>
-<tr class="separator:a0b7665bbd0f1734618a898db56fdbda2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad937cf30de780f06396b49ca032cc705"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#ad937cf30de780f06396b49ca032cc705">cfe_damgard_multi_ciphertext_init</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *e)</td></tr>
-<tr class="separator:ad937cf30de780f06396b49ca032cc705"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ffcdd1d97250ada70d0b5f8b99e0885"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a9ffcdd1d97250ada70d0b5f8b99e0885">cfe_damgard_multi_encrypt</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *e, <a class="el" href="structcfe__vec.html">cfe_vec</a> *x, <a class="el" href="structcfe__vec.html">cfe_vec</a> *pub_key, <a class="el" href="structcfe__vec.html">cfe_vec</a> *otp)</td></tr>
-<tr class="separator:a9ffcdd1d97250ada70d0b5f8b99e0885"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2854abd77a43e6f806a51f8e288873f4"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a2854abd77a43e6f806a51f8e288873f4">cfe_damgard_multi_decrypt</a> (mpz_t res, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, <a class="el" href="structcfe__mat.html">cfe_mat</a> *ciphertext, <a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *key, <a class="el" href="structcfe__mat.html">cfe_mat</a> *y)</td></tr>
-<tr class="separator:a2854abd77a43e6f806a51f8e288873f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa465067ffc1165a60beb39de56d6949f"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#aa465067ffc1165a60beb39de56d6949f">cfe_damgard_multi_derive_fe_key</a> (<a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *fe_key, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, <a class="el" href="structcfe__damgard__multi__sec__key.html">cfe_damgard_multi_sec_key</a> *msk, <a class="el" href="structcfe__mat.html">cfe_mat</a> *y)</td></tr>
+<tr class="separator:aa465067ffc1165a60beb39de56d6949f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc2aa2abdae49e743e6049b9c2268bcd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#adc2aa2abdae49e743e6049b9c2268bcd">cfe_damgard_multi_ciphertext_init</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *e)</td></tr>
+<tr class="separator:adc2aa2abdae49e743e6049b9c2268bcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0db5c7691aa843aa34b1f10c54bd6756"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a0db5c7691aa843aa34b1f10c54bd6756">cfe_damgard_multi_encrypt</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *e, <a class="el" href="structcfe__vec.html">cfe_vec</a> *x, <a class="el" href="structcfe__vec.html">cfe_vec</a> *pub_key, <a class="el" href="structcfe__vec.html">cfe_vec</a> *otp)</td></tr>
+<tr class="separator:a0db5c7691aa843aa34b1f10c54bd6756"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcd39e9c925cb2f612eb8b8d45647c97"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#afcd39e9c925cb2f612eb8b8d45647c97">cfe_damgard_multi_decrypt</a> (mpz_t res, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, <a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *fe_key, <a class="el" href="structcfe__mat.html">cfe_mat</a> *y)</td></tr>
+<tr class="separator:afcd39e9c925cb2f612eb8b8d45647c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Damgard multi input scheme. </p>
@@ -156,24 +156,24 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a1efa51bc34f92f69b8f55e5a9617b5fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1efa51bc34f92f69b8f55e5a9617b5fe">&#9670;&nbsp;</a></span>cfe_damgard_multi_enc</h2>
+<a id="a64069814b0eb114a1308e7fec6817e28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64069814b0eb114a1308e7fec6817e28">&#9670;&nbsp;</a></span>cfe_damgard_multi_client</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef struct <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a>  <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a></td>
+          <td class="memname">typedef struct <a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a>  <a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p><a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> represents a single encryptor for the damgard_multi scheme. </p>
+<p><a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> represents a single encryptor for the damgard_multi scheme. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a9c29e897c7457171b599149776fe8db0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c29e897c7457171b599149776fe8db0">&#9670;&nbsp;</a></span>cfe_damgard_multi_init()</h2>
+<a id="a1baa4ad5bf0ab203f89dfae26b0f58d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1baa4ad5bf0ab203f89dfae26b0f58d3">&#9670;&nbsp;</a></span>cfe_damgard_multi_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -188,7 +188,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>slots</em>, </td>
+          <td class="paramname"><em>num_clients</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -215,11 +215,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Configures a new instance of the scheme. It accepts the number of slots (encryptors), the length of input vectors l, the bit length of the modulus (we are operating in the Z_p group), and a bound by which coordinates of input vectors are bounded.</p>
+<p>Configures a new instance of the scheme. It accepts the number of clients (encryptors), the length of input vectors l, the bit length of the modulus (we are operating in the Z_p group), and a bound by which coordinates of input vectors are bounded.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">m</td><td>A pointer to an uninitialized struct representing the scheme </td></tr>
-    <tr><td class="paramname">slots</td><td>The number of slots (encryptors) </td></tr>
+    <tr><td class="paramname">num_clients</td><td>The number of clients (encryptors) </td></tr>
     <tr><td class="paramname">l</td><td>The length of input vectors </td></tr>
     <tr><td class="paramname">modulus_len</td><td>The bit length of the modulus (we are operating in the Z_p group) </td></tr>
     <tr><td class="paramname">bound</td><td>The bound by which coordinates of input vectors are bounded. </td></tr>
@@ -291,16 +291,16 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aba1a1d6ec1746c7e61426a20e1c453db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba1a1d6ec1746c7e61426a20e1c453db">&#9670;&nbsp;</a></span>cfe_damgard_multi_enc_init()</h2>
+<a id="afa0040aabd5a4b8c96ec81db867c82df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa0040aabd5a4b8c96ec81db867c82df">&#9670;&nbsp;</a></span>cfe_damgard_multi_client_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void cfe_damgard_multi_enc_init </td>
+          <td class="memname">void cfe_damgard_multi_client_init </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *&#160;</td>
           <td class="paramname"><em>e</em>, </td>
         </tr>
         <tr>
@@ -316,10 +316,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Takes configuration parameters of a scheme instance, and instantiates a new <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a>.</p>
+<p>Takes configuration parameters of a scheme instance, and instantiates a new <a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e</td><td>A pointer to an uninitialized struct representing the encryptor for the scheme. </td></tr>
+    <tr><td class="paramname">e</td><td>A pointer to an uninitialized struct representing a client for the scheme. </td></tr>
     <tr><td class="paramname">m</td><td>A pointer to an instance of the scheme (<em>initialized</em> <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> struct) </td></tr>
   </table>
   </dd>
@@ -327,16 +327,16 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a286be3c060b36e40f82c9cb8282c2e38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a286be3c060b36e40f82c9cb8282c2e38">&#9670;&nbsp;</a></span>cfe_damgard_multi_enc_free()</h2>
+<a id="a36279083fe4ce48d6c1c8f37d0e3c4d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36279083fe4ce48d6c1c8f37d0e3c4d5">&#9670;&nbsp;</a></span>cfe_damgard_multi_client_free()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void cfe_damgard_multi_enc_free </td>
+          <td class="memname">void cfe_damgard_multi_client_free </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *&#160;</td>
           <td class="paramname"><em>e</em></td><td>)</td>
           <td></td>
         </tr>
@@ -345,7 +345,7 @@ Functions</h2></td></tr>
 <p>Frees the memory occupied by the struct members. It does not free memory occupied by the struct itself.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e</td><td>A pointer to an instance of the encryptor (<em>initialized</em> <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> struct) </td></tr>
+    <tr><td class="paramname">e</td><td>A pointer to an instance of the encryptor (<em>initialized</em> <a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> struct) </td></tr>
   </table>
   </dd>
 </dl>
@@ -524,14 +524,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0b7665bbd0f1734618a898db56fdbda2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b7665bbd0f1734618a898db56fdbda2">&#9670;&nbsp;</a></span>cfe_damgard_multi_derive_key()</h2>
+<a id="aa465067ffc1165a60beb39de56d6949f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa465067ffc1165a60beb39de56d6949f">&#9670;&nbsp;</a></span>cfe_damgard_multi_derive_fe_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">cfe_error cfe_damgard_multi_derive_key </td>
+          <td class="memname">cfe_error cfe_damgard_multi_derive_fe_key </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *&#160;</td>
           <td class="paramname"><em>fe_key</em>, </td>
@@ -575,8 +575,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ad937cf30de780f06396b49ca032cc705"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad937cf30de780f06396b49ca032cc705">&#9670;&nbsp;</a></span>cfe_damgard_multi_ciphertext_init()</h2>
+<a id="adc2aa2abdae49e743e6049b9c2268bcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc2aa2abdae49e743e6049b9c2268bcd">&#9670;&nbsp;</a></span>cfe_damgard_multi_ciphertext_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -590,7 +590,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *&#160;</td>
           <td class="paramname"><em>e</em>&#160;</td>
         </tr>
         <tr>
@@ -604,15 +604,15 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ciphertext</td><td>A pointer to an uninitialized vector </td></tr>
-    <tr><td class="paramname">e</td><td>A pointer to an instance of the encryptor (<em>initialized</em> <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> struct) </td></tr>
+    <tr><td class="paramname">e</td><td>A pointer to an instance of the encryptor (<em>initialized</em> cfe_damgard_multi_enc struct) </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a9ffcdd1d97250ada70d0b5f8b99e0885"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ffcdd1d97250ada70d0b5f8b99e0885">&#9670;&nbsp;</a></span>cfe_damgard_multi_encrypt()</h2>
+<a id="a0db5c7691aa843aa34b1f10c54bd6756"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0db5c7691aa843aa34b1f10c54bd6756">&#9670;&nbsp;</a></span>cfe_damgard_multi_encrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -626,7 +626,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__damgard__multi__client.html">cfe_damgard_multi_client</a> *&#160;</td>
           <td class="paramname"><em>e</em>, </td>
         </tr>
         <tr>
@@ -658,7 +658,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ciphertext</td><td>A pointer to a vector (the resulting ciphertext will be stored here) </td></tr>
-    <tr><td class="paramname">e</td><td>A pointer to an instance of the encryptor (<em>initialized</em> <a class="el" href="structcfe__damgard__multi__enc.html">cfe_damgard_multi_enc</a> struct) </td></tr>
+    <tr><td class="paramname">e</td><td>A pointer to an instance of the encryptor (<em>initialized</em> cfe_damgard_multi_enc struct) </td></tr>
     <tr><td class="paramname">x</td><td>A pointer to the input vector </td></tr>
     <tr><td class="paramname">pub_key</td><td>A pointer to the public key vector </td></tr>
     <tr><td class="paramname">otp</td><td>A pointer to the one-time pad vector </td></tr>
@@ -669,8 +669,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a2854abd77a43e6f806a51f8e288873f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2854abd77a43e6f806a51f8e288873f4">&#9670;&nbsp;</a></span>cfe_damgard_multi_decrypt()</h2>
+<a id="afcd39e9c925cb2f612eb8b8d45647c97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcd39e9c925cb2f612eb8b8d45647c97">&#9670;&nbsp;</a></span>cfe_damgard_multi_decrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -690,14 +690,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
           <td class="paramname"><em>ciphertext</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structcfe__damgard__multi__fe__key.html">cfe_damgard_multi_fe_key</a> *&#160;</td>
-          <td class="paramname"><em>key</em>, </td>
+          <td class="paramname"><em>fe_key</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -717,9 +717,9 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">res</td><td>The result of the decryption (the value will be stored here) </td></tr>
     <tr><td class="paramname">m</td><td>A pointer to an instance of the scheme (<em>initialized</em> <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> struct) </td></tr>
-    <tr><td class="paramname">ciphertext</td><td>A pointer to the matrix comprised of encrypted vectors </td></tr>
-    <tr><td class="paramname">key</td><td>A pointer to the functional encryption key </td></tr>
-    <tr><td class="paramname">y</td><td>A pointer to the matrix comprised of plaintext vectors </td></tr>
+    <tr><td class="paramname">ciphertext</td><td>An array comprised of encrypted vectors </td></tr>
+    <tr><td class="paramname">fe_key</td><td>An functional encryption key represented as an array of the parts of functional encryption keys. </td></tr>
+    <tr><td class="paramname">y</td><td>A pointer to the matrix comprised of plaintext inner product vectors </td></tr>
   </table>
   </dd>
 </dl>

@@ -101,8 +101,8 @@ Functions</h2></td></tr>
 <tr class="separator:a481a1414c1b36b588a81d9ce252d43c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa118b19bd160ce58ba1a8ca0c47a0a75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh__multi_8h.html#aa118b19bd160ce58ba1a8ca0c47a0a75">cfe_ddh_multi_generate_master_keys</a> (<a class="el" href="structcfe__mat.html">cfe_mat</a> *mpk, <a class="el" href="structcfe__ddh__multi__sec__key.html">cfe_ddh_multi_sec_key</a> *msk, <a class="el" href="structcfe__ddh__multi.html">cfe_ddh_multi</a> *m)</td></tr>
 <tr class="separator:aa118b19bd160ce58ba1a8ca0c47a0a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a897c66fec6fa185996b01ad637773234"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh__multi_8h.html#a897c66fec6fa185996b01ad637773234">cfe_ddh_multi_derive_key</a> (<a class="el" href="structcfe__ddh__multi__fe__key.html">cfe_ddh_multi_fe_key</a> *res, <a class="el" href="structcfe__ddh__multi.html">cfe_ddh_multi</a> *m, <a class="el" href="structcfe__ddh__multi__sec__key.html">cfe_ddh_multi_sec_key</a> *msk, <a class="el" href="structcfe__mat.html">cfe_mat</a> *y)</td></tr>
-<tr class="separator:a897c66fec6fa185996b01ad637773234"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8f38603be96584ba72075d308e2464d"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh__multi_8h.html#af8f38603be96584ba72075d308e2464d">cfe_ddh_multi_derive_fe_key</a> (<a class="el" href="structcfe__ddh__multi__fe__key.html">cfe_ddh_multi_fe_key</a> *res, <a class="el" href="structcfe__ddh__multi.html">cfe_ddh_multi</a> *m, <a class="el" href="structcfe__ddh__multi__sec__key.html">cfe_ddh_multi_sec_key</a> *msk, <a class="el" href="structcfe__mat.html">cfe_mat</a> *y)</td></tr>
+<tr class="separator:af8f38603be96584ba72075d308e2464d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad85e1b112a78b15de7274a6f4cea7e69"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh__multi_8h.html#ad85e1b112a78b15de7274a6f4cea7e69">cfe_ddh_multi_encrypt</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__ddh__multi__enc.html">cfe_ddh_multi_enc</a> *e, <a class="el" href="structcfe__vec.html">cfe_vec</a> *x, <a class="el" href="structcfe__vec.html">cfe_vec</a> *pub_key, <a class="el" href="structcfe__vec.html">cfe_vec</a> *otp)</td></tr>
 <tr class="separator:ad85e1b112a78b15de7274a6f4cea7e69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e9443b0871bcf729c8da5cba1adf515"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh__multi_8h.html#a4e9443b0871bcf729c8da5cba1adf515">cfe_ddh_multi_decrypt</a> (mpz_t res, <a class="el" href="structcfe__ddh__multi.html">cfe_ddh_multi</a> *m, <a class="el" href="structcfe__mat.html">cfe_mat</a> *ciphertext, <a class="el" href="structcfe__ddh__multi__fe__key.html">cfe_ddh_multi_fe_key</a> *key, <a class="el" href="structcfe__mat.html">cfe_mat</a> *y)</td></tr>
@@ -560,14 +560,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a897c66fec6fa185996b01ad637773234"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a897c66fec6fa185996b01ad637773234">&#9670;&nbsp;</a></span>cfe_ddh_multi_derive_key()</h2>
+<a id="af8f38603be96584ba72075d308e2464d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8f38603be96584ba72075d308e2464d">&#9670;&nbsp;</a></span>cfe_ddh_multi_derive_fe_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">cfe_error cfe_ddh_multi_derive_key </td>
+          <td class="memname">cfe_error cfe_ddh_multi_derive_fe_key </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structcfe__ddh__multi__fe__key.html">cfe_ddh_multi_fe_key</a> *&#160;</td>
           <td class="paramname"><em>res</em>, </td>

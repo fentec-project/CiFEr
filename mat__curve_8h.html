@@ -83,8 +83,8 @@ Functions</h2></td></tr>
 <tr class="separator:a09eee9d09ad9419c8116e42b425f9593"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86a879940fc707e3413e504bc81f51d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat__curve_8h.html#a86a879940fc707e3413e504bc81f51d9">cfe_mat_mul_G1_mat</a> (<a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> *res, <a class="el" href="structcfe__mat.html">cfe_mat</a> *mi, <a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> *m)</td></tr>
 <tr class="separator:a86a879940fc707e3413e504bc81f51d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9836dcc9d3c228d22d012047d20774a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat__curve_8h.html#a9836dcc9d3c228d22d012047d20774a4">cfe_mat_G1_mul_vec</a> (<a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> *res, <a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> *m, <a class="el" href="structcfe__vec.html">cfe_vec</a> *u)</td></tr>
-<tr class="separator:a9836dcc9d3c228d22d012047d20774a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f4e3e17430384db45494bc045f4e191"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat__curve_8h.html#a5f4e3e17430384db45494bc045f4e191">cfe_mat_G1_mul_vec</a> (<a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> *res, <a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> *m, <a class="el" href="structcfe__vec.html">cfe_vec</a> *mi)</td></tr>
+<tr class="separator:a5f4e3e17430384db45494bc045f4e191"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa70f8f994f598663ecf55315c76023ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat__curve_8h.html#aa70f8f994f598663ecf55315c76023ee">cfe_mat_G1_free</a> (<a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> *m)</td></tr>
 <tr class="separator:aa70f8f994f598663ecf55315c76023ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af309c0a699c04a69eb179dd0006eb8f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat__curve_8h.html#af309c0a699c04a69eb179dd0006eb8f7">cfe_mat_G2_init</a> (<a class="el" href="structcfe__mat__G2.html">cfe_mat_G2</a> *m, size_t rows, size_t cols)</td></tr>
@@ -314,15 +314,15 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">res</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> matrix </td></tr>
     <tr><td class="paramname">mi</td><td>A pointer to matrix of integers </td></tr>
-    <tr><td class="paramname">u</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> matrix </td></tr>
+    <tr><td class="paramname">m</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> matrix </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a9836dcc9d3c228d22d012047d20774a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9836dcc9d3c228d22d012047d20774a4">&#9670;&nbsp;</a></span>cfe_mat_G1_mul_vec()</h2>
+<a id="a5f4e3e17430384db45494bc045f4e191"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f4e3e17430384db45494bc045f4e191">&#9670;&nbsp;</a></span>cfe_mat_G1_mul_vec()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -343,7 +343,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
-          <td class="paramname"><em>u</em>&#160;</td>
+          <td class="paramname"><em>mi</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -357,7 +357,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">res</td><td>A pointer to an initialized <a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> vector </td></tr>
     <tr><td class="paramname">m</td><td>A pointer to a <a class="el" href="structcfe__mat__G1.html">cfe_mat_G1</a> matrix </td></tr>
-    <tr><td class="paramname">u</td><td>A pointer to matrix of integers </td></tr>
+    <tr><td class="paramname">mi</td><td>A pointer to matrix of integers </td></tr>
   </table>
   </dd>
 </dl>
@@ -540,7 +540,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">res</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__G2.html">cfe_mat_G2</a> matrix </td></tr>
     <tr><td class="paramname">mi</td><td>A pointer to matrix of integers </td></tr>
-    <tr><td class="paramname">u</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__G2.html">cfe_mat_G2</a> matrix </td></tr>
+    <tr><td class="paramname">m</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__G2.html">cfe_mat_G2</a> matrix </td></tr>
   </table>
   </dd>
 </dl>
@@ -730,7 +730,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">res</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__GT.html">cfe_mat_GT</a> matrix </td></tr>
     <tr><td class="paramname">mi</td><td>A pointer to matrix of integers </td></tr>
-    <tr><td class="paramname">u</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__GT.html">cfe_mat_GT</a> matrix </td></tr>
+    <tr><td class="paramname">m</td><td>A pointer to an initialized <a class="el" href="structcfe__mat__GT.html">cfe_mat_GT</a> matrix </td></tr>
   </table>
   </dd>
 </dl>

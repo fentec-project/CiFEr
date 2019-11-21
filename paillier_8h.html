@@ -77,8 +77,8 @@ Functions</h2></td></tr>
 <tr class="separator:a7e60eeef8718cc068a61a9041513d3a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1437d729a0b787c636a6a42783d8e3d5"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="paillier_8h.html#a1437d729a0b787c636a6a42783d8e3d5">cfe_paillier_generate_master_keys</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *msk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *mpk, <a class="el" href="structcfe__paillier.html">cfe_paillier</a> *s)</td></tr>
 <tr class="separator:a1437d729a0b787c636a6a42783d8e3d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ff4b07c431af82bb0c1fa92ad84b90f"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="paillier_8h.html#a3ff4b07c431af82bb0c1fa92ad84b90f">cfe_paillier_derive_key</a> (mpz_t derived_key, <a class="el" href="structcfe__paillier.html">cfe_paillier</a> *s, <a class="el" href="structcfe__vec.html">cfe_vec</a> *msk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
-<tr class="separator:a3ff4b07c431af82bb0c1fa92ad84b90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc63bd39e550fea0cd78f77e95dfacc0"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="paillier_8h.html#afc63bd39e550fea0cd78f77e95dfacc0">cfe_paillier_derive_fe_key</a> (mpz_t fe_key, <a class="el" href="structcfe__paillier.html">cfe_paillier</a> *s, <a class="el" href="structcfe__vec.html">cfe_vec</a> *msk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
+<tr class="separator:afc63bd39e550fea0cd78f77e95dfacc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85e6920068f9050ccc6ff12196484157"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="paillier_8h.html#a85e6920068f9050ccc6ff12196484157">cfe_paillier_ciphertext_init</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__paillier.html">cfe_paillier</a> *s)</td></tr>
 <tr class="separator:a85e6920068f9050ccc6ff12196484157"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d64e6d03bc626545084dd10d30c5842"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="paillier_8h.html#a6d64e6d03bc626545084dd10d30c5842">cfe_paillier_encrypt</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__paillier.html">cfe_paillier</a> *s, <a class="el" href="structcfe__vec.html">cfe_vec</a> *x, <a class="el" href="structcfe__vec.html">cfe_vec</a> *mpk)</td></tr>
@@ -318,17 +318,17 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3ff4b07c431af82bb0c1fa92ad84b90f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ff4b07c431af82bb0c1fa92ad84b90f">&#9670;&nbsp;</a></span>cfe_paillier_derive_key()</h2>
+<a id="afc63bd39e550fea0cd78f77e95dfacc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc63bd39e550fea0cd78f77e95dfacc0">&#9670;&nbsp;</a></span>cfe_paillier_derive_fe_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">cfe_error cfe_paillier_derive_key </td>
+          <td class="memname">cfe_error cfe_paillier_derive_fe_key </td>
           <td>(</td>
           <td class="paramtype">mpz_t&#160;</td>
-          <td class="paramname"><em>derived_key</em>, </td>
+          <td class="paramname"><em>fe_key</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -358,7 +358,7 @@ Functions</h2></td></tr>
 <p>Takes master secret key and input vector y, and returns the functional encryption key. In case the key could not be derived, it returns an error.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">derived_key</td><td>The resulting functional encryption key (the value will be stored here) </td></tr>
+    <tr><td class="paramname">fe_key</td><td>The resulting functional encryption key (the value will be stored here) </td></tr>
     <tr><td class="paramname">s</td><td>A pointer to an instance of the scheme (<em>initialized</em> <a class="el" href="structcfe__paillier.html">cfe_paillier</a> struct) </td></tr>
     <tr><td class="paramname">msk</td><td>A pointer to the master secret key </td></tr>
     <tr><td class="paramname">y</td><td>A pointer to the inner product vector </td></tr>

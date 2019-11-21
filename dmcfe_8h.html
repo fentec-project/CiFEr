@@ -75,8 +75,10 @@ Functions</h2></td></tr>
 <tr class="separator:a103bc02ea3640dfb815bbd99a30247b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae217cad96b6cac3610804429c76759b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#aae217cad96b6cac3610804429c76759b">cfe_dmcfe_encrypt</a> (ECP_BN254 *cipher, <a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> *c, mpz_t x, char *label)</td></tr>
 <tr class="separator:aae217cad96b6cac3610804429c76759b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf3b5c34a0c6b4c4a68bce0b3b144ad8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#aaf3b5c34a0c6b4c4a68bce0b3b144ad8">cfe_dmcfe_generate_key_share</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *key_share, <a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> *c, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
-<tr class="separator:aaf3b5c34a0c6b4c4a68bce0b3b144ad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a1589cf9ea38adf65659eef1d852993"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#a0a1589cf9ea38adf65659eef1d852993">cfe_dmcfe_fe_key_part_init</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *fe_key_part)</td></tr>
+<tr class="separator:a0a1589cf9ea38adf65659eef1d852993"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac442fe2eeeec84528f2035d6979654c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#ac442fe2eeeec84528f2035d6979654c8">cfe_dmcfe_derive_fe_key_part</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *fe_key_part, <a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> *c, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
+<tr class="separator:ac442fe2eeeec84528f2035d6979654c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc2789584165c1565d515dcbbdbad541"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#abc2789584165c1565d515dcbbdbad541">cfe_dmcfe_decrypt</a> (mpz_t res, ECP_BN254 *ciphers, <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *key_shares, char *label, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y, mpz_t bound)</td></tr>
 <tr class="separator:abc2789584165c1565d515dcbbdbad541"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -191,7 +193,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets a secret key share for the client based on the public keys all the participant. Note that the function assumes that if there is n clients, their identifications are from [0,n).</p>
+<p>Sets a secret key share for the client based on the public keys of all the participant. Note that the function assumes that if there are n clients, their identifications are from [0,n).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">c</td><td>A pointer to an initialized struct representing the scheme </td></tr>
@@ -253,17 +255,42 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aaf3b5c34a0c6b4c4a68bce0b3b144ad8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf3b5c34a0c6b4c4a68bce0b3b144ad8">&#9670;&nbsp;</a></span>cfe_dmcfe_generate_key_share()</h2>
+<a id="a0a1589cf9ea38adf65659eef1d852993"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a1589cf9ea38adf65659eef1d852993">&#9670;&nbsp;</a></span>cfe_dmcfe_fe_key_part_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void cfe_dmcfe_generate_key_share </td>
+          <td class="memname">void cfe_dmcfe_fe_key_part_init </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *&#160;</td>
-          <td class="paramname"><em>key_share</em>, </td>
+          <td class="paramname"><em>fe_key_part</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Configures a new functional encryption key share for the dmcfe scheme.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fe_key_part</td><td>A pointer to an uninitialized <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> vec representing the share </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac442fe2eeeec84528f2035d6979654c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac442fe2eeeec84528f2035d6979654c8">&#9670;&nbsp;</a></span>cfe_dmcfe_derive_fe_key_part()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_dmcfe_derive_fe_key_part </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *&#160;</td>
+          <td class="paramname"><em>fe_key_part</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -284,10 +311,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets a share of a decryption key needed for the decryption of an inner product of encrypted vector and y.</p>
+<p>Sets a part of a functional encryption key needed for the decryption of an inner product of encrypted vector and y.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">key_share</td><td>A pointer to initialized <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> of size 2 (the key share will be save here) </td></tr>
+    <tr><td class="paramname">fe_key_part</td><td>A pointer to initialized <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> (the key share will be save here) </td></tr>
     <tr><td class="paramname">c</td><td>A pointer to an initialized struct representing the scheme </td></tr>
     <tr><td class="paramname">y</td><td>A pointer to the inner-product vector </td></tr>
   </table>

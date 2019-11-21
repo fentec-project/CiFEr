@@ -79,8 +79,8 @@ Functions</h2></td></tr>
 <tr class="separator:a4de4e696bbb7bccb838a7a2bc617e21b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5205c90990e16d4d54d4f976fa1d36a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh_8h.html#a5205c90990e16d4d54d4f976fa1d36a5">cfe_ddh_generate_master_keys</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *msk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *mpk, <a class="el" href="structcfe__ddh.html">cfe_ddh</a> *s)</td></tr>
 <tr class="separator:a5205c90990e16d4d54d4f976fa1d36a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac95cc56367226ab517044125f06d3c17"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh_8h.html#ac95cc56367226ab517044125f06d3c17">cfe_ddh_derive_key</a> (mpz_t res, <a class="el" href="structcfe__ddh.html">cfe_ddh</a> *s, <a class="el" href="structcfe__vec.html">cfe_vec</a> *msk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
-<tr class="separator:ac95cc56367226ab517044125f06d3c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51c4119bb52ebb40315c8ac7987687a6"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh_8h.html#a51c4119bb52ebb40315c8ac7987687a6">cfe_ddh_derive_fe_key</a> (mpz_t res, <a class="el" href="structcfe__ddh.html">cfe_ddh</a> *s, <a class="el" href="structcfe__vec.html">cfe_vec</a> *msk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
+<tr class="separator:a51c4119bb52ebb40315c8ac7987687a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecb52e48dbb360759d440639ed3696eb"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh_8h.html#aecb52e48dbb360759d440639ed3696eb">cfe_ddh_encrypt</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, <a class="el" href="structcfe__ddh.html">cfe_ddh</a> *s, <a class="el" href="structcfe__vec.html">cfe_vec</a> *x, <a class="el" href="structcfe__vec.html">cfe_vec</a> *mpk)</td></tr>
 <tr class="separator:aecb52e48dbb360759d440639ed3696eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ab09755332ddbb7bf46f0689851d58b"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ddh_8h.html#a0ab09755332ddbb7bf46f0689851d58b">cfe_ddh_decrypt</a> (mpz_t res, <a class="el" href="structcfe__ddh.html">cfe_ddh</a> *s, <a class="el" href="structcfe__vec.html">cfe_vec</a> *ciphertext, mpz_t key, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
@@ -339,14 +339,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac95cc56367226ab517044125f06d3c17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac95cc56367226ab517044125f06d3c17">&#9670;&nbsp;</a></span>cfe_ddh_derive_key()</h2>
+<a id="a51c4119bb52ebb40315c8ac7987687a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51c4119bb52ebb40315c8ac7987687a6">&#9670;&nbsp;</a></span>cfe_ddh_derive_fe_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">cfe_error cfe_ddh_derive_key </td>
+          <td class="memname">cfe_error cfe_ddh_derive_fe_key </td>
           <td>(</td>
           <td class="paramtype">mpz_t&#160;</td>
           <td class="paramname"><em>res</em>, </td>

@@ -468,8 +468,9 @@ Attribute-Based Encryption with Receiver Privacy". </p>
 <p>Prepares a cipher struct</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pk</td><td>A pointer to a <a class="el" href="structcfe__dippe__cipher.html">cfe_dippe_cipher</a> struct </td></tr>
+    <tr><td class="paramname">cipher</td><td>A pointer to a <a class="el" href="structcfe__dippe__cipher.html">cfe_dippe_cipher</a> struct </td></tr>
     <tr><td class="paramname">dippe</td><td>A pointer to a <a class="el" href="structcfe__dippe.html">cfe_dippe</a> struct </td></tr>
+    <tr><td class="paramname">pol_size</td><td>Length of the cipher </td></tr>
   </table>
   </dd>
 </dl>
@@ -590,7 +591,7 @@ Attribute-Based Encryption with Receiver Privacy". </p>
 <p>Prepares a secret key struct</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pk</td><td>A pointer to a <a class="el" href="structcfe__dippe__sec__key.html">cfe_dippe_sec_key</a> struct </td></tr>
+    <tr><td class="paramname">sk</td><td>A pointer to a <a class="el" href="structcfe__dippe__sec__key.html">cfe_dippe_sec_key</a> struct </td></tr>
     <tr><td class="paramname">dippe</td><td>A pointer to a <a class="el" href="structcfe__dippe.html">cfe_dippe</a> struct </td></tr>
   </table>
   </dd>
@@ -861,6 +862,7 @@ Attribute-Based Encryption with Receiver Privacy". </p>
     <tr><td class="paramname">usk_id</td><td>Index of the given attribute vector for which a user secret key will be created </td></tr>
     <tr><td class="paramname">pks</td><td>An array containing references to <a class="el" href="structcfe__dippe__pub__key.html">cfe_dippe_pub_key</a> structs </td></tr>
     <tr><td class="paramname">pks_len</td><td>Length of the public key array </td></tr>
+    <tr><td class="paramname">sk</td><td>Secret key </td></tr>
     <tr><td class="paramname">av</td><td>A pointer to a <a class="el" href="structcfe__vec.html">cfe_vec</a> struct; Represents the attribute vector </td></tr>
     <tr><td class="paramname">gid</td><td>String that represents a unique user; Required for collusion prevention </td></tr>
   </table>
