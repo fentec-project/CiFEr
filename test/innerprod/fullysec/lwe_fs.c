@@ -52,9 +52,9 @@ MunitResult test_lwe_fully_secure(const MunitParameter *params, void *data) {
     cfe_lwe_fs_pub_key_init(&PK, &s);
     cfe_lwe_fs_generate_pub_key(&PK, &s, &SK);
 
-    cfe_vec z_y;
-    cfe_lwe_fs_fe_key_init(&z_y, &s);
-    err = cfe_lwe_fs_derive_key(&z_y, &s, &y, &SK);
+    cfe_vec fe_key;
+    cfe_lwe_fs_fe_key_init(&fe_key, &s);
+    err = cfe_lwe_fs_derive_fe_key(&fe_key, &s, &y, &SK);
     munit_assert(!err);
 
     cfe_vec ciphertext;
@@ -62,14 +62,14 @@ MunitResult test_lwe_fully_secure(const MunitParameter *params, void *data) {
     err = cfe_lwe_fs_encrypt(&ciphertext, &s, &x, &PK);
     munit_assert(!err);
 
-    err = cfe_lwe_fs_decrypt(res, &s, &ciphertext, &z_y, &y);
+    err = cfe_lwe_fs_decrypt(res, &s, &ciphertext, &fe_key, &y);
     munit_assert(!err);
 
     munit_assert(mpz_cmp(res, expect) == 0);
 
     cfe_lwe_fs_free(&s);
     mpz_clears(bound_x, bound_x_neg, bound_y, bound_y_neg, res, expect, NULL);
-    cfe_vec_frees(&z_y, &ciphertext, &x, &y, NULL);
+    cfe_vec_frees(&fe_key, &ciphertext, &x, &y, NULL);
     cfe_mat_frees(&SK, &PK, NULL);
 
     return MUNIT_OK;

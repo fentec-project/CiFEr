@@ -114,10 +114,10 @@ assumptions:
 
 * Schemes with **selective security under chosen-plaintext attacks** (s-IND-CPA 
 security):
-    * Scheme by _Abdalla et. al._ ([paper](https://eprint.iacr.org/2015/017.pdf)). 
-        The scheme can be instantiated from DDH (`cfe_ddh`), LWE (`cfe_lwe`) and 
-        RingLWE (`cfe_ring_lwe`) primitives.
-    * Multi-input scheme based on paper by _Abdalla et.al_ 
+    * Schemes by _Abdalla, Bourse, De Caro, Pointcheval_ ([paper](https://eprint.iacr.org/2015/017.pdf)). 
+        The scheme can be instantiated from DDH (`cfe_ddh`) and LWE (`cfe_lwe`).
+    * Experimental Ring-LWE scheme whose security will be argued in a future paper (`cfe_ring_LWE`).        
+    * Multi-input scheme based on paper by _Abdalla, Catalano, Fiore, Gay, Ursu_ 
         ([paper](https://eprint.iacr.org/2017/972.pdf)) and instantiated from 
         the scheme in the first point (`cfe_ddh_multi`).
 
@@ -130,9 +130,18 @@ security) by
         encryption scheme is obtained from ElGamal scheme 
         ([paper](https://link.springer.com/chapter/10.1007/3-540-46766-1_36))), 
         LWE (`cfe_lwe_fs`) and Paillier (`cfe_paillier`) primitives.
-    * Multi-input scheme based on paper by _Abdalla et.al_ 
+    * Multi-input scheme based on paper by _Abdalla, Catalano, Fiore, Gay, Ursu_ 
     ([paper](https://eprint.iacr.org/2017/972.pdf)) and instantiated from the 
     scheme in the first point (`cfe_damgard_multi`).
+    * Decentralized scheme based on paper by _Chotard, Dufour Sans, Gay, Phan and Pointcheval_
+     ([paper](https://eprint.iacr.org/2017/989.pdf)). This scheme does not require a trusted
+     party to generate keys. It is built on pairings  (`cfe_dmcfe`).
+    * Decentralized scheme based on paper by _Abdalla, Benhamouda, Kohlweiss, Waldner_
+     ([paper](https://eprint.iacr.org/2019/020.pdf)). Similarly as above this scheme
+     this scheme does not require a trusted party to generate keys and is based on a general 
+    procedure for decentralization of an inner product scheme, in particular the
+    decentralization of a Damgard DDH scheme (``cfe_damgard_dec_multi``).
+
 
 #### Quadratic scheme
 You will need to include headers from `quadratic` directory.
@@ -155,6 +164,12 @@ are needed for the decryption. The functions needed in this scheme have prefix
 ([paper](https://eprint.iacr.org/2006/309.pdf)) allowing a distribution of keys
 following a boolean expression defining a policy which attributes are needed for
 the decryption. The functions needed in this scheme have prefix `cfe_gpsw`.
+
+* A decentralized inner product predicate scheme by _Michalevsky, Joye_ ([paper](https://eprint.iacr.org/2018/753.pdf)) allowing encryption
+with policy described as a vector, and a decentralized distribution of keys based on users' vectors so that
+only users with  vectors orthogonal to the encryption vector posses a key that can decrypt the ciphertext.
+The functions needed in this scheme have prefix `cfe_dippe`.
+
 
 These schemes allow to specify a decryption policy defining which attributes are
 needed to be able to decrypt. For the latter we implemented a policy converter
@@ -306,7 +321,7 @@ cfe_vec_set(&y, el, 0);
 mpz_set_ui(el, 2);
 cfe_vec_set(&y, el, 1); // y is [1, 2]
 
-cfe_ddh_derive_key(fe_key, &s, &msk, &y);
+cfe_ddh_derive_fe_key(fe_key, &s, &msk, &y);
 
 // Simulate instantiation of encryptor 
 // Encryptor wants to hide x and should be given
@@ -370,7 +385,7 @@ cfe_ddh_multi_master_keys_init(&mpk, &msk, &m);
 cfe_ddh_multi_generate_master_keys(&mpk, &msk, &m);
 cfe_ddh_multi_fe_key fe_key;
 cfe_ddh_multi_fe_key_init(&fe_key, &m);
-cfe_ddh_multi_derive_key(&fe_key, &m, &msk, &Y);
+cfe_ddh_multi_derive_fe_key(&fe_key, &m, &msk, &Y);
 
 // Different encryptors may reside on different machines.
 // We simulate this with the for loop below, where numClients
@@ -438,7 +453,7 @@ cfe_mat m;
 cfe_mat_init(&m, l, l);
 cfe_uniform_sample_mat(&m, b);
 ECP2_BN254 key;
-cfe_sgp_derive_key(&key, &s, &msk, &m);
+cfe_sgp_derive_fe_key(&key, &s, &msk, &m);
 mpz_t dec;
 mpz_init(dec);
 cfe_sgp_decrypt(dec, &s, &cipher, &key, &m);

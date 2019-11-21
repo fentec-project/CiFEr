@@ -135,7 +135,7 @@ void cfe_lwe_fs_fe_key_init(cfe_vec *z_y, cfe_lwe_fs *s);
  * @param SK A pointer to the master secret key
  * @return Error code
  */
-cfe_error cfe_lwe_fs_derive_key(cfe_vec *z_y, cfe_lwe_fs *s, cfe_vec *y, cfe_mat *SK);
+cfe_error cfe_lwe_fs_derive_fe_key(cfe_vec *z_y, cfe_lwe_fs *s, cfe_vec *y, cfe_mat *SK);
 
 /**
  * Initializes the vector which represents the ciphertext.

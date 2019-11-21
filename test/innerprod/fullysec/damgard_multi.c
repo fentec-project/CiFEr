@@ -20,70 +20,77 @@
 #include "cifer/sample/uniform.h"
 
 MunitResult test_damgard_multi_end_to_end(const MunitParameter *params, void *data) {
-    size_t l = 3;
-    size_t slots = 2;
-    size_t modulus_len = 64;
+    size_t l = 2;
+    size_t num_clients = 6;
+    size_t modulus_len = 512;
     mpz_t bound, xy_check, xy;
     mpz_inits(bound, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
 
-    cfe_damgard_multi m, decryptor;
-    cfe_damgard_multi_enc encryptors[slots];
-    cfe_error err = cfe_damgard_multi_init(&m, slots, l, modulus_len, bound);
+    // create a multi-client scheme
+    cfe_damgard_multi m;
+    cfe_error err = cfe_damgard_multi_init(&m, num_clients, l, modulus_len, bound);
     munit_assert(err == 0);
 
-    cfe_mat x, y, ciphertext, mpk;
-    cfe_mat_inits(slots, l, &x, &y, NULL);
-    cfe_mat_init(&ciphertext, slots, l + 2);
-    cfe_uniform_sample_mat(&y, bound);
 
+    cfe_mat x, y, mpk;
+    cfe_mat_inits(num_clients, l, &x, &y, NULL);
     cfe_damgard_multi_sec_key msk;
+
+    // generate secret an public key
     cfe_damgard_multi_master_keys_init(&mpk, &msk, &m);
     cfe_damgard_multi_generate_master_keys(&mpk, &msk, &m);
 
-    for (size_t i = 0; i < slots; i++) {
-        cfe_damgard_multi_enc_init(&encryptors[i], &m);
-    }
-
-    cfe_damgard_multi_fe_key key;
-    cfe_damgard_multi_fe_key_init(&key, &m);
-    err = cfe_damgard_multi_derive_key(&key, &m, &msk, &y);
+    // sample an inner product key and derive a corresponding
+    // functional encryption key
+    cfe_damgard_multi_fe_key fe_key;
+    cfe_damgard_multi_fe_key_init(&fe_key, &m);
+    cfe_uniform_sample_mat(&y, bound);
+    err = cfe_damgard_multi_derive_fe_key(&fe_key, &m, &msk, &y);
     munit_assert(err == 0);
 
-    cfe_vec ct;
-    cfe_damgard_multi_ciphertext_init(&ct, &encryptors[0]);
-    for (size_t i = 0; i < slots; i++) {
+    // simulate clients so that each client encrypts its
+    // vector x; collect encryptions in an array
+    cfe_vec ciphertext[num_clients];
+
+    cfe_damgard_multi_client clients[num_clients];
+    for (size_t i = 0; i < num_clients; i++) {
         cfe_vec *x_vec = cfe_mat_get_row_ptr(&x, i);
         cfe_uniform_sample_vec(x_vec, bound);
 
         cfe_vec *pub_key = cfe_mat_get_row_ptr(&mpk, i);
         cfe_vec *otp = cfe_mat_get_row_ptr(&msk.otp, i);
-        err = cfe_damgard_multi_encrypt(&ct, &encryptors[i], x_vec, pub_key, otp);
+
+        cfe_damgard_multi_client_init(&clients[i], &m);
+        cfe_damgard_multi_ciphertext_init(&(ciphertext[i]), &clients[0]);
+
+        err = cfe_damgard_multi_encrypt(&(ciphertext[i]), &clients[i], x_vec, pub_key, otp);
         munit_assert(err == 0);
-
-        cfe_mat_set_vec(&ciphertext, &ct, i);
     }
-    cfe_vec_free(&ct);
 
-    cfe_mat_dot(xy_check, &x, &y);
-    mpz_mod(xy_check, xy_check, bound);
-
+    // simulate decrytor that using FE key an an array of ciphertexts
+    // decrypts a value Σ_i <x_i, y_i> (sum of inner products)
+    cfe_damgard_multi decryptor;
     cfe_damgard_multi_copy(&decryptor, &m);
-    err = cfe_damgard_multi_decrypt(xy, &m, &ciphertext, &key, &y);
+    err = cfe_damgard_multi_decrypt(xy, &m, ciphertext, &fe_key, &y);
     munit_assert(err == 0);
 
+    // check correctness
+    cfe_mat_dot(xy_check, &x, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
+    // clear up
     mpz_clears(bound, xy_check, xy, NULL);
-    cfe_mat_frees(&x, &y, &ciphertext, &mpk, NULL);
+    cfe_mat_frees(&x, &y, &mpk, NULL);
 
     cfe_damgard_multi_sec_key_free(&msk);
-    cfe_damgard_multi_fe_key_free(&key);
+    cfe_damgard_multi_fe_key_free(&fe_key);
     cfe_damgard_multi_free(&m);
     cfe_damgard_multi_free(&decryptor);
-    for (size_t i = 0; i < slots; i++) {
-        cfe_damgard_multi_enc_free(&encryptors[i]);
+    for (size_t i = 0; i < num_clients; i++) {
+        cfe_damgard_multi_client_free(&clients[i]);
+        cfe_vec_free(&ciphertext[i]);
     }
 
     return MUNIT_OK;

@@ -51,22 +51,22 @@ MunitResult test_lwe(const MunitParameter *params, void *data) {
     err = cfe_lwe_generate_pub_key(&PK, &s, &SK);
     munit_assert(!err);
 
-    cfe_vec sk_y, ct;
-    cfe_lwe_fe_key_init(&sk_y, &s);
-    err = cfe_lwe_derive_key(&sk_y, &s, &SK, &y);
+    cfe_vec fe_key, ct;
+    cfe_lwe_fe_key_init(&fe_key, &s);
+    err = cfe_lwe_derive_fe_key(&fe_key, &s, &SK, &y);
     munit_assert(!err);
 
     cfe_lwe_ciphertext_init(&ct, &s);
     err = cfe_lwe_encrypt(&ct, &s, &x, &PK);
     munit_assert(!err);
 
-    err = cfe_lwe_decrypt(res, &s, &ct, &sk_y, &y);
+    err = cfe_lwe_decrypt(res, &s, &ct, &fe_key, &y);
     munit_assert(!err);
 
     munit_assert(mpz_cmp(res, expect) == 0);
 
     mpz_clears(B, B_neg, expect, res, NULL);
-    cfe_vec_frees(&x, &y, &sk_y, &ct, NULL);
+    cfe_vec_frees(&x, &y, &fe_key, &ct, NULL);
     cfe_mat_frees(&SK, &PK, NULL);
     cfe_lwe_free(&s);
 

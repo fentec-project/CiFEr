@@ -102,7 +102,11 @@ void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *la
     ECP_BN254_add(cipher, &h);
 }
 
-void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y) {
+void cfe_dmcfe_fe_key_part_init(cfe_vec_G2 *key_share) {
+    cfe_vec_G2_init(key_share, 2);
+}
+
+void cfe_dmcfe_derive_fe_key_part(cfe_vec_G2 *fe_key_part, cfe_dmcfe_client *c, cfe_vec *y) {
     char *str, *str_i, *for_hash;
     str = cfe_vec_to_string(y);
     ECP2_BN254 hash[2];
@@ -120,20 +124,20 @@ void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cf
     BIG_256_56 tmp_big;
     ECP2_BN254 h;
     for (size_t k = 0; k < 2; k++) {
-        ECP2_BN254_inf(&(key_share->vec[k]));
+        ECP2_BN254_inf(&(fe_key_part->vec[k]));
         for (size_t i = 0; i < 2; i++) {
             ECP2_BN254_copy(&h, &(hash[i]));
             cfe_mat_get(tmp, &(c->share), k, i);
             BIG_256_56_from_mpz(tmp_big, tmp);
             ECP2_BN254_mul(&(h), tmp_big);
-            ECP2_BN254_add(&(key_share->vec[k]), &h);
+            ECP2_BN254_add(&(fe_key_part->vec[k]), &h);
         }
 
         mpz_mul(tmp, y->vec[c->idx], c->s.vec[k]);
         BIG_256_56_from_mpz(tmp_big, tmp);
         ECP2_BN254_generator(&h);
         ECP2_BN254_mul(&h, tmp_big);
-        ECP2_BN254_add(&(key_share->vec[k]), &h);
+        ECP2_BN254_add(&(fe_key_part->vec[k]), &h);
     }
     mpz_clear(tmp);
 }

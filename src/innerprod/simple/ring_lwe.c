@@ -136,7 +136,7 @@ void cfe_ring_lwe_fe_key_init(cfe_vec *sk_y, cfe_ring_lwe *s) {
 // Derives a secret key sk_y for decryption of inner product of y and
 // a secret operand.
 // Secret key is a linear combination of input vector y and master secret keys.
-cfe_error cfe_ring_lwe_derive_key(cfe_vec *sk_y, cfe_ring_lwe *s, cfe_mat *SK, cfe_vec *y) {
+cfe_error cfe_ring_lwe_derive_fe_key(cfe_vec *sk_y, cfe_ring_lwe *s, cfe_mat *SK, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }

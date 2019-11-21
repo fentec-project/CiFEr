@@ -23,8 +23,8 @@ MunitResult test_ddh_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 3;
     size_t modulus_len = 128;
 
-    mpz_t bound, bound_neg, func_key, xy_check, xy;
-    mpz_inits(bound, bound_neg, func_key, xy_check, xy, NULL);
+    mpz_t bound, bound_neg, fe_key, xy_check, xy;
+    mpz_inits(bound, bound_neg, fe_key, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 15);
     mpz_neg(bound_neg, bound);
@@ -42,7 +42,7 @@ MunitResult test_ddh_end_to_end(const MunitParameter *params, void *data) {
     cfe_ddh_master_keys_init(&msk, &mpk, &s);
     cfe_ddh_generate_master_keys(&msk, &mpk, &s);
 
-    err = cfe_ddh_derive_key(func_key, &s, &msk, &y);
+    err = cfe_ddh_derive_fe_key(fe_key, &s, &msk, &y);
     munit_assert(err == 0);
 
     cfe_ddh_copy(&encryptor, &s);
@@ -51,12 +51,12 @@ MunitResult test_ddh_end_to_end(const MunitParameter *params, void *data) {
     munit_assert(err == 0);
 
     cfe_ddh_copy(&decryptor, &s);
-    err = cfe_ddh_decrypt(xy, &decryptor, &ciphertext, func_key, &y);
+    err = cfe_ddh_decrypt(xy, &decryptor, &ciphertext, fe_key, &y);
     munit_assert(err == 0);
 
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
-    mpz_clears(bound, bound_neg, func_key, xy_check, xy, NULL);
+    mpz_clears(bound, bound_neg, fe_key, xy_check, xy, NULL);
     cfe_vec_frees(&x, &y, &msk, &mpk, &ciphertext, NULL);
 
     cfe_ddh_free(&s);

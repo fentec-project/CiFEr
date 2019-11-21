@@ -85,6 +85,8 @@ MunitResult test_big(const MunitParameter *params, void *data) {
     check = FP12_BN254_equals(&GT, &GT2);
     munit_assert(check);
 
+    mpz_clears(four, four_inv, p, NULL);
+
     return MUNIT_OK;
 }
 

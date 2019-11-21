@@ -46,6 +46,7 @@ cfe_error cfe_damgard_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t b
     mpz_init_set(s->bound, bound);
     mpz_init_set(s->g, key.g);
     mpz_init_set(s->p, key.p);
+    mpz_init_set(s->q, key.q);
     mpz_init(s->h);
     cfe_uniform_sample_range_i_mpz(s->h, 1, s->p);
     mpz_powm(s->h, key.g, s->h, s->p);
@@ -57,7 +58,7 @@ cfe_error cfe_damgard_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t b
 }
 
 void cfe_damgard_free(cfe_damgard *s) {
-    mpz_clears(s->bound, s->g, s->p, s->h, NULL);
+    mpz_clears(s->bound, s->g, s->p, s->h, s->q, NULL);
 }
 
 // res should be uninitialized!
@@ -67,6 +68,7 @@ void cfe_damgard_copy(cfe_damgard *res, cfe_damgard *s) {
     mpz_init_set(res->g, s->g);
     mpz_init_set(res->p, s->p);
     mpz_init_set(res->h, s->h);
+    mpz_init_set(res->q, s->q);
 }
 
 void cfe_damgard_sec_key_init(cfe_damgard_sec_key *msk, cfe_damgard *s) {
@@ -81,11 +83,6 @@ void cfe_damgard_sec_key_free(cfe_damgard_sec_key *key) {
     cfe_vec_frees(&key->s, &key->t, NULL);
 }
 
-void cfe_damgard_derived_key_free(cfe_damgard_fe_key *key) {
-    mpz_clears(key->key1, key->key2, NULL);
-}
-
-// mpk must be uninitialized!
 void cfe_damgard_generate_master_keys(cfe_damgard_sec_key *msk, cfe_vec *mpk, cfe_damgard *s) {
     mpz_t s_i, t_i, y1, y2, r, p_min_1;
     mpz_inits(s_i, t_i, y1, y2, r, p_min_1, NULL);
@@ -113,8 +110,11 @@ void cfe_damgard_fe_key_init(cfe_damgard_fe_key *fe_key) {
     mpz_inits(fe_key->key1, fe_key->key2, NULL);
 }
 
-cfe_error
-cfe_damgard_derive_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
+void cfe_damgard_fe_key_free(cfe_damgard_fe_key *key) {
+    mpz_clears(key->key1, key->key2, NULL);
+}
+
+cfe_error cfe_damgard_derive_fe_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
@@ -173,8 +173,8 @@ cfe_error cfe_damgard_decrypt(mpz_t res, cfe_damgard *s, cfe_vec *ciphertext, cf
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
 
-    mpz_t num, ct, t1, t2, denom, denom_inv, r, order, bound;
-    mpz_inits(num, ct, t1, t2, denom, denom_inv, r, order, bound, NULL);
+    mpz_t num, ct, t1, t2, denom, denom_inv, r, bound;
+    mpz_inits(num, ct, t1, t2, denom, denom_inv, r, bound, NULL);
 
     mpz_set_ui(num, 1);
 
@@ -200,12 +200,11 @@ cfe_error cfe_damgard_decrypt(mpz_t res, cfe_damgard *s, cfe_vec *ciphertext, cf
     mpz_mul(r, denom_inv, num);
     mpz_mod(r, r, s->p);
 
-    mpz_sub_ui(order, s->p, 1);
     mpz_pow_ui(bound, s->bound, 2);
     mpz_mul_ui(bound, bound, s->l);
 
-    cfe_error err = cfe_baby_giant_with_neg(res, r, s->g, s->p, order, bound);
+    cfe_error err = cfe_baby_giant_with_neg(res, r, s->g, s->p, s->q, bound);
 
-    mpz_clears(num, ct, t1, t2, denom, denom_inv, r, order, bound, NULL);
+    mpz_clears(num, ct, t1, t2, denom, denom_inv, r, bound, NULL);
     return err;
 }

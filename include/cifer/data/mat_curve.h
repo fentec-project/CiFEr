@@ -86,7 +86,7 @@ void cfe_mat_mul_G1(cfe_mat_G1 *m, cfe_mat *u);
  *
  * @param res A pointer to an initialized cfe_mat_G1 matrix
  * @param mi A pointer to matrix of integers
- * @param u A pointer to an initialized cfe_mat_G1 matrix
+ * @param m A pointer to an initialized cfe_mat_G1 matrix
  */
 void cfe_mat_mul_G1_mat(cfe_mat_G1 *res, cfe_mat *mi, cfe_mat_G1 *m);
 
@@ -95,9 +95,9 @@ void cfe_mat_mul_G1_mat(cfe_mat_G1 *res, cfe_mat *mi, cfe_mat_G1 *m);
  * 
  * @param res A pointer to an initialized cfe_vec_G1 vector
  * @param m A pointer to a cfe_mat_G1 matrix
- * @param u A pointer to matrix of integers
+ * @param mi A pointer to matrix of integers
  */
-void cfe_mat_G1_mul_vec(cfe_vec_G1 *res, cfe_mat_G1 *m, cfe_vec *u);
+void cfe_mat_G1_mul_vec(cfe_vec_G1 *res, cfe_mat_G1 *m, cfe_vec *mi);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -140,7 +140,7 @@ void cfe_mat_mul_G2(cfe_mat_G2 *m, cfe_mat *u);
  *
  * @param res A pointer to an initialized cfe_mat_G2 matrix
  * @param mi A pointer to matrix of integers
- * @param u A pointer to an initialized cfe_mat_G2 matrix
+ * @param m A pointer to an initialized cfe_mat_G2 matrix
  */
 void cfe_mat_mul_G2_mat(cfe_mat_G2 *res, cfe_mat *mi, cfe_mat_G2 *m);
 
@@ -184,7 +184,7 @@ void cfe_mat_GT_transpose(cfe_mat_GT *res, cfe_mat_GT *m);
  *
  * @param res A pointer to an initialized cfe_mat_GT matrix
  * @param mi A pointer to matrix of integers
- * @param u A pointer to an initialized cfe_mat_GT matrix
+ * @param m A pointer to an initialized cfe_mat_GT matrix
  */
 void cfe_mat_mul_GT_mat(cfe_mat_GT *res, cfe_mat *mi, cfe_mat_GT *m);
 

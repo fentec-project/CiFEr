@@ -129,7 +129,7 @@ void cfe_sgp_generate_sec_key(cfe_sgp_sec_key *msk, cfe_sgp *s);
  * @param f A pointer to the matrix for the quadratic polynomial
  * @return Error code
  */
-cfe_error cfe_sgp_derive_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f);
+cfe_error cfe_sgp_derive_fe_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f);
 
 /**
  * Initializes the struct which represents the ciphertext.

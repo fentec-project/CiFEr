@@ -41,7 +41,7 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
 
     cfe_mat mpk;
     cfe_ddh_multi_sec_key msk;
-    cfe_ddh_multi_fe_key key;
+    cfe_ddh_multi_fe_key fe_key;
 
     cfe_ddh_multi_master_keys_init(&mpk, &msk, &m);
     cfe_ddh_multi_generate_master_keys(&mpk, &msk, &m);
@@ -50,8 +50,8 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
         cfe_ddh_multi_enc_init(&encryptors[i], &m);
     }
 
-    cfe_ddh_multi_fe_key_init(&key, &m);
-    err = cfe_ddh_multi_derive_key(&key, &m, &msk, &y);
+    cfe_ddh_multi_fe_key_init(&fe_key, &m);
+    err = cfe_ddh_multi_derive_fe_key(&fe_key, &m, &msk, &y);
     munit_assert(err == 0);
 
     for (size_t i = 0; i < slots; i++) {
@@ -73,7 +73,7 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
     mpz_mod(xy_check, xy_check, bound);
 
     cfe_ddh_multi_copy(&decryptor, &m);
-    err = cfe_ddh_multi_decrypt(xy, &decryptor, &ciphertext, &key, &y);
+    err = cfe_ddh_multi_decrypt(xy, &decryptor, &ciphertext, &fe_key, &y);
     munit_assert(err == 0);
 
     munit_assert(mpz_cmp(xy, xy_check) == 0);
@@ -81,7 +81,7 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
     mpz_clears(bound, xy_check, xy, NULL);
     cfe_mat_frees(&x, &y, &ciphertext, &mpk, NULL);
     cfe_ddh_multi_sec_key_free(&msk);
-    cfe_ddh_multi_fe_key_free(&key);
+    cfe_ddh_multi_fe_key_free(&fe_key);
     cfe_ddh_multi_free(&m);
     cfe_ddh_multi_free(&decryptor);
     for (size_t i = 0; i < slots; i++) {

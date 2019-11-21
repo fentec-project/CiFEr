@@ -87,7 +87,7 @@ void cfe_ddh_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s) {
     mpz_clears(x, p_min_1, NULL);
 }
 
-cfe_error cfe_ddh_derive_key(mpz_t res, cfe_ddh *s, cfe_vec *msk, cfe_vec *y) {
+cfe_error cfe_ddh_derive_fe_key(mpz_t res, cfe_ddh *s, cfe_vec *msk, cfe_vec *y) {
     if (!cfe_vec_check_bound(y, s->bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }

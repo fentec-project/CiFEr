@@ -104,7 +104,7 @@ void cfe_ddh_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_ddh *s);
  * @param y A pointer to the input vector
  * @return Error code
  */
-cfe_error cfe_ddh_derive_key(mpz_t res, cfe_ddh *s, cfe_vec *msk, cfe_vec *y);
+cfe_error cfe_ddh_derive_fe_key(mpz_t res, cfe_ddh *s, cfe_vec *msk, cfe_vec *y);
 
 /**
  * Encrypts input vector x with the provided master public key. It returns a

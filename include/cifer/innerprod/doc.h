@@ -31,7 +31,7 @@
  * *struct_name_free* function). These free the memory used by the struct's
  * members, but not the memory used by the struct itself. This is due to the
  * initialization of the structs' members in functions such as *generate_keys*
- * and *derive_key* - this makes the API simpler and easier to use as the user
+ * and *derive_fe_key* - this makes the API simpler and easier to use as the user
  * of the library does not to know all struct fields.
  *
  * The results of the functions are the

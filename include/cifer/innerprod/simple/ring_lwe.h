@@ -129,7 +129,7 @@ void cfe_ring_lwe_fe_key_init(cfe_vec *sk_y, cfe_ring_lwe *s);
  * @param y A pointer to the inner product vector
  * @return Error code
  */
-cfe_error cfe_ring_lwe_derive_key(cfe_vec *sk_y, cfe_ring_lwe *s, cfe_mat *SK, cfe_vec *y);
+cfe_error cfe_ring_lwe_derive_fe_key(cfe_vec *sk_y, cfe_ring_lwe *s, cfe_mat *SK, cfe_vec *y);
 
 /**
  * Initializes the matrix which represents the ciphertext.

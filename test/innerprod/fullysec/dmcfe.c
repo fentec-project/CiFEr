@@ -20,8 +20,8 @@
 
 MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     size_t num_clients = 10;
-    mpz_t bound, bound_neg, key1, key2, xy_check, xy;
-    mpz_inits(bound, bound_neg, key1, key2, xy_check, xy, NULL);
+    mpz_t bound, bound_neg, xy_check, xy;
+    mpz_inits(bound, bound_neg, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
@@ -48,26 +48,26 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     cfe_uniform_sample_vec(&y, bound);
     char label[] = "some label";
     ECP_BN254 ciphers[num_clients];
-    cfe_vec_G2 key_shares[num_clients];
+    cfe_vec_G2 fe_key[num_clients];
 
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_encrypt(&(ciphers[i]), &(clients[i]), x.vec[i], label);
-        cfe_vec_G2_init(&(key_shares[i]), 2);
-        cfe_dmcfe_generate_key_share(&(key_shares[i]), &(clients[i]), &y);
+        cfe_dmcfe_fe_key_part_init(&(fe_key[i]));
+        cfe_dmcfe_derive_fe_key_part(&(fe_key[i]), &(clients[i]), &y);
     }
 
     // decrypt the inner product
-    cfe_dmcfe_decrypt(xy, ciphers, key_shares, label, &y, bound);
+    cfe_dmcfe_decrypt(xy, ciphers, fe_key, label, &y, bound);
 
     // check correctness
     cfe_vec_dot(xy_check, &x, &y);
     munit_assert(mpz_cmp(xy, xy_check) == 0);
 
     // free the memory
-    mpz_clears(bound, bound_neg, key1, key2, xy_check, xy, NULL);
+    mpz_clears(bound, bound_neg, xy_check, xy, NULL);
     for (size_t i = 0; i < num_clients; i++) {
         cfe_dmcfe_client_free(&(clients[i]));
-        cfe_vec_G2_free(&(key_shares[i]));
+        cfe_vec_G2_free(&(fe_key[i]));
     }
     cfe_vec_frees(&x, &y, NULL);
 

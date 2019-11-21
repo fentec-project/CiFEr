@@ -35,6 +35,7 @@ typedef struct cfe_damgard {
     mpz_t g;
     mpz_t h;
     mpz_t p;
+    mpz_t q;
 } cfe_damgard;
 
 /**
@@ -97,9 +98,9 @@ void cfe_damgard_sec_key_free(cfe_damgard_sec_key *key);
  * Frees the memory occupied by the struct members. It does
  * not free memory occupied by the struct itself.
  *
- * @param key A pointer to an *initialized* cfe_damgard_derived_key struct
+ * @param key A pointer to an *initialized* cfe_damgard_fe_key struct
  */
-void cfe_damgard_derived_key_free(cfe_damgard_fe_key *key);
+void cfe_damgard_fe_key_free(cfe_damgard_fe_key *key);
 
 /**
  * Initializes the struct which represents the master secret key.
@@ -141,7 +142,7 @@ void cfe_damgard_fe_key_init(cfe_damgard_fe_key *fe_key);
  * Takes master secret key and input vector y, and returns the functional
  * encryption key. In case the key could not be derived, it returns an error.
  *
- * @param fe_key A pointer to a cfe_damgard_derived_key struct (the functional
+ * @param fe_key A pointer to a cfe_damgard_fe_key struct (the functional
  * encryption key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_damgard
  * struct)
@@ -149,7 +150,7 @@ void cfe_damgard_fe_key_init(cfe_damgard_fe_key *fe_key);
  * @param y A pointer to the inner product vector
  * @return Error code
  */
-cfe_error cfe_damgard_derive_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y);
+cfe_error cfe_damgard_derive_fe_key(cfe_damgard_fe_key *fe_key, cfe_damgard *s, cfe_damgard_sec_key *msk, cfe_vec *y);
 
 /**
  * Initializes the vector which represents the ciphertext.

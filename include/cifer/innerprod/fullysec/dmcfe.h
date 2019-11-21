@@ -61,8 +61,8 @@ void cfe_dmcfe_client_init(cfe_dmcfe_client *c, size_t idx);
 void cfe_dmcfe_client_free(cfe_dmcfe_client *c);
 
 /**
- * Sets a secret key share for the client based on the public keys all the
- * participant. Note that the function assumes that if there is n clients,
+ * Sets a secret key share for the client based on the public keys of all the
+ * participant. Note that the function assumes that if there are n clients,
  * their identifications are from [0,n).
  *
  * @param c A pointer to an initialized struct representing the scheme
@@ -85,15 +85,22 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
 void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label);
 
 /**
- * Sets a share of a decryption key needed for the decryption of an inner product
- * of encrypted vector and y.
+ * Configures a new functional encryption key share for the dmcfe scheme.
  *
- * @param key_share A pointer to initialized cfe_vec_G2 of size 2 (the key share will
+ * @param fe_key_part A pointer to an uninitialized cfe_vec_G2 vec representing the share
+ */
+void cfe_dmcfe_fe_key_part_init(cfe_vec_G2 *fe_key_part);
+
+/**
+ * Sets a part of a functional encryption key needed for the decryption of an inner
+ * product of encrypted vector and y.
+ *
+ * @param fe_key_part A pointer to initialized cfe_vec_G2 (the key share will
  * be save here)
  * @param c A pointer to an initialized struct representing the scheme
  * @param y A pointer to the inner-product vector
  */
-void cfe_dmcfe_generate_key_share(cfe_vec_G2 *key_share, cfe_dmcfe_client *c, cfe_vec *y);
+void cfe_dmcfe_derive_fe_key_part(cfe_vec_G2 *fe_key_part, cfe_dmcfe_client *c, cfe_vec *y);
 
 /**
  * Accepts an array of ciphers, i.e. the encrypted vector, an array of key shares for the

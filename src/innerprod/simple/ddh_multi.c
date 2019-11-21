@@ -93,7 +93,7 @@ void cfe_ddh_multi_generate_master_keys(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk
 
 
 cfe_error
-cfe_ddh_multi_derive_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, cfe_ddh_multi_sec_key *msk, cfe_mat *y) {
+cfe_ddh_multi_derive_fe_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, cfe_ddh_multi_sec_key *msk, cfe_mat *y) {
     if (!cfe_mat_check_bound(y, m->scheme.bound)) {
         return CFE_ERR_BOUND_CHECK_FAILED;
     }
@@ -108,7 +108,7 @@ cfe_ddh_multi_derive_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, cfe_ddh_mu
     mpz_set(res->otp_key, z);
 
     for (size_t i = 0; i < m->slots; i++) {
-        err = cfe_ddh_derive_key(key, &m->scheme, cfe_mat_get_row_ptr(&msk->msk, i), cfe_mat_get_row_ptr(y, i));
+        err = cfe_ddh_derive_fe_key(key, &m->scheme, cfe_mat_get_row_ptr(&msk->msk, i), cfe_mat_get_row_ptr(y, i));
         if (err) {
             break;
         }
