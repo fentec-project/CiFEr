@@ -67,6 +67,8 @@ typedef struct cfe_damgard_fe_key {
  */
 cfe_error cfe_damgard_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t bound);
 
+cfe_error cfe_damgard_precomp_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t bound);
+
 /**
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.

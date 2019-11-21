@@ -22,16 +22,23 @@
 
 MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 3;
-    size_t modulus_len = 64;
     mpz_t bound, bound_neg, key1, key2, xy_check, xy;
     mpz_inits(bound, bound_neg, key1, key2, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
-
-
     cfe_damgard s, encryptor, decryptor;
-    cfe_error err = cfe_damgard_init(&s, l, modulus_len, bound);
+    cfe_error err;
+
+    size_t modulus_len;
+    const char *precomp = munit_parameters_get(params, "parameters");
+    if (strcmp(precomp, "precomputed") == 0) {
+        modulus_len = 2048;
+        err = cfe_damgard_precomp_init(&s, l, modulus_len, bound);
+    } else {
+        modulus_len = 512;
+        err = cfe_damgard_init(&s, l, modulus_len, bound);
+    }
     munit_assert(err == 0);
 
     cfe_vec mpk, ciphertext, x, y;
@@ -74,8 +81,17 @@ MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
     return MUNIT_OK;
 }
 
+char *precomp_param[] = {
+        (char *) "precomputed", (char *) "random", NULL
+};
+
+MunitParameterEnum test_params[] = {
+        { (char*) "parameters", precomp_param },
+        { NULL, NULL },
+};
+
 MunitTest simple_ip_damgard_tests[] = {
-        {(char *) "/end-to-end", test_damgard_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/end-to-end", test_damgard_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
         {NULL, NULL,                                      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
