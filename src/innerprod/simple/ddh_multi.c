@@ -29,6 +29,18 @@ cfe_error cfe_ddh_multi_init(cfe_ddh_multi *m, size_t slots, size_t l, size_t mo
     return CFE_ERR_NONE;
 }
 
+cfe_error cfe_ddh_multi_precomp_init(cfe_ddh_multi *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound) {
+    cfe_ddh s;
+    cfe_error err = cfe_ddh_precomp_init(&s, l, modulus_len, bound);
+    if (err) {
+        return err;
+    }
+
+    m->slots = slots;
+    m->scheme = s;
+    return CFE_ERR_NONE;
+}
+
 void cfe_ddh_multi_free(cfe_ddh_multi *m) {
     cfe_ddh_free(&m->scheme);
 }

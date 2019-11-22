@@ -57,7 +57,7 @@ typedef struct cfe_damgard_fe_key {
 /**
  * Configures a new instance of the scheme.
  * It returns an error in case the scheme could not be properly configured, or
- * if precondition l * bound² is >= order of the cyclic group.
+ * if precondition 2 * l * bound² is >= order of the cyclic group.
  *
  * @param s A pointer to an uninitialized struct representing the scheme
  * @param l The length of input vectors
@@ -67,6 +67,18 @@ typedef struct cfe_damgard_fe_key {
  */
 cfe_error cfe_damgard_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t bound);
 
+/**
+ * Configures a new instance of the scheme based on precomputed prime
+ * numbers and generators.
+ * It returns an error in case the scheme could not be properly configured, or
+ * if precondition 2 * l * bound² is >= order of the cyclic group.
+ *
+ * @param s A pointer to an uninitialized struct representing the scheme
+ * @param l The length of input vectors
+ * @param modulus_len The bit length of the modulus
+ * @param bound The bound by which coordinates of input vectors are bounded
+ * @return Error code
+ */
 cfe_error cfe_damgard_precomp_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t bound);
 
 /**

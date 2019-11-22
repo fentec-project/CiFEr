@@ -74,6 +74,8 @@ typedef struct cfe_ddh_multi_enc {
  */
 cfe_error cfe_ddh_multi_init(cfe_ddh_multi *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound);
 
+cfe_error cfe_ddh_multi_precomp_init(cfe_ddh_multi *m, size_t slots, size_t l, size_t modulus_len, mpz_t bound);
+
 /**
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.

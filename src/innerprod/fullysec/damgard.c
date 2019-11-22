@@ -35,9 +35,9 @@ cfe_error cfe_damgard_init(cfe_damgard *s, size_t l, size_t modulus_len, mpz_t b
     mpz_init(check);
 
     mpz_pow_ui(check, bound, 2);
-    mpz_mul_ui(check, check, l);
+    mpz_mul_ui(check, check, 2 * l);
 
-    if (mpz_cmp(check, key.p) >= 0) {
+    if (mpz_cmp(check, key.q) >= 0) {
         err = CFE_ERR_PRECONDITION_FAILED;
         goto cleanup;
     }
@@ -95,7 +95,7 @@ cfe_error cfe_damgard_precomp_init(cfe_damgard *s, size_t l, size_t modulus_len,
     mpz_div_ui(s->q, s->q, 2);
 
     mpz_pow_ui(check, bound, 2);
-    mpz_mul_ui(check, check, 2*l);
+    mpz_mul_ui(check, check, 2 * l);
 
     if (mpz_cmp(check, s->q) >= 0) {
         err = CFE_ERR_PRECONDITION_FAILED;

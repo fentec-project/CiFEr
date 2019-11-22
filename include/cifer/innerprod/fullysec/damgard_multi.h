@@ -79,6 +79,24 @@ typedef struct cfe_damgard_multi_client {
  */
 cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t num_clients, size_t l, size_t modulus_len, mpz_t bound);
 
+
+/**
+ * Configures a new instance of the scheme based on precomputed prime
+ * numbers and generators. It accepts the number of clients (encryptors),
+ * the length of input vectors l, the bit length of the modulus
+ * (we are operating in the Z_p group), and a bound by which coordinates of
+ * input vectors are bounded.
+ *
+ * @param m A pointer to an uninitialized struct representing the scheme
+ * @param num_clients The number of clients (encryptors)
+ * @param l The length of input vectors
+ * @param modulus_len The bit length of the modulus (we are operating in the Z_p
+ * group)
+ * @param bound The bound by which coordinates of input vectors are bounded.
+ * @return Error code
+ */
+cfe_error cfe_damgard_multi_precomp_init(cfe_damgard_multi *m, size_t num_clients, size_t l, size_t modulus_len, mpz_t bound);
+
 /**
  * Frees the memory occupied by the struct members. It does not free
  * memory occupied by the struct itself.

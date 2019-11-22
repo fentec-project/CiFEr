@@ -33,6 +33,7 @@ MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
     size_t modulus_len;
     const char *precomp = munit_parameters_get(params, "parameters");
     if (strcmp(precomp, "precomputed") == 0) {
+        // modulus_len defines the security of the scheme, the higher the better
         modulus_len = 2048;
         err = cfe_damgard_precomp_init(&s, l, modulus_len, bound);
     } else {
@@ -81,21 +82,20 @@ MunitResult test_damgard_end_to_end(const MunitParameter *params, void *data) {
     return MUNIT_OK;
 }
 
-char *precomp_param[] = {
+char *damgard_param[] = {
         (char *) "precomputed", (char *) "random", NULL
 };
 
-MunitParameterEnum test_params[] = {
-        { (char*) "parameters", precomp_param },
-        { NULL, NULL },
+MunitParameterEnum damgard_params[] = {
+        {(char *) "parameters", damgard_param},
+        {NULL,                  NULL},
 };
 
 MunitTest simple_ip_damgard_tests[] = {
-        {(char *) "/end-to-end", test_damgard_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-        {NULL, NULL,                                      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
+        {(char *) "/end-to-end", test_damgard_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, damgard_params},
+        {NULL,                   NULL,                    NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 MunitSuite damgard_suite = {
         (char *) "/innerprod/fullysec/damgard", simple_ip_damgard_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE
 };
-
