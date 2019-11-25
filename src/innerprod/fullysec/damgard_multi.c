@@ -48,6 +48,8 @@ cfe_error cfe_damgard_multi_precomp_init(cfe_damgard_multi *m, size_t num_client
     m->scheme = s;
     mpz_init_set(m->bound, bound);
 
+=======
+>>>>>>> master
     return CFE_ERR_NONE;
 }
 
@@ -152,12 +154,21 @@ cfe_error cfe_damgard_multi_encrypt(cfe_vec *ciphertext, cfe_damgard_multi_clien
 
     cfe_vec otp_add_x;
     cfe_vec_init(&otp_add_x, x->size);
+<<<<<<< HEAD
 
     cfe_vec_add(&otp_add_x, x, otp);
     cfe_vec_mod(&otp_add_x, &otp_add_x, e->scheme.q);
 
     cfe_error err = cfe_damgard_encrypt(ciphertext, &e->scheme, &otp_add_x, pub_key);
 
+=======
+
+    cfe_vec_add(&otp_add_x, x, otp);
+    cfe_vec_mod(&otp_add_x, &otp_add_x, e->scheme.q);
+
+    cfe_error err = cfe_damgard_encrypt(ciphertext, &e->scheme, &otp_add_x, pub_key);
+
+>>>>>>> master
     cfe_vec_free(&otp_add_x);
     return err;
 }
