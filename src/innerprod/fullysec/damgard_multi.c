@@ -28,7 +28,7 @@ cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t num_clients, size_
         return err;
     }
 
-    mpz_set(s.bound, s.p);
+    mpz_set(s.bound, s.q);
     m->num_clients = num_clients;
     m->scheme = s;
     mpz_init_set(m->bound, bound);

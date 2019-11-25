@@ -36,9 +36,11 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
         // modulus_len defines the security of the scheme, the higher the better
         modulus_len = 2048;
         err = cfe_damgard_multi_precomp_init(&damgard_multi, num_clients, l, modulus_len, bound);
-    } else {
+    } else if (strcmp(precomp, "random") == 0) {
         modulus_len = 512;
         err = cfe_damgard_multi_init(&damgard_multi, num_clients, l, modulus_len, bound);
+    } else {
+        err = CFE_ERR_INIT;
     }
     munit_assert(err == 0);
 

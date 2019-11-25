@@ -39,9 +39,11 @@ MunitResult test_ddh_multi_end_to_end(const MunitParameter *params, void *data) 
         // modulus_len defines the security of the scheme, the higher the better
         modulus_len = 2048;
         err = cfe_ddh_multi_precomp_init(&m, slots, l, modulus_len, bound);
-    } else {
+    } else if (strcmp(precomp, "random") == 0)   {
         modulus_len = 512;
         err = cfe_ddh_multi_init(&m, slots, l, modulus_len, bound);
+    } else {
+        err = CFE_ERR_INIT;
     }
     munit_assert(err == 0);
 

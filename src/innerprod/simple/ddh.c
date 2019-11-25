@@ -34,7 +34,7 @@ cfe_error cfe_ddh_init(cfe_ddh *s, size_t l, size_t modulus_len, mpz_t bound) {
     mpz_init(check);
 
     mpz_pow_ui(check, bound, 2);
-    mpz_mul_ui(check, check, 2*l);
+    mpz_mul_ui(check, check, 2 * l);
 
     if (mpz_cmp(check, key.p) >= 0) {
         err = CFE_ERR_PRECONDITION_FAILED;
