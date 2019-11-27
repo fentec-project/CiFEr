@@ -121,8 +121,8 @@ security):
         ([paper](https://eprint.iacr.org/2017/972.pdf)) and instantiated from 
         the scheme in the first point (`cfe_ddh_multi`).
 
-* Schemes with **adaptive security under chosen-plaintext attacks** (IND-CPA
-security) by 
+* Schemes with stronger **adaptive security under chosen-plaintext attacks** (IND-CPA
+security)  or **simulation based security** (SIM-Security for IPE):
     * Scheme based on paper by _Agrawal, Libert and Stehlé_ 
         ([paper](https://eprint.iacr.org/2015/608.pdf)). It can be instantiated 
         from Damgard DDH (`cfe_damgard` - similar to `cfe_ddh`, but uses one 
@@ -141,6 +141,12 @@ security) by
      this scheme does not require a trusted party to generate keys and is based on a general 
     procedure for decentralization of an inner product scheme, in particular the
     decentralization of a Damgard DDH scheme (``cfe_damgard_dec_multi``).
+    * Function hiding inner product scheme by _Kim, Lewi, Mandal, Montgomery, Roy, Wu_
+    ([paper](https://eprint.iacr.org/2016/440.pdf)). The scheme allows the decryptor to
+decrypt the inner product of x and y without reveling (ciphertext) x or (function) y (`cfe_fhipe`).
+    * Function hiding multi-input scheme based on paper by _Datta, Okamoto, Tomida_
+    ([paper](https://eprint.iacr.org/2018/061.pdf)). This scheme allows clients to encrypt vectors and derive 
+functional key that allows a decrytor to decrypt an inner product without revealing the ciphertext or the function (`cfe_fh_multi_ipe`).
 
 
 #### Quadratic scheme

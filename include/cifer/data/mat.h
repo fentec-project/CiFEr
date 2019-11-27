@@ -217,7 +217,7 @@ void cfe_mat_mul_scalar(cfe_mat *res, cfe_mat *mat, mpz_t s);
 void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p);
 
 /**
- * cfe_mat_inverse_mod_gauss calculates in inverse of a matrix over field
+ * cfe_mat_inverse_mod_gauss calculates the inverse of a matrix over field
  * Z_p, using Gaussian elimination. The latter is faster than the naive (analytic)
  * algorithm. Additionally the determinant of the matrix is returned.
  *
@@ -229,7 +229,7 @@ void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p);
 cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p);
 
 /**
- * cfe_mat_inverse_mod_gauss calculates the determinant of a matrix over field
+ * cfe_mat_determinant_gauss calculates the determinant of a matrix over field
  * Z_p, using Gaussian elimination. The latter is faster than the naive (analytic)
  * algorithm.
  *
@@ -240,7 +240,7 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
 void cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p);
 
 /**
- * cfe_gaussian_elimination solves a matrix vector equation mat * x = v and finds
+ * cfe_gaussian_elimination_solver solves a matrix vector equation mat * x = v and finds
  * vector x, using Gaussian elimination. Arithmetic operations are considered
  * to be over Z_p, where p should be a prime number. If such x does not exist,
  * then the function returns an 1, else 0.
