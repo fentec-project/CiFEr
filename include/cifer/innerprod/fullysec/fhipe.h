@@ -114,7 +114,7 @@ void cfe_fhipe_master_key_free(cfe_fhipe_sec_key *sec_key);
 cfe_error cfe_fhipe_generate_master_key(cfe_fhipe_sec_key *sec_key, cfe_fhipe *c);
 
 /**
- * cfe_fhipe_FE_key represents a functional encryption key in fhipe scheme.
+ * cfe_fhipe_fe_key represents a functional encryption key in fhipe scheme.
  */
 typedef struct cfe_fhipe_fe_key {
     ECP_BN254 k1;
