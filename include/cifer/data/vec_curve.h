@@ -69,13 +69,25 @@ void cfe_vec_G1_inf(cfe_vec_G1 *v);
 
 /**
  * Creates a vector whose i-th element equals u[i] * g,
- * where g is the generator of ECP2_BN254. The sizes of
+ * where g is the generator of ECP_BN254. The sizes of
  * v and u must match.
  *
- * @param v A pointer to an initialized cfe_vec_G2 vector
- * @param u A pointer to vector of integers.
+ * @param v A pointer to an initialized cfe_vec_G1 vector
+ * @param u A pointer to vector of integers
  */
 void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u);
+
+/**
+ * Creates a vector whose i-th element equals u[i] * v[i],
+ * where v[i] is an element in ECP_BN254. The sizes of
+ * res, v and u must match.
+ *
+ * @param res A pointer to an initialized cfe_vec_G1 vector,
+ * the result will be saved here
+ * @param u A pointer to vector of integers
+ * @param v A pointer to a cfe_vec_G1 vector
+ */
+void cfe_vec_mul_vec_G1(cfe_vec_G1 *res, cfe_vec *u, cfe_vec_G1 *v);
 
 /**
  * Initializes a vector of ECP2_BN254 elements of given size.
@@ -101,6 +113,18 @@ void cfe_vec_G2_inf(cfe_vec_G2 *v);
  * @param u A pointer to vector of integers.
  */
 void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u);
+
+/**
+ * Creates a vector whose i-th element equals u[i] * v[i],
+ * where v[i] is an element in ECP2_BN254. The sizes of
+ * res, v and u must match.
+ *
+ * @param res A pointer to an initialized cfe_vec_G2 vector,
+ * the result will be saved here
+ * @param u A pointer to vector of integers
+ * @param v A pointer to a cfe_vec_G2 vector
+ */
+void cfe_vec_mul_vec_G2(cfe_vec_G2 *res, cfe_vec *u, cfe_vec_G2 *v);
 
 /**
  * Initializes a vector of FP12_BN254 elements of given size.
