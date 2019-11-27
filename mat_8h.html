@@ -121,6 +121,16 @@ Functions</h2></td></tr>
 <tr class="separator:a07d3179999dd78aedb5c3bf266656823"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7dabc392ed27c7344c64dadce52da073"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat_8h.html#a7dabc392ed27c7344c64dadce52da073">cfe_mat_mul_x_mat_y</a> (mpz_t res, <a class="el" href="structcfe__mat.html">cfe_mat</a> *mat, <a class="el" href="structcfe__vec.html">cfe_vec</a> *x, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
 <tr class="separator:a7dabc392ed27c7344c64dadce52da073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a616f0421f1b73790e388c52638f84bf8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat_8h.html#a616f0421f1b73790e388c52638f84bf8">cfe_mat_mul_scalar</a> (<a class="el" href="structcfe__mat.html">cfe_mat</a> *res, <a class="el" href="structcfe__mat.html">cfe_mat</a> *mat, mpz_t s)</td></tr>
+<tr class="separator:a616f0421f1b73790e388c52638f84bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7e4fbd757d2b66bf506f6805233da11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat_8h.html#ae7e4fbd757d2b66bf506f6805233da11">cfe_mat_gaussian_elimination</a> (<a class="el" href="structcfe__mat.html">cfe_mat</a> *res, <a class="el" href="structcfe__mat.html">cfe_mat</a> *mat, mpz_t p)</td></tr>
+<tr class="separator:ae7e4fbd757d2b66bf506f6805233da11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae575eae5b2ff40df83d0f7fc2c5d459b"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat_8h.html#ae575eae5b2ff40df83d0f7fc2c5d459b">cfe_mat_inverse_mod_gauss</a> (<a class="el" href="structcfe__mat.html">cfe_mat</a> *res, mpz_t det, <a class="el" href="structcfe__mat.html">cfe_mat</a> *m, mpz_t p)</td></tr>
+<tr class="separator:ae575eae5b2ff40df83d0f7fc2c5d459b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75d54539e902dac9df647e62d637d0dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat_8h.html#a75d54539e902dac9df647e62d637d0dd">cfe_mat_determinant_gauss</a> (mpz_t det, <a class="el" href="structcfe__mat.html">cfe_mat</a> *m, mpz_t p)</td></tr>
+<tr class="separator:a75d54539e902dac9df647e62d637d0dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a928a86e0ecbb29c4965ec3effad0c033"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mat_8h.html#a928a86e0ecbb29c4965ec3effad0c033">cfe_gaussian_elimination_solver</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *res, <a class="el" href="structcfe__mat.html">cfe_mat</a> *mat, <a class="el" href="structcfe__vec.html">cfe_vec</a> *vec, mpz_t p)</td></tr>
+<tr class="separator:a928a86e0ecbb29c4965ec3effad0c033"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Matrix struct and operations. </p>
@@ -1045,6 +1055,228 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Calcualtes x^T * mat * y, for x, y vectors and mat a matrix. </p>
+
+</div>
+</div>
+<a id="a616f0421f1b73790e388c52638f84bf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a616f0421f1b73790e388c52638f84bf8">&#9670;&nbsp;</a></span>cfe_mat_mul_scalar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_mat_mul_scalar </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>mat</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>s</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Multiplication of a matrix mat and a scalar s. </p>
+
+</div>
+</div>
+<a id="ae7e4fbd757d2b66bf506f6805233da11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7e4fbd757d2b66bf506f6805233da11">&#9670;&nbsp;</a></span>cfe_mat_gaussian_elimination()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_mat_gaussian_elimination </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>mat</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>cfe_gaussian_elimination transforms a matrix to an equivalent upper triangular matrix over field Z_p, where p should be a prime number.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>A pointer to an initialized matrix where the result will be saved </td></tr>
+    <tr><td class="paramname">mat</td><td>A pointer to a matrix to be transformed </td></tr>
+    <tr><td class="paramname">p</td><td>Modulus for the computations </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae575eae5b2ff40df83d0f7fc2c5d459b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae575eae5b2ff40df83d0f7fc2c5d459b">&#9670;&nbsp;</a></span>cfe_mat_inverse_mod_gauss()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cfe_error cfe_mat_inverse_mod_gauss </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>det</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>cfe_mat_inverse_mod_gauss calculates the inverse of a matrix over field Z_p, using Gaussian elimination. The latter is faster than the naive (analytic) algorithm. Additionally the determinant of the matrix is returned.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>A pointer to an initialized matrix where the result will be saved </td></tr>
+    <tr><td class="paramname">det</td><td>Determinant will be saved here; if not needed this should be NULL </td></tr>
+    <tr><td class="paramname">mat</td><td>A pointer to a matrix </td></tr>
+    <tr><td class="paramname">p</td><td>Modulus for the computations </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a75d54539e902dac9df647e62d637d0dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75d54539e902dac9df647e62d637d0dd">&#9670;&nbsp;</a></span>cfe_mat_determinant_gauss()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_mat_determinant_gauss </td>
+          <td>(</td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>det</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>cfe_mat_determinant_gauss calculates the determinant of a matrix over field Z_p, using Gaussian elimination. The latter is faster than the naive (analytic) algorithm.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>The result will be saved </td></tr>
+    <tr><td class="paramname">mat</td><td>A pointer to a matrix </td></tr>
+    <tr><td class="paramname">p</td><td>Modulus for the computations </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a928a86e0ecbb29c4965ec3effad0c033"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a928a86e0ecbb29c4965ec3effad0c033">&#9670;&nbsp;</a></span>cfe_gaussian_elimination_solver()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cfe_error cfe_gaussian_elimination_solver </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__mat.html">cfe_mat</a> *&#160;</td>
+          <td class="paramname"><em>mat</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
+          <td class="paramname"><em>vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>cfe_gaussian_elimination_solver solves a matrix vector equation mat * x = v and finds vector x, using Gaussian elimination. Arithmetic operations are considered to be over Z_p, where p should be a prime number. If such x does not exist, then the function returns an 1, else 0.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>A pointer to an uninitialized vector where the result will be saved </td></tr>
+    <tr><td class="paramname">mat</td><td>A pointer to the matrix for the equation </td></tr>
+    <tr><td class="paramname">vec</td><td>A pointer to the right-hand side vector in the equation </td></tr>
+    <tr><td class="paramname">p</td><td>Modulus for the computations </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns CFE_ERR_NO_SOLUTION_EXISTS error if the solution does not exist, else CFE_ERR_NONE for no error </dd></dl>
 
 </div>
 </div>

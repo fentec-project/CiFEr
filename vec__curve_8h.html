@@ -81,12 +81,16 @@ Functions</h2></td></tr>
 <tr class="separator:ab127bbbbb5255f33358094470c7e2e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6633ec7aee3d87e75814ca61c5bc0baf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#a6633ec7aee3d87e75814ca61c5bc0baf">cfe_vec_mul_G1</a> (<a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> *v, <a class="el" href="structcfe__vec.html">cfe_vec</a> *u)</td></tr>
 <tr class="separator:a6633ec7aee3d87e75814ca61c5bc0baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac72191d0b7b0cc758dbc1d2953b60314"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#ac72191d0b7b0cc758dbc1d2953b60314">cfe_vec_mul_vec_G1</a> (<a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> *res, <a class="el" href="structcfe__vec.html">cfe_vec</a> *u, <a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> *v)</td></tr>
+<tr class="separator:ac72191d0b7b0cc758dbc1d2953b60314"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeef4784180f54c17d16234a4b21911ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#aeef4784180f54c17d16234a4b21911ca">cfe_vec_G2_init</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *v, size_t size)</td></tr>
 <tr class="separator:aeef4784180f54c17d16234a4b21911ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad80408c46d40748de607ff5d3fea324f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#ad80408c46d40748de607ff5d3fea324f">cfe_vec_G2_inf</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *v)</td></tr>
 <tr class="separator:ad80408c46d40748de607ff5d3fea324f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7150bea034ad9b89492a27f5f8104377"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#a7150bea034ad9b89492a27f5f8104377">cfe_vec_mul_G2</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *v, <a class="el" href="structcfe__vec.html">cfe_vec</a> *u)</td></tr>
 <tr class="separator:a7150bea034ad9b89492a27f5f8104377"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb0086374494ff1e4073773f8d872410"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#abb0086374494ff1e4073773f8d872410">cfe_vec_mul_vec_G2</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *res, <a class="el" href="structcfe__vec.html">cfe_vec</a> *u, <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *v)</td></tr>
+<tr class="separator:abb0086374494ff1e4073773f8d872410"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e04fe108cdefe8e42d1a4313cda0cc3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#a8e04fe108cdefe8e42d1a4313cda0cc3">cfe_vec_GT_init</a> (<a class="el" href="structcfe__vec__GT.html">cfe_vec_GT</a> *v, size_t size)</td></tr>
 <tr class="separator:a8e04fe108cdefe8e42d1a4313cda0cc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfaef9b45a9f7b3abcd07a2c1f08ca71"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vec__curve_8h.html#abfaef9b45a9f7b3abcd07a2c1f08ca71">cfe_vec_GT_inf</a> (<a class="el" href="structcfe__vec__GT.html">cfe_vec_GT</a> *v)</td></tr>
@@ -235,11 +239,54 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a vector whose i-th element equals u[i] * g, where g is the generator of ECP2_BN254. The sizes of v and u must match.</p>
+<p>Creates a vector whose i-th element equals u[i] * g, where g is the generator of ECP_BN254. The sizes of v and u must match.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">v</td><td>A pointer to an initialized <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> vector </td></tr>
-    <tr><td class="paramname">u</td><td>A pointer to vector of integers. </td></tr>
+    <tr><td class="paramname">v</td><td>A pointer to an initialized <a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> vector </td></tr>
+    <tr><td class="paramname">u</td><td>A pointer to vector of integers </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac72191d0b7b0cc758dbc1d2953b60314"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac72191d0b7b0cc758dbc1d2953b60314">&#9670;&nbsp;</a></span>cfe_vec_mul_vec_G1()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_vec_mul_vec_G1 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
+          <td class="paramname"><em>u</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> *&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a vector whose i-th element equals u[i] * v[i], where v[i] is an element in ECP_BN254. The sizes of res, v and u must match.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>A pointer to an initialized <a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> vector, the result will be saved here </td></tr>
+    <tr><td class="paramname">u</td><td>A pointer to vector of integers </td></tr>
+    <tr><td class="paramname">v</td><td>A pointer to a <a class="el" href="structcfe__vec__G1.html">cfe_vec_G1</a> vector </td></tr>
   </table>
   </dd>
 </dl>
@@ -337,6 +384,49 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">v</td><td>A pointer to an initialized <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> vector </td></tr>
     <tr><td class="paramname">u</td><td>A pointer to vector of integers. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abb0086374494ff1e4073773f8d872410"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb0086374494ff1e4073773f8d872410">&#9670;&nbsp;</a></span>cfe_vec_mul_vec_G2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cfe_vec_mul_vec_G2 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *&#160;</td>
+          <td class="paramname"><em>res</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
+          <td class="paramname"><em>u</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a vector whose i-th element equals u[i] * v[i], where v[i] is an element in ECP2_BN254. The sizes of res, v and u must match.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>A pointer to an initialized <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> vector, the result will be saved here </td></tr>
+    <tr><td class="paramname">u</td><td>A pointer to vector of integers </td></tr>
+    <tr><td class="paramname">v</td><td>A pointer to a <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> vector </td></tr>
   </table>
   </dd>
 </dl>
