@@ -21,16 +21,28 @@
 
 MunitResult test_ddh_end_to_end(const MunitParameter *params, void *data) {
     size_t l = 3;
-    size_t modulus_len = 128;
 
     mpz_t bound, bound_neg, fe_key, xy_check, xy;
     mpz_inits(bound, bound_neg, fe_key, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
-    mpz_pow_ui(bound, bound, 15);
+    mpz_pow_ui(bound, bound, 10);
     mpz_neg(bound_neg, bound);
 
     cfe_ddh s, encryptor, decryptor;
-    cfe_error err = cfe_ddh_init(&s, l, modulus_len, bound);
+    cfe_error err;
+
+    size_t modulus_len;
+    const char *precomp = munit_parameters_get(params, "parameters");
+    if (strcmp(precomp, "precomputed") == 0) {
+        // modulus_len defines the security of the scheme, the higher the better
+        modulus_len = 2048;
+        err = cfe_ddh_precomp_init(&s, l, modulus_len, bound);
+    } else if (strcmp(precomp, "random") == 0)  {
+        modulus_len = 512;
+        err = cfe_ddh_init(&s, l, modulus_len, bound);
+    } else {
+        err = CFE_ERR_INIT;
+    }
     munit_assert(err == 0);
 
     cfe_vec msk, mpk, ciphertext, x, y;
@@ -66,8 +78,17 @@ MunitResult test_ddh_end_to_end(const MunitParameter *params, void *data) {
     return MUNIT_OK;
 }
 
+char *ddh_param[] = {
+        (char *) "precomputed", (char *) "random", NULL
+};
+
+MunitParameterEnum ddh_params[] = {
+        {(char *) "parameters", ddh_param},
+        {NULL,                  NULL},
+};
+
 MunitTest simple_ip_tests[] = {
-        {(char *) "/end-to-end", test_ddh_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/end-to-end", test_ddh_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, ddh_params},
         {NULL, NULL,                                  NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 

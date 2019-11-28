@@ -21,7 +21,6 @@
 MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void *data) {
     size_t num_clients = 4;
     size_t l = 5;
-    size_t modulus_len = 512;
     mpz_t bound, bound_neg, xy_check, xy;
     mpz_inits(bound, bound_neg, xy_check, xy, NULL);
     mpz_set_ui(bound, 2);
@@ -30,7 +29,19 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
 
     // create a underlying multi-client scheme
     cfe_damgard_multi damgard_multi;
-    cfe_error err = cfe_damgard_multi_init(&damgard_multi, num_clients, l, modulus_len, bound);
+    cfe_error err;
+    size_t modulus_len;
+    const char *precomp = munit_parameters_get(params, "parameters");
+    if (strcmp(precomp, "precomputed") == 0) {
+        // modulus_len defines the security of the scheme, the higher the better
+        modulus_len = 2048;
+        err = cfe_damgard_multi_precomp_init(&damgard_multi, num_clients, l, modulus_len, bound);
+    } else if (strcmp(precomp, "random") == 0) {
+        modulus_len = 512;
+        err = cfe_damgard_multi_init(&damgard_multi, num_clients, l, modulus_len, bound);
+    } else {
+        err = CFE_ERR_INIT;
+    }
     munit_assert(err == 0);
 
     // create clients and make an array of their public keys
@@ -117,9 +128,18 @@ MunitResult test_damgard_dec_multi_end_to_end(const MunitParameter *params, void
     return MUNIT_OK;
 }
 
+char *damgard_dec_multi_param[] = {
+        (char *) "precomputed", (char *) "random", NULL
+};
+
+MunitParameterEnum damgard_dec_multi_params[] = {
+        {(char *) "parameters", damgard_dec_multi_param},
+        {NULL,                  NULL},
+};
+
 MunitTest fully_secure_damgard_dec_multi_tests[] = {
-        {(char *) "/end-to-end", test_damgard_dec_multi_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {NULL, NULL,                                      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
+        {(char *) "/end-to-end", test_damgard_dec_multi_end_to_end, NULL, NULL, MUNIT_TEST_OPTION_NONE, damgard_dec_multi_params},
+        {NULL,                   NULL,                              NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 MunitSuite damgard_dec_multi_suite = {

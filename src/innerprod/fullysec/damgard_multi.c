@@ -28,7 +28,22 @@ cfe_error cfe_damgard_multi_init(cfe_damgard_multi *m, size_t num_clients, size_
         return err;
     }
 
-    mpz_set(s.bound, s.p);
+    mpz_set(s.bound, s.q);
+    m->num_clients = num_clients;
+    m->scheme = s;
+    mpz_init_set(m->bound, bound);
+
+    return CFE_ERR_NONE;
+}
+
+cfe_error cfe_damgard_multi_precomp_init(cfe_damgard_multi *m, size_t num_clients, size_t l, size_t modulus_len, mpz_t bound) {
+    cfe_damgard s;
+    cfe_error err = cfe_damgard_precomp_init(&s, l, modulus_len, bound);
+    if (err) {
+        return err;
+    }
+
+    mpz_set(s.bound, s.q);
     m->num_clients = num_clients;
     m->scheme = s;
     mpz_init_set(m->bound, bound);
