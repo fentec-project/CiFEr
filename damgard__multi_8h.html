@@ -81,6 +81,8 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a1baa4ad5bf0ab203f89dfae26b0f58d3"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a1baa4ad5bf0ab203f89dfae26b0f58d3">cfe_damgard_multi_init</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, size_t num_clients, size_t l, size_t modulus_len, mpz_t bound)</td></tr>
 <tr class="separator:a1baa4ad5bf0ab203f89dfae26b0f58d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f300228a9c1c8b07f88f6d647ed042f"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a6f300228a9c1c8b07f88f6d647ed042f">cfe_damgard_multi_precomp_init</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m, size_t num_clients, size_t l, size_t modulus_len, mpz_t bound)</td></tr>
+<tr class="separator:a6f300228a9c1c8b07f88f6d647ed042f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9026a06fbce5e2d7bbee8cfb309bc125"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a9026a06fbce5e2d7bbee8cfb309bc125">cfe_damgard_multi_free</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m)</td></tr>
 <tr class="separator:a9026a06fbce5e2d7bbee8cfb309bc125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5aaaa9609d92550ce32cab0c0b5c6e56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="damgard__multi_8h.html#a5aaaa9609d92550ce32cab0c0b5c6e56">cfe_damgard_multi_copy</a> (<a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *res, <a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *m)</td></tr>
@@ -216,6 +218,64 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Configures a new instance of the scheme. It accepts the number of clients (encryptors), the length of input vectors l, the bit length of the modulus (we are operating in the Z_p group), and a bound by which coordinates of input vectors are bounded.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>A pointer to an uninitialized struct representing the scheme </td></tr>
+    <tr><td class="paramname">num_clients</td><td>The number of clients (encryptors) </td></tr>
+    <tr><td class="paramname">l</td><td>The length of input vectors </td></tr>
+    <tr><td class="paramname">modulus_len</td><td>The bit length of the modulus (we are operating in the Z_p group) </td></tr>
+    <tr><td class="paramname">bound</td><td>The bound by which coordinates of input vectors are bounded. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Error code </dd></dl>
+
+</div>
+</div>
+<a id="a6f300228a9c1c8b07f88f6d647ed042f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f300228a9c1c8b07f88f6d647ed042f">&#9670;&nbsp;</a></span>cfe_damgard_multi_precomp_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cfe_error cfe_damgard_multi_precomp_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcfe__damgard__multi.html">cfe_damgard_multi</a> *&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>num_clients</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>modulus_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>bound</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Configures a new instance of the scheme based on precomputed prime numbers and generators. It accepts the number of clients (encryptors), the length of input vectors l, the bit length of the modulus (we are operating in the Z_p group), and a bound by which coordinates of input vectors are bounded.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">m</td><td>A pointer to an uninitialized struct representing the scheme </td></tr>
