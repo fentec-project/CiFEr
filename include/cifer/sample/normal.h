@@ -72,6 +72,8 @@ bool cfe_normal_is_exp_greater(cfe_normal *s, mpf_t y, mpz_t x);
  */
 void cfe_taylor_exp(mpf_t res, mpz_t x, mpf_t alpha, size_t k, size_t n);
 
+bool cfe_bernoulli(mpz_t t, mpf_t k_square_inv);
+
 /**
  * Calculates the mean of a vector of integers.
  */

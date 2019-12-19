@@ -15,6 +15,11 @@
  */
 
 #include <stdlib.h>
+#include <math.h>
+#include <stdint.h>
+#include <sodium.h>
+#include <memory.h>
+
 #include "cifer/sample/normal.h"
 
 void cfe_normal_init(cfe_normal *s, mpf_t sigma, size_t n) {
@@ -192,4 +197,58 @@ void cfe_variance(mpf_t res, cfe_vec *vec) {
     mpf_set_z(res, sum_sqr);
     mpf_div_ui(res, res, vec->size);
     mpz_clears(sum_sqr, value, NULL);
+}
+
+static const double EXP_COFF[] = {1.43291003789439094275872613876154915146798884961754e-7,
+                                  1.2303944375555413249736938854916878938183799618855e-6,
+                                  1.5359914219462011698283041005730353845137869939208e-5,
+                                  1.5396043210538638053991311593904356413986533880234e-4,
+                                  1.3333877552501097445841748978523355617653578519821e-3,
+                                  9.6181209331756452318717975913386908359825611114502e-3,
+                                  5.5504109841318247098307381293125217780470848083496e-2,
+                                  0.24022650687652774559310842050763312727212905883789,
+                                  0.69314718056193380668617010087473317980766296386719,
+                                  1};
+static const size_t EXP_LEN = 10;
+static const uint64_t EXP_MANTISSA_PRECISION = 52;
+static const uint64_t EXP_MANTISSA_MASK = (((uint64_t) 1 << 52) - 1);
+static const uint64_t MAX_EXP = 1023;
+static const uint64_t BIT_LEN_FOR_SAMPLE = 19;
+static const uint64_t CMP_MASK = (uint64_t) 1 << 61;
+
+bool cfe_bernoulli(mpz_t t, mpf_t k_square_inv) {
+    mpf_t a_big;
+    mpf_init(a_big);
+    mpf_set_z(a_big, t);
+    mpf_mul(a_big, a_big, k_square_inv);
+    double a = mpf_get_d(a_big);
+    a = -a;
+
+    double neg_floor_a = -floor(a);
+    double z = a + neg_floor_a;
+
+    double pow_of_z = EXP_COFF[0];
+    for (size_t i = 1; i < EXP_LEN; i++) {
+        pow_of_z = pow_of_z * z + EXP_COFF[i];
+    }
+    uint64_t pow_of_a_mantissa, pow_of_a_exponent;
+    memcpy(&pow_of_a_mantissa, &pow_of_z, 8);
+    pow_of_a_mantissa = pow_of_a_mantissa & EXP_MANTISSA_MASK;
+    memcpy(&pow_of_a_exponent, &pow_of_z, 8);
+    pow_of_a_exponent = (pow_of_a_exponent >> EXP_MANTISSA_PRECISION) - (uint64_t) neg_floor_a;
+
+    uint8_t r[16];
+    randombytes_buf(r, 16);
+
+    uint64_t r1 = (*((uint64_t *) r)) >> (64 - (EXP_MANTISSA_PRECISION + 1));
+    uint64_t r2 = (*((uint64_t *) (r + 8))) >> (64 - BIT_LEN_FOR_SAMPLE);
+
+    uint64_t check1 = pow_of_a_mantissa | (1LL << EXP_MANTISSA_PRECISION);
+    uint64_t check2 = (uint64_t) 1 << (BIT_LEN_FOR_SAMPLE + pow_of_a_exponent + 1 - MAX_EXP);
+
+    if (CMP_MASK & (r1 - check1) & (r2 - check2)) {
+        return true;
+    }
+
+    return false;
 }
