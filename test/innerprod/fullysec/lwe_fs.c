@@ -45,8 +45,7 @@ MunitResult test_lwe_fully_secure(const MunitParameter *params, void *data) {
 
     cfe_mat SK;
     cfe_lwe_fs_sec_key_init(&SK, &s);
-    err = cfe_lwe_fs_generate_sec_key(&SK, &s);
-    munit_assert(!err);
+    cfe_lwe_fs_generate_sec_key(&SK, &s);
 
     cfe_mat PK;
     cfe_lwe_fs_pub_key_init(&PK, &s);

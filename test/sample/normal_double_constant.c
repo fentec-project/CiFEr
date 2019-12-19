@@ -14,13 +14,36 @@
  * limitations under the License.
  */
 
-#include <cifer/sample/normal_double_constant.h>
+#include "cifer/sample/normal_double_constant.h"
+#include "cifer/sample/normal_cdt.h"
 #include "cifer/test.h"
 #include "cifer/sample/normal_double.h"
 
-void test_normal_double_constant_helper(mpz_t k, double mean_low, double mean_high,
-                                        double var_low,
-                                        double var_high) {
+MunitResult test_normal_double_constant(const MunitParameter *params, void *data) {
+    mpz_t k, sample;
+    mpz_inits(k, sample, NULL);
+    double mean_low, mean_high, var_low, var_high;
+    mean_low = -0.01;
+    mean_high = 0.01;
+    var_low = cfe_sigma_cdt * cfe_sigma_cdt - 0.02;
+    var_high = cfe_sigma_cdt * cfe_sigma_cdt + 0.02;
+
+    const char *sigma = munit_parameters_get(params, "sigma");
+    if (strcmp(sigma, "1 * sqrt(1/(2*ln(2)))") == 0) {
+        mpz_set_ui(k, 1);
+    } else if (strcmp(sigma, "10 * sqrt(1/(2*ln(2)))") == 0) {
+        mpz_set_ui(k, 10);
+        mean_low *= 10;
+        mean_high *= 10;
+        var_low *= 100;
+        var_high *= 100;
+    } else if (strcmp(sigma, "100 * sqrt(1/(2*ln(2)))") == 0) {
+        mpz_set_ui(k, 100);
+        mean_low *= 100;
+        mean_high *= 100;
+        var_low *= 10000;
+        var_high *= 10000;
+    }
 
     cfe_normal_double_constant s;
     cfe_normal_double_constant_init(&s, k);
@@ -28,9 +51,6 @@ void test_normal_double_constant_helper(mpz_t k, double mean_low, double mean_hi
     size_t size = 100000;
     cfe_vec v;
     cfe_vec_init(&v, size);
-
-    mpz_t sample;
-    mpz_init(sample);
 
     for (size_t i = 0; i < size; i++) {
         cfe_normal_double_constant_sample(sample, &s);
@@ -45,42 +65,34 @@ void test_normal_double_constant_helper(mpz_t k, double mean_low, double mean_hi
     double mean_d = mpf_get_d(me);
     double var_d = mpf_get_d(var);
 
-    gmp_printf("%f %f \n", mean_d, var_d);
-
     munit_assert(mean_d > mean_low);
     munit_assert(mean_d < mean_high);
     munit_assert(var_d > var_low);
     munit_assert(var_d < var_high);
 
-    mpz_clear(sample);
+    mpz_clears(k, sample, NULL);
     mpf_clears(me, var, NULL);
     cfe_vec_free(&v);
     cfe_normal_double_constant_free(&s);
-}
 
-MunitResult test_normal_double_constant1(const MunitParameter *params, void *data) {
-    mpz_t k;
-    mpz_init_set_ui(k, 1);
-    double sigmaCDTSquare = 0.84932180028801904272150283410;
-    sigmaCDTSquare *= sigmaCDTSquare;
-
-    test_normal_double_constant_helper(k, -0.1, 0.1, sigmaCDTSquare -0.02, sigmaCDTSquare + 0.02);
     return MUNIT_OK;
 }
 
-MunitResult test_normal_double_constant2(const MunitParameter *params, void *data) {
-    mpz_t k;
-    mpz_init_set_ui(k, 10);
-    double sigmaCDTSquare = 0.84932180028801904272150283410;
-    sigmaCDTSquare *= sigmaCDTSquare;
-    test_normal_double_constant_helper(k, -0.1, 0.1, 100 * (sigmaCDTSquare -0.02), 100 * (sigmaCDTSquare + 0.02));
-    return MUNIT_OK;
-}
+char *normal_double_constant_param[] = {
+        (char *) "1 * sqrt(1/(2*ln(2)))",
+        (char *) "10 * sqrt(1/(2*ln(2)))",
+        (char *) "100 * sqrt(1/(2*ln(2)))",
+        NULL
+};
+
+MunitParameterEnum normal_double_constant_params[] = {
+        {(char *) "sigma", normal_double_constant_param},
+        {NULL, NULL},
+};
 
 MunitTest normal_double_constant_tests[] = {
-        {(char *) "/sigmas=[1,10]",  test_normal_double_constant1, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/sigmas=[1.5,9]", test_normal_double_constant2, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {NULL, NULL,                                               NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
+        {(char *) "/mean_var_test", test_normal_double_constant, NULL, NULL, MUNIT_TEST_OPTION_NONE, normal_double_constant_params},
+        {NULL, NULL,                                             NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 MunitSuite normal_double_constant_suite = {

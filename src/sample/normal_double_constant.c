@@ -79,3 +79,16 @@ void cfe_normal_double_constant_sample(mpz_t res, cfe_normal_double_constant *s)
 
     mpz_clears(x, y, check_val, NULL);
 }
+
+
+void cfe_normal_double_constant_sample_vec(cfe_vec *res, cfe_normal_double_constant *s) {
+    for (size_t i = 0; i < res->size; i++) {
+        cfe_normal_double_constant_sample(res->vec[i], s);
+    }
+}
+
+void cfe_normal_double_constant_sample_mat(cfe_mat *res, cfe_normal_double_constant *s) {
+    for (size_t i = 0; i < res->rows; i++) {
+        cfe_normal_double_constant_sample_vec(&res->mat[i], s);
+    }
+}

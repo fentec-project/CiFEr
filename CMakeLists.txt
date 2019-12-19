@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wredundant-decls \
 -Wnested-externs -Wmissing-include-dirs -Wstrict-prototypes -Wwrite-strings \
--Wno-unused-parameter -Wshadow -Wold-style-definition -msse4.1")
+-Wno-unused-parameter -Wshadow -Wold-style-definition")
 
 # GCC warnings that Clang doesn't provide
 if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")

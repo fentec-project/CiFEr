@@ -36,6 +36,7 @@ typedef struct cfe_paillier {
     mpz_t bound_x;
     mpz_t bound_y;
     mpf_t sigma;
+    mpz_t k_sigma;
     size_t lambda;
     mpz_t g;
 } cfe_paillier;

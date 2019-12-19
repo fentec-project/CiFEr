@@ -19,6 +19,31 @@
 
 #include <gmp.h>
 
+/**
+ * \file
+ * \ingroup sample
+ * \brief Normal sampler that samples from small fixed half-Gaussian distribution.
+ */
+
+/**
+ * cfe_sigma_cdt is a constant 1/(2ln(2)).
+ */
+static const double cfe_sigma_cdt = 0.84932180028801904272150283410;
+
+/**
+* cfe_normal_cdt_sample samples random values from the discrete Normal (Gaussian)
+* probability distribution, limited to non-negative values (half-Gaussian).
+* In particular each value x from Z^+ is sampled with probability proportional to
+* exp(-x^2/sigma^2) where sigma = 1/2ln(2).
+* The implementation is based on paper:
+* "FACCT: FAst, Compact, and Constant-Time Discrete Gaussian
+* Sampler over Integers" by R. K. Zhao, R. Steinfeld, and A. Sakzad
+* (https://eprint.iacr.org/2018/1234.pdf). See the above paper where
+* it is argued that such a sampling achieves a relative error at most
+* 2^{-46} with the chosen parameters.
+*
+* @param res The result of sampling will be saved here
+*/
 void cfe_normal_cdt_sample(mpz_t res);
 
 #endif

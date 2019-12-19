@@ -51,11 +51,14 @@ typedef struct cfe_lwe_fs {
     // TODO check appropriateness of this parameter in constructor!
     mpz_t q;
     // standard deviation for the noise terms in the encryption process
-    mpf_t siqma_q;
+    mpf_t sigma_q;
+    mpz_t k_sigma_q;
     // standard deviation for first half of the matrix for sampling private key
     mpf_t sigma1;
+    mpz_t k_sigma1;
     // standard deviation for second half of the matrix for sampling private key
     mpf_t sigma2;
+    mpz_t k_sigma2;
 
     // Matrix A of dimensions m*n is a public parameter
     // of the scheme
@@ -90,9 +93,8 @@ void cfe_lwe_fs_sec_key_init(cfe_mat *SK, cfe_lwe_fs *s);
  * @param SK A pointer to a matrix (master secret key will be stored here)
  * @param s A pointer to an instance of the scheme (*initialized* cfe_lwe_fs
  * struct)
- * @return Error code
  */
-cfe_error cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s);
+void cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s);
 
 /**
  * Initializes the matrix which represents the public key.

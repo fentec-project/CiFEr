@@ -56,11 +56,9 @@ MunitResult test_bernoulli(const MunitParameter *params, void *data) {
     cfe_mean(me, &v);
 
     double mean_d = mpf_get_d(me);
-    gmp_printf("%f %f", mean_d, me_correct);
 
     double mean_low = me_correct - 0.01;
     double mean_high = me_correct + 0.01;
-
     munit_assert(mean_d > mean_low);
     munit_assert(mean_d < mean_high);
 

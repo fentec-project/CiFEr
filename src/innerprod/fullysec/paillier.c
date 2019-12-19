@@ -20,14 +20,15 @@
 #include "cifer/innerprod/fullysec/paillier.h"
 #include "cifer/internal/prime.h"
 #include "cifer/sample/uniform.h"
-#include "cifer/sample/normal_double.h"
+#include "cifer/sample/normal_double_constant.h"
+#include "cifer/sample/normal_cdt.h"
 
 cfe_error cfe_paillier_init(cfe_paillier *s, size_t l, size_t lambda, size_t bit_len, mpz_t bound_x, mpz_t bound_y) {
-    mpz_t p, q, n, n_square, check, g_prime, g, n_to_5;
-    mpz_inits(p, q, n, n_square, check, g_prime, g, n_to_5, NULL);
+    mpz_t p, q, n, n_square, check, g_prime, g, n_to_5, k_sigma;
+    mpz_inits(p, q, n, n_square, check, g_prime, g, n_to_5, k_sigma, NULL);
 
-    mpf_t sigma;
-    mpf_init(sigma);
+    mpf_t sigma, sigma_cdt, k_sigma_f;
+    mpf_inits(sigma, sigma_cdt, k_sigma_f, NULL);
 
     // generate two safe primes
     cfe_error err = cfe_get_prime(p, bit_len, true);
@@ -76,7 +77,16 @@ cfe_error cfe_paillier_init(cfe_paillier *s, size_t l, size_t lambda, size_t bit
     mpf_mul_ui(sigma, sigma, lambda);
     mpf_sqrt(sigma, sigma);
     mpf_add_ui(sigma, sigma, 2);
-    mpf_floor(sigma, sigma);
+
+    // to sample with cfe_normal_double_constant sigma must be
+    // a multiple of cfe_sigma_cdt = 1/(2ln(2)), hence we make
+    // it such
+    mpf_set_d(sigma_cdt, cfe_sigma_cdt);
+    mpf_div(k_sigma_f, sigma, sigma_cdt);
+    mpz_set_f(k_sigma, k_sigma_f);
+    mpz_add_ui(k_sigma, k_sigma, 1);
+    mpf_set_z(k_sigma_f, k_sigma);
+    mpf_mul(sigma, k_sigma_f, sigma_cdt);
 
     // set the parameters for the scheme
     s->l = l;
@@ -85,12 +95,13 @@ cfe_error cfe_paillier_init(cfe_paillier *s, size_t l, size_t lambda, size_t bit
     mpz_init_set(s->bound_x, bound_x);
     mpz_init_set(s->bound_y, bound_y);
     mpf_init_set(s->sigma, sigma);
+    mpz_init_set(s->k_sigma, k_sigma);
     s->lambda = lambda;
     mpz_init_set(s->g, g);
 
     cleanup:
-    mpz_clears(p, q, n, n_square, check, g_prime, g, n_to_5, NULL);
-    mpf_clear(sigma);
+    mpz_clears(p, q, n, n_square, check, g_prime, g, n_to_5, k_sigma, NULL);
+    mpf_clears(sigma, sigma_cdt, k_sigma_f, NULL);
     return err;
 }
 
@@ -116,18 +127,19 @@ void cfe_paillier_master_keys_init(cfe_vec *msk, cfe_vec *mpk, cfe_paillier *s) 
 }
 
 cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_paillier *s) {
+    if (msk->size != s->l || mpk->size != s->l) {
+        return CFE_ERR_MALFORMED_INPUT;
+    }
+
     mpf_t one;
     mpf_init_set_ui(one, 1);
-    cfe_normal_double sampler;
-    if (cfe_normal_double_init(&sampler, s->sigma, s->lambda, one)) {
-        mpf_clear(one);
-        return CFE_ERR_SEC_KEY_GEN_FAILED;
-    }
+    cfe_normal_double_constant sampler;
+    cfe_normal_double_constant_init(&sampler, s->k_sigma);
 
     mpz_t x, y;
     mpz_inits(x, y, NULL);
 
-    cfe_normal_double_sample_vec(msk, &sampler);
+    cfe_normal_double_constant_sample_vec(msk, &sampler);
 
     for (size_t i = 0; i < s->l; i++) {
         cfe_vec_get(y, msk, i);
@@ -137,7 +149,7 @@ cfe_error cfe_paillier_generate_master_keys(cfe_vec *msk, cfe_vec *mpk, cfe_pail
 
     mpf_clear(one);
     mpz_clears(x, y, NULL);
-    cfe_normal_double_free(&sampler);
+    cfe_normal_double_constant_free(&sampler);
     return CFE_ERR_NONE;
 }
 

@@ -240,8 +240,12 @@ bool cfe_bernoulli(mpz_t t, mpf_t k_square_inv) {
     uint8_t r[16];
     randombytes_buf(r, 16);
 
-    uint64_t r1 = (*((uint64_t *) r)) >> (64 - (EXP_MANTISSA_PRECISION + 1));
-    uint64_t r2 = (*((uint64_t *) (r + 8))) >> (64 - BIT_LEN_FOR_SAMPLE);
+    uint64_t r1, r2;
+    memcpy(&r1, r, 8);
+    memcpy(&r2, r + 8, 8);
+
+    r1 = r1 >> (64 - (EXP_MANTISSA_PRECISION + 1));
+    r2 = r2 >> (64 - BIT_LEN_FOR_SAMPLE);
 
     uint64_t check1 = pow_of_a_mantissa | (1LL << EXP_MANTISSA_PRECISION);
     uint64_t check2 = (uint64_t) 1 << (BIT_LEN_FOR_SAMPLE + pow_of_a_exponent + 1 - MAX_EXP);
