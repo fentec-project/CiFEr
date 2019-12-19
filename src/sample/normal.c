@@ -223,6 +223,7 @@ bool cfe_bernoulli(mpz_t t, mpf_t k_square_inv) {
     mpf_mul(a_big, a_big, k_square_inv);
     double a = mpf_get_d(a_big);
     a = -a;
+    mpf_clear(a_big);
 
     double neg_floor_a = -floor(a);
     double z = a + neg_floor_a;

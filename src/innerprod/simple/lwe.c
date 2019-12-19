@@ -129,7 +129,8 @@ cfe_error cfe_lwe_init(cfe_lwe *s, size_t l, mpz_t bound_x, mpz_t bound_y, size_
 
     cleanup:
     mpz_clears(l_z, x_i, NULL);
-    mpf_clears(p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one, NULL);
+    mpf_clears(p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one,
+               sigma_cdt, k_sigma_f, NULL);
 
     return err;
 }
@@ -329,7 +330,7 @@ cfe_error cfe_lwe_decrypt(mpz_t res, cfe_lwe *s, cfe_vec *ct, cfe_vec *sk_y, cfe
 
 // Frees the memory allocated for configuration of the scheme.
 void cfe_lwe_free(cfe_lwe *s) {
-    mpz_clears(s->p, s->q, s->bound_x, s->bound_y, NULL);
+    mpz_clears(s->p, s->q, s->bound_x, s->bound_y, s->k_sigma_q, NULL);
     mpf_clear(s->sigma_q);
 
     if (s->A.mat != NULL) {

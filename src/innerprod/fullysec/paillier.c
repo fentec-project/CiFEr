@@ -106,7 +106,7 @@ cfe_error cfe_paillier_init(cfe_paillier *s, size_t l, size_t lambda, size_t bit
 }
 
 void cfe_paillier_free(cfe_paillier *s) {
-    mpz_clears(s->n, s->n_square, s->bound_x, s->bound_y, s->g, NULL);
+    mpz_clears(s->n, s->n_square, s->bound_x, s->bound_y, s->g, s->k_sigma, NULL);
     mpf_clear(s->sigma);
 }
 
@@ -120,6 +120,7 @@ void cfe_paillier_copy(cfe_paillier *res, cfe_paillier *s) {
     mpz_init_set(res->n, s->n);
     mpz_init_set(res->n_square, s->n_square);
     mpf_init_set(res->sigma, s->sigma);
+    mpz_init_set(res->k_sigma, s->k_sigma);
 }
 
 void cfe_paillier_master_keys_init(cfe_vec *msk, cfe_vec *mpk, cfe_paillier *s) {

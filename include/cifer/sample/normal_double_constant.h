@@ -66,7 +66,7 @@ void cfe_normal_double_constant_free(cfe_normal_double_constant *s);
 
 /**
  * Samples according to discrete Gauss distribution using
- * normal_double_constant.
+ * cfe_normal_double_constant.
  *
  * @param res The sampling value (result value will be stored here)
  * @param s A pointer to an instance of the sampler (*initialized*

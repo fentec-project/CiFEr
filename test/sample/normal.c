@@ -62,7 +62,8 @@ MunitResult test_bernoulli(const MunitParameter *params, void *data) {
     munit_assert(mean_d > mean_low);
     munit_assert(mean_d < mean_high);
 
-    mpf_clears(me, NULL);
+    mpf_clears(me, k_square_inv, NULL);
+    mpz_clears(t, bound, one, zero, NULL);
     cfe_vec_free(&v);
     return MUNIT_OK;
 }
