@@ -15,7 +15,7 @@
  */
 #include <math.h>
 
-#include <cifer/data/vec.h>
+#include "cifer/data/vec.h"
 #include "cifer/test.h"
 #include "cifer/sample/normal_cdt.h"
 #include "cifer/sample/normal.h"
@@ -71,7 +71,7 @@ MunitResult test_bernoulli(const MunitParameter *params, void *data) {
 
 MunitTest normal_tests[] = {
         {(char *) "/bernoulli", test_bernoulli, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {NULL, NULL,                                 NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
+        {NULL, NULL,                            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 MunitSuite normal_suite = {

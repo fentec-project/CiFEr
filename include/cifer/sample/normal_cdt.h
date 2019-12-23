@@ -26,7 +26,7 @@
  */
 
 /**
- * cfe_sigma_cdt is a constant 1/(2ln(2)).
+ * cfe_sigma_cdt is a constant sqrt(1/(2ln(2))).
  */
 static const double cfe_sigma_cdt = 0.84932180028801904272150283410;
 
@@ -34,7 +34,7 @@ static const double cfe_sigma_cdt = 0.84932180028801904272150283410;
 * cfe_normal_cdt_sample samples random values from the discrete Normal (Gaussian)
 * probability distribution, limited to non-negative values (half-Gaussian).
 * In particular each value x from Z^+ is sampled with probability proportional to
-* exp(-x^2/sigma^2) where sigma = 1/2ln(2).
+* exp(-x^2/sigma^2) where sigma = sqrt(1/(2ln(2))).
 * The implementation is based on paper:
 * "FACCT: FAst, Compact, and Constant-Time Discrete Gaussian
 * Sampler over Integers" by R. K. Zhao, R. Steinfeld, and A. Sakzad

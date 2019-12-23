@@ -79,7 +79,7 @@ cfe_error cfe_paillier_init(cfe_paillier *s, size_t l, size_t lambda, size_t bit
     mpf_add_ui(sigma, sigma, 2);
 
     // to sample with cfe_normal_double_constant sigma must be
-    // a multiple of cfe_sigma_cdt = 1/(2ln(2)), hence we make
+    // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
     // it such
     mpf_set_d(sigma_cdt, cfe_sigma_cdt);
     mpf_div(k_sigma_f, sigma, sigma_cdt);

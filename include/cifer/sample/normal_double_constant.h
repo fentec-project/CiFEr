@@ -48,10 +48,10 @@ typedef struct cfe_normal_double_constant {
 
 /**
  * Initializes an instance of cfe_normal_double_constant sampler. It assumes
- * mean = 0. Parameter k needs to be given, such that sigma = k * 1/2ln(2).
+ * mean = 0. Parameter k needs to be given, such that sigma = k * sqrt(1/(2ln(2))).
  *
  * @param s A pointer to an uninitialized struct representing the sampler
- * @param k The value determining sigma = k * 1/2ln(2)
+ * @param k The value determining sigma = k * sqrt(1/(2ln(2)))
  */
 void cfe_normal_double_constant_init(cfe_normal_double_constant *s, mpz_t k);
 
@@ -65,7 +65,7 @@ void cfe_normal_double_constant_init(cfe_normal_double_constant *s, mpz_t k);
 void cfe_normal_double_constant_free(cfe_normal_double_constant *s);
 
 /**
- * Samples according to discrete Gauss distribution using
+ * Samples according to discrete Gaussian distribution using
  * cfe_normal_double_constant.
  *
  * @param res The sampling value (result value will be stored here)
@@ -75,12 +75,12 @@ void cfe_normal_double_constant_free(cfe_normal_double_constant *s);
 void cfe_normal_double_constant_sample(mpz_t res, cfe_normal_double_constant *s);
 
 /**
- * Sets the elements of the vector to random numbers with the normal_double_constant sampler.
+ * Sets the elements of the vector to random numbers with the cfe_normal_double_constant sampler.
  */
 void cfe_normal_double_constant_sample_vec(cfe_vec *res, cfe_normal_double_constant *s);
 
 /**
- * Sets the elements of a matrix to random numbers with the normal_double_constant sampler.
+ * Sets the elements of a matrix to random numbers with the cfe_normal_double_constant sampler.
  */
 void cfe_normal_double_constant_sample_mat(cfe_mat *res, cfe_normal_double_constant *s);
 

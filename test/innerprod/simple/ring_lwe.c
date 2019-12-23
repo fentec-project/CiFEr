@@ -22,18 +22,18 @@
 
 MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
     // Length of data vectors x, y
-    size_t l = 10;
-    size_t n = 1024;
+    size_t l = 100;
+    size_t n = 256;
 
     // message space size
     mpz_t B, B_neg;
     mpz_inits(B, B_neg, NULL);
-    mpz_set_si(B, 10);
+    mpz_set_si(B, 1000000);
     mpz_neg(B_neg, B);
 
     // parameters for the sampling of small noise
     mpf_t sigma;
-    mpf_init_set_ui(sigma, 1);
+    mpf_init_set_ui(sigma, 20);
 
     // Create some message and vector for the product
     cfe_vec y;
@@ -45,7 +45,7 @@ MunitResult test_ring_lwe(const MunitParameter *params, void *data) {
 
     // TODO modify when code for generation of p, q is ready
     mpz_t p, q;
-    mpz_init_set_str(p, "10000000", 10);
+    mpz_init_set_str(p, "10000000000000000", 10);
     mpz_init_set_str(q, "903468688179973616387830299599", 10);
 
     cfe_vec expect, res;

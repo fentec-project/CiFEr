@@ -15,7 +15,8 @@
  */
 
 #include <stdlib.h>
-#include <cifer/sample/normal_cdt.h>
+
+#include "cifer/sample/normal_cdt.h"
 #include "cifer/internal/errors.h"
 #include "cifer/sample/normal_double_constant.h"
 #include "cifer/sample/uniform.h"

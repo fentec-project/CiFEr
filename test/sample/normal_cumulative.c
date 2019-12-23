@@ -19,7 +19,7 @@
 
 MunitResult test_normal_cumulative(const MunitParameter *params, void *data) {
     mpf_t sigma;
-    mpf_init_set_d(sigma, 10);
+    mpf_init_set_ui(sigma, 10);
     size_t n = 256;
     bool two_sided = true;
 
@@ -31,7 +31,7 @@ MunitResult test_normal_cumulative(const MunitParameter *params, void *data) {
     cfe_normal_cumulative s;
     cfe_normal_cumulative_init(&s, sigma, n, two_sided);
 
-    size_t size = 100000;
+    size_t size = 10000;
     cfe_vec v;
     cfe_vec_init(&v, size);
 

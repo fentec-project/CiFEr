@@ -101,7 +101,7 @@ cfe_error cfe_lwe_init(cfe_lwe *s, size_t l, mpz_t bound_x, mpz_t bound_y, size_
     mpf_mul(s->sigma_q, sigma, q_f);
 
     // to sample with cfe_normal_double_constant sigmaQ must be
-    // a multiple of cfe_sigma_cdt = 1/(2ln(2)), hence we make
+    // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
     // it such
     mpf_set_d(sigma_cdt, cfe_sigma_cdt);
     mpf_div(k_sigma_f, s->sigma_q, sigma_cdt);

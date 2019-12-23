@@ -67,7 +67,7 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
         mpf_mul(s->sigma1, tmp, sqrt_max);
 
         // to sample with cfe_normal_double_constant sigmaQ must be
-        // a multiple of cfe_sigma_cdt = 1/(2ln(2)), hence we make
+        // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
         // it such
         mpf_div(k_sigma_f, s->sigma1, sigma_cdt);
         mpz_set_f(s->k_sigma1, k_sigma_f);
@@ -82,7 +82,7 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
         mpf_mul(s->sigma2, tmp, max);
 
         // to sample with cfe_normal_double_constant sigma2 must be
-        // a multiple of cfe_sigma_cdt = 1/(2ln(2)), hence we make
+        // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
         // it such
         mpf_div(k_sigma_f, s->sigma2, sigma_cdt);
         mpz_set_f(s->k_sigma2, k_sigma_f);
@@ -131,7 +131,7 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
     mpf_mul(s->sigma_q, sigma, tmp);
 
     // to sample with cfe_normal_double_constant sigma_q must be
-    // a multiple of cfe_sigma_cdt = 1/(2ln(2)), hence we make
+    // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
     // it such
     mpf_div(k_sigma_f, s->sigma_q, sigma_cdt);
     mpz_set_f(s->k_sigma_q, k_sigma_f);
