@@ -29,7 +29,9 @@
  * cfe_normal_cumulative samples random values from the cumulative normal (Gaussian)
  * probability distribution, centered on 0.
  * This sampler is the fastest, but is limited only to cases when sigma is not
- * too big, due to the sizes of the precomputed tables.
+ * too big, due to the sizes of the precomputed tables. Note that
+ * the sampler offers arbitrary precision but the implementation is not
+ * constant time.
  */
 typedef struct cfe_normal_cumulative {
     cfe_normal nor;

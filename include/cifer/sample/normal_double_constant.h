@@ -27,7 +27,7 @@
 
 /**
  * cfe_normal_double_constant samples random values from the normal (Gaussian)
- * probability distribution, centered on 0. This sampler works in a way that
+ * probability distribution, centered on 0. This sampler works in a way that it
  * first samples from a cfe_normal_cdt - normal distribution with fixed sigma -
  * and then using another sampling from uniform distribution creates a
  * candidate for the output, which is accepted or rejected with certain
