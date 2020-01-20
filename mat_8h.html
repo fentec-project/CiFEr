@@ -1178,7 +1178,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">res</td><td>A pointer to an initialized matrix where the result will be saved </td></tr>
     <tr><td class="paramname">det</td><td>Determinant will be saved here; if not needed this should be NULL </td></tr>
-    <tr><td class="paramname">mat</td><td>A pointer to a matrix </td></tr>
+    <tr><td class="paramname">m</td><td>A pointer to a matrix </td></tr>
     <tr><td class="paramname">p</td><td>Modulus for the computations </td></tr>
   </table>
   </dd>
@@ -1220,8 +1220,8 @@ Functions</h2></td></tr>
 <p>cfe_mat_determinant_gauss calculates the determinant of a matrix over field Z_p, using Gaussian elimination. The latter is faster than the naive (analytic) algorithm.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">res</td><td>The result will be saved </td></tr>
-    <tr><td class="paramname">mat</td><td>A pointer to a matrix </td></tr>
+    <tr><td class="paramname">det</td><td>The result will be saved </td></tr>
+    <tr><td class="paramname">m</td><td>A pointer to a matrix </td></tr>
     <tr><td class="paramname">p</td><td>Modulus for the computations </td></tr>
   </table>
   </dd>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CiFEr: cfe_normal_double Struct Reference</title>
+<title>CiFEr: cfe_normal_double_constant Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -40,29 +40,27 @@ $(function() {
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">cfe_normal_double Struct Reference</div>  </div>
+<div class="title">cfe_normal_double_constant Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a7a6754e11ef0d67d4b4097076181a730"><td class="memItemLeft" align="right" valign="top"><a id="a7a6754e11ef0d67d4b4097076181a730"></a>
-<a class="el" href="structcfe__normal.html">cfe_normal</a>&#160;</td><td class="memItemRight" valign="bottom"><b>nor</b></td></tr>
-<tr class="separator:a7a6754e11ef0d67d4b4097076181a730"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade3afb797fdd602a33a05ab1f145ab04"><td class="memItemLeft" align="right" valign="top"><a id="ade3afb797fdd602a33a05ab1f145ab04"></a>
-<a class="el" href="structcfe__normal__cumulative.html">cfe_normal_cumulative</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sampler_cumu</b></td></tr>
-<tr class="separator:ade3afb797fdd602a33a05ab1f145ab04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9f4ec1e94b6d1ea1c695d1f5719d65a"><td class="memItemLeft" align="right" valign="top"><a id="ac9f4ec1e94b6d1ea1c695d1f5719d65a"></a>
+<tr class="memitem:ad3d3f497f717296230b8b086f64b1f87"><td class="memItemLeft" align="right" valign="top"><a id="ad3d3f497f717296230b8b086f64b1f87"></a>
 mpz_t&#160;</td><td class="memItemRight" valign="bottom"><b>k</b></td></tr>
-<tr class="separator:ac9f4ec1e94b6d1ea1c695d1f5719d65a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2528e3c57f11ae07f928d3b436207d4"><td class="memItemLeft" align="right" valign="top"><a id="ac2528e3c57f11ae07f928d3b436207d4"></a>
+<tr class="separator:ad3d3f497f717296230b8b086f64b1f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac90ea82032b35ef1fc2aa590b96c7b9e"><td class="memItemLeft" align="right" valign="top"><a id="ac90ea82032b35ef1fc2aa590b96c7b9e"></a>
+mpf_t&#160;</td><td class="memItemRight" valign="bottom"><b>k_square_inv</b></td></tr>
+<tr class="separator:ac90ea82032b35ef1fc2aa590b96c7b9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05801c0bda87dd7def183f9276191095"><td class="memItemLeft" align="right" valign="top"><a id="a05801c0bda87dd7def183f9276191095"></a>
 mpz_t&#160;</td><td class="memItemRight" valign="bottom"><b>twice_k</b></td></tr>
-<tr class="separator:ac2528e3c57f11ae07f928d3b436207d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a05801c0bda87dd7def183f9276191095"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Samples random values from the normal (Gaussian) probability distribution, centered on 0. This sampler works in a way that first samples from a normal_cumulative with some small sigma and then using another sampling from uniform distribution creates a candidate for the output, which is accepted or rejected with certain probability. Note that the sampler offers arbitrary precision but the implementation is not constant time. </p>
+<div class="textblock"><p><a class="el" href="structcfe__normal__double__constant.html">cfe_normal_double_constant</a> samples random values from the normal (Gaussian) probability distribution, centered on 0. This sampler works in a way that it first samples from a cfe_normal_cdt - normal distribution with fixed sigma - and then using another sampling from uniform distribution creates a candidate for the output, which is accepted or rejected with certain probability. The sampler algorithm is constant time in the sense that the sampled value is independent of the time needed. The implementation is based on paper: "FACCT: FAst, Compact, and Constant-Time Discrete Gaussian Sampler
+over Integers" by R. K. Zhao, R. Steinfeld, and A. Sakzad, see <a href="https://eprint.iacr.org/2018/1234.pdf">https://eprint.iacr.org/2018/1234.pdf</a>. See the above paper for the argumentation of the choice of parameters and proof of precision and security. </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/cifer/sample/<a class="el" href="normal__double_8h_source.html">normal_double.h</a></li>
+<li>include/cifer/sample/<a class="el" href="normal__double__constant_8h_source.html">normal_double_constant.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

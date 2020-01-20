@@ -77,6 +77,8 @@ Functions</h2></td></tr>
 <tr class="separator:a17aae72607c74d4235c4d845d44cbb14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed1618217f42d149f2fee1b9ec3aefa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="normal_8h.html#aed1618217f42d149f2fee1b9ec3aefa6">cfe_taylor_exp</a> (mpf_t res, mpz_t x, mpf_t alpha, size_t k, size_t n)</td></tr>
 <tr class="separator:aed1618217f42d149f2fee1b9ec3aefa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa709a61120debed1157798906488f63a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="normal_8h.html#aa709a61120debed1157798906488f63a">cfe_bernoulli</a> (mpz_t t, mpf_t k_square_inv)</td></tr>
+<tr class="separator:aa709a61120debed1157798906488f63a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c4a1c7faa8c320db9f9f0b8b271b5e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="normal_8h.html#a1c4a1c7faa8c320db9f9f0b8b271b5e5">cfe_mean</a> (mpf_t res, <a class="el" href="structcfe__vec.html">cfe_vec</a> *vec)</td></tr>
 <tr class="separator:a1c4a1c7faa8c320db9f9f0b8b271b5e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bf0435f3b2573043bdf1b109751dbae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="normal_8h.html#a6bf0435f3b2573043bdf1b109751dbae">cfe_variance</a> (mpf_t res, <a class="el" href="structcfe__vec.html">cfe_vec</a> *vec)</td></tr>
@@ -253,6 +255,44 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Approximates exp(-x/alpha) with taylor polynomial of degree k, precise at least up to 2^-n. </p>
+
+</div>
+</div>
+<a id="aa709a61120debed1157798906488f63a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa709a61120debed1157798906488f63a">&#9670;&nbsp;</a></span>cfe_bernoulli()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cfe_bernoulli </td>
+          <td>(</td>
+          <td class="paramtype">mpz_t&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mpf_t&#160;</td>
+          <td class="paramname"><em>k_square_inv</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>cfe_bernoulli returns true with probability proportional to 2^{-t/k^2}. A polynomial approximation is used to evaluate the exponential function. The implementation is based on paper: "FACCT: FAst, Compact, and Constant-Time Discrete Gaussian
+Sampler over Integers" by R. K. Zhao, R. Steinfeld, and A. Sakzad (<a href="https://eprint.iacr.org/2018/1234.pdf">https://eprint.iacr.org/2018/1234.pdf</a>). See the above paper where it is argued that such a sampling achieves a relative error at most 2^{-45} with the chosen parameters.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>Value t in 2^{-t/k^2} determining the probability </td></tr>
+    <tr><td class="paramname">k_square_inv</td><td>Value 1/k^2 in 2^{-t/k^2} determining the probability </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Boolean value </dd></dl>
 
 </div>
 </div>
