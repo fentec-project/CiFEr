@@ -46,6 +46,7 @@ typedef struct cfe_lwe {
     mpz_t q; // Modulus for ciphertext and keys
 
     mpf_t sigma_q;
+    mpz_t k_sigma_q;
 
     // Matrix A of dimensions m*n is a public parameter
     // of the scheme

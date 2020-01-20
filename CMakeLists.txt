@@ -55,6 +55,8 @@ set(library_SOURCES
         src/sample/normal.c
         src/sample/normal_cumulative.c
         src/sample/normal_double.c
+        src/sample/normal_double_constant.c
+        src/sample/normal_cdt.c
         src/sample/normal_negative.c
         src/sample/uniform.c
         src/abe/policy.c
@@ -94,8 +96,11 @@ set(binary_SOURCES
         test/innerprod/fullysec/damgard_dec_multi.c
         test/innerprod/fullysec/fhipe.c
         test/innerprod/fullysec/fh_multi_ipe.c
+        test/sample/normal.c
         test/sample/normal_cumulative.c
         test/sample/normal_double.c
+        test/sample/normal_double_constant.c
+        test/sample/normal_cdt.c
         test/sample/normal_negative.c
         test/sample/uniform.c
         test/abe/policy.c

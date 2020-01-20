@@ -17,7 +17,8 @@
 #include "cifer/innerprod/simple/lwe.h"
 
 #include "cifer/internal/prime.h"
-#include "cifer/sample/normal_double.h"
+#include "cifer/sample/normal_double_constant.h"
+#include "cifer/sample/normal_cdt.h"
 #include "cifer/sample/uniform.h"
 
 // Calculates the center function t(x) = floor(x*q/p) % q for a vector x.
@@ -47,11 +48,12 @@ cfe_error cfe_lwe_init(cfe_lwe *s, size_t l, mpz_t bound_x, mpz_t bound_y, size_
     mpz_init_set(s->bound_x, bound_x);
     mpz_init_set(s->bound_y, bound_y);
 
-    mpf_t p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one;
-    mpf_inits(s->sigma_q, p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one, NULL);
+    mpf_t p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one, sigma_cdt, k_sigma_f;;
+    mpf_inits(s->sigma_q, p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one,
+              sigma_cdt, k_sigma_f, NULL);
 
     mpz_t l_z, x_i;
-    mpz_inits(s->p, s->q, x_i, l_z, NULL);
+    mpz_inits(s->p, s->q, s->k_sigma_q, x_i, l_z, NULL);
     mpz_set_ui(l_z, l);
 
     size_t n_bits_p = mpz_sizeinbase(bound_x, 2) + mpz_sizeinbase(bound_y, 2) + mpz_sizeinbase(l_z, 2) + 2;
@@ -97,7 +99,16 @@ cfe_error cfe_lwe_init(cfe_lwe *s, size_t l, mpz_t bound_x, mpz_t bound_y, size_
     mpf_div(sigma, sigma, bound_y_f);
     mpf_set_z(q_f, s->q);
     mpf_mul(s->sigma_q, sigma, q_f);
-    mpf_ceil(s->sigma_q, s->sigma_q);
+
+    // to sample with cfe_normal_double_constant sigmaQ must be
+    // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
+    // it such
+    mpf_set_d(sigma_cdt, cfe_sigma_cdt);
+    mpf_div(k_sigma_f, s->sigma_q, sigma_cdt);
+    mpz_set_f(s->k_sigma_q, k_sigma_f);
+    mpz_add_ui(s->k_sigma_q, s->k_sigma_q, 1);
+    mpf_set_z(k_sigma_f, s->k_sigma_q);
+    mpf_mul(s->sigma_q, k_sigma_f, sigma_cdt);
 
     // sanity check if the parameters satisfy theoretical bounds
     mpf_div(val, s->sigma_q, val);
@@ -118,7 +129,8 @@ cfe_error cfe_lwe_init(cfe_lwe *s, size_t l, mpz_t bound_x, mpz_t bound_y, size_
 
     cleanup:
     mpz_clears(l_z, x_i, NULL);
-    mpf_clears(p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one, NULL);
+    mpf_clears(p_f, q_f, bound_x_f, bound_y_f, val, x, x_sqrt, tmp, sigma, one,
+               sigma_cdt, k_sigma_f, NULL);
 
     return err;
 }
@@ -145,21 +157,14 @@ cfe_error cfe_lwe_generate_pub_key(cfe_mat *PK, cfe_lwe *s, cfe_mat *SK) {
         return CFE_ERR_MALFORMED_SEC_KEY;
     }
 
-    cfe_error err = CFE_ERR_NONE;
-
     // Initialize and fill noise matrix E with m*l samples
     cfe_mat E;
     cfe_mat_init(&E, s->m, s->l);
 
-    cfe_normal_double sampler;
-    mpf_t one;
-    mpf_init_set_ui(one, 1);
+    cfe_normal_double_constant sampler;
 
-    if (cfe_normal_double_init(&sampler, s->sigma_q, s->n, one)) {
-        err = CFE_ERR_PUB_KEY_GEN_FAILED;
-        goto cleanup;
-    }
-    cfe_normal_double_sample_mat(&E, &sampler);
+    cfe_normal_double_constant_init(&sampler, s->k_sigma_q);
+    cfe_normal_double_constant_sample_mat(&E, &sampler);
 
     // Calculate public key as PK = (A * SK + E) % q
     cfe_mat_mul(PK, &s->A, SK);
@@ -167,11 +172,9 @@ cfe_error cfe_lwe_generate_pub_key(cfe_mat *PK, cfe_lwe *s, cfe_mat *SK) {
     cfe_mat_add(PK, PK, &E);
     cfe_mat_mod(PK, PK, s->q);
 
-    cleanup:
     cfe_mat_free(&E);
-    mpf_clear(one);
-    cfe_normal_double_free(&sampler);
-    return err;
+    cfe_normal_double_constant_free(&sampler);
+    return CFE_ERR_NONE;
 }
 
 void cfe_lwe_fe_key_init(cfe_vec *sk_y, cfe_lwe *s) {
@@ -327,7 +330,7 @@ cfe_error cfe_lwe_decrypt(mpz_t res, cfe_lwe *s, cfe_vec *ct, cfe_vec *sk_y, cfe
 
 // Frees the memory allocated for configuration of the scheme.
 void cfe_lwe_free(cfe_lwe *s) {
-    mpz_clears(s->p, s->q, s->bound_x, s->bound_y, NULL);
+    mpz_clears(s->p, s->q, s->bound_x, s->bound_y, s->k_sigma_q, NULL);
     mpf_clear(s->sigma_q);
 
     if (s->A.mat != NULL) {

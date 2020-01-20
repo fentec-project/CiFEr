@@ -43,9 +43,12 @@ int main(int argc, char *argv[]) {
             fame_suite,
             dippe_suite,
             uniform_suite,
+            normal_suite,
             normal_cumulative_suite,
             normal_negative_suite,
             normal_double_suite,
+            normal_double_constant_suite,
+            normal_cdt_suite,
             sgp_suite,
             {NULL, NULL, NULL, 0, MUNIT_SUITE_OPTION_NONE}
     };

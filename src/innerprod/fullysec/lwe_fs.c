@@ -18,10 +18,11 @@
 
 #include "cifer/innerprod/fullysec/lwe_fs.h"
 #include "cifer/internal/prime.h"
-#include "cifer/sample/normal_double.h"
+#include "cifer/sample/normal_double_constant.h"
+#include "cifer/sample/normal_cdt.h"
 #include "cifer/sample/uniform.h"
 
-// Initializes scheme struct with the desired confifuration
+// Initializes scheme struct with the desired configuration
 // and configures public parameters for the scheme.
 cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_t bound_y) {
     cfe_error err = CFE_ERR_NONE;
@@ -33,13 +34,13 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
     mpz_init_set(s->bound_y, bound_y);
 
     mpz_t bound_for_q_z;
-    mpz_inits(s->K, s->q, bound_for_q_z, NULL);
+    mpz_inits(s->K, s->q, s->k_sigma1, s->k_sigma2, s->k_sigma_q, bound_for_q_z, NULL);
     mpz_mul(s->K, bound_x, bound_y);
     mpz_mul_ui(s->K, s->K, l * 2);
 
-    mpf_t max, sqrt_max, tmp, k_f, k_squared_f, sigma, sigma_prime, bound2, one, bound_for_q;
-    mpf_inits(s->siqma_q, s->sigma1, s->sigma2, max, sqrt_max, tmp, k_f, k_squared_f, sigma, sigma_prime, bound2, one,
-              bound_for_q, NULL);
+    mpf_t max, sqrt_max, tmp, k_f, k_squared_f, sigma, sigma_prime, bound2, one, bound_for_q, sigma_cdt, k_sigma_f;
+    mpf_inits(s->sigma_q, s->sigma1, s->sigma2, max, sqrt_max, tmp, k_f, k_squared_f, sigma, sigma_prime, bound2, one,
+              bound_for_q, sigma_cdt, k_sigma_f, NULL);
 
     size_t n_bits_q = 1;
     double n_f = (double) n;
@@ -47,6 +48,7 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
     mpf_set_z(k_f, s->K);
     mpf_set_ui(one, 1);
     mpf_mul(k_squared_f, k_f, k_f);
+    mpf_set_d(sigma_cdt, cfe_sigma_cdt);
 
     for (size_t i = 1; true; i++) {
         // assuming that the final q will have at most i bits we calculate a bound
@@ -62,17 +64,31 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
 
         mpf_set_d(tmp, sqrt(n_f * log2_m));
         mpf_sqrt(sqrt_max, max);
-
         mpf_mul(s->sigma1, tmp, sqrt_max);
-        mpf_ceil(s->sigma1, s->sigma1);
+
+        // to sample with cfe_normal_double_constant sigmaQ must be
+        // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
+        // it such
+        mpf_div(k_sigma_f, s->sigma1, sigma_cdt);
+        mpz_set_f(s->k_sigma1, k_sigma_f);
+        mpz_add_ui(s->k_sigma1, s->k_sigma1, 1);
+        mpf_set_z(k_sigma_f, s->k_sigma1);
+        mpf_mul(s->sigma1, k_sigma_f, sigma_cdt);
 
         double n_pow_3 = pow(n_f, 3);
         double pow_sqrt_log_m_5 = pow(sqrt(log2_m), 5);
         double mul_val = sqrt(n_f) * n_pow_3 * pow_sqrt_log_m_5 * sqrt(bound_m_f);
         mpf_set_d(tmp, mul_val);
-
         mpf_mul(s->sigma2, tmp, max);
-        mpf_ceil(s->sigma2, s->sigma2);
+
+        // to sample with cfe_normal_double_constant sigma2 must be
+        // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
+        // it such
+        mpf_div(k_sigma_f, s->sigma2, sigma_cdt);
+        mpz_set_f(s->k_sigma2, k_sigma_f);
+        mpz_add_ui(s->k_sigma2, s->k_sigma2, 1);
+        mpf_set_z(k_sigma_f, s->k_sigma2);
+        mpf_mul(s->sigma2, k_sigma_f, sigma_cdt);
 
         mpf_mul(tmp, s->sigma1, s->sigma1);
         mpf_set(bound2, tmp);
@@ -112,14 +128,23 @@ cfe_error cfe_lwe_fs_init(cfe_lwe_fs *s, size_t l, size_t n, mpz_t bound_x, mpz_
     s->m = (size_t) (1.01 * n_f * (double) n_bits_q);
 
     mpf_set_z(tmp, s->q);
-    mpf_mul(s->siqma_q, sigma, tmp);
-    mpf_ceil(s->siqma_q, s->siqma_q);
+    mpf_mul(s->sigma_q, sigma, tmp);
+
+    // to sample with cfe_normal_double_constant sigma_q must be
+    // a multiple of cfe_sigma_cdt = sqrt(1/(2ln(2))), hence we make
+    // it such
+    mpf_div(k_sigma_f, s->sigma_q, sigma_cdt);
+    mpz_set_f(s->k_sigma_q, k_sigma_f);
+    mpz_add_ui(s->k_sigma_q, s->k_sigma_q, 1);
+    mpf_set_z(k_sigma_f, s->k_sigma_q);
+    mpf_mul(s->sigma_q, k_sigma_f, sigma_cdt);
 
     cfe_mat_init(&s->A, s->m, s->n);
     cfe_uniform_sample_mat(&s->A, s->q);
 
     cleanup:
-    mpf_clears(max, sqrt_max, tmp, k_f, k_squared_f, sigma, sigma_prime, bound2, one, bound_for_q, NULL);
+    mpf_clears(max, sqrt_max, tmp, k_f, k_squared_f, sigma, sigma_prime, bound2, one, bound_for_q,
+               sigma_cdt, k_sigma_f, NULL);
     mpz_clear(bound_for_q_z);
 
     return err;
@@ -129,21 +154,14 @@ void cfe_lwe_fs_sec_key_init(cfe_mat *SK, cfe_lwe_fs *s) {
     cfe_mat_init(SK, s->l, s->m);
 }
 
-cfe_error cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s) {
+void cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s) {
     mpf_t one;
     mpf_init_set_ui(one, 1);
 
-    cfe_normal_double sampler1, sampler2;
+    cfe_normal_double_constant sampler1, sampler2;
 
-    if (cfe_normal_double_init(&sampler1, s->sigma1, s->n, one)) {
-        mpf_clear(one);
-        return CFE_ERR_SEC_KEY_GEN_FAILED;
-    }
-
-    if (cfe_normal_double_init(&sampler2, s->sigma2, s->n, one)) {
-        mpf_clear(one);
-        return CFE_ERR_SEC_KEY_GEN_FAILED;
-    }
+    cfe_normal_double_constant_init(&sampler1, s->k_sigma1);
+    cfe_normal_double_constant_init(&sampler2, s->k_sigma2);
 
     // sample the matrix
     mpz_t val;
@@ -153,9 +171,9 @@ cfe_error cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s) {
     for (size_t i = 0; i < s->l; ++i) {
         for (size_t j = 0; j < s->m; ++j) {
             if (j < half_rows) {
-                cfe_normal_double_sample(val, &sampler1);
+                cfe_normal_double_constant_sample(val, &sampler1);
             } else {
-                cfe_normal_double_sample(val, &sampler2);
+                cfe_normal_double_constant_sample(val, &sampler2);
                 if (j - half_rows == i) {
                     mpz_add_ui(val, val, 1);
                 }
@@ -166,9 +184,8 @@ cfe_error cfe_lwe_fs_generate_sec_key(cfe_mat *SK, cfe_lwe_fs *s) {
 
     mpz_clear(val);
     mpf_clear(one);
-    cfe_normal_double_free(&sampler1);
-    cfe_normal_double_free(&sampler2);
-    return CFE_ERR_NONE;
+    cfe_normal_double_constant_free(&sampler1);
+    cfe_normal_double_constant_free(&sampler2);
 }
 
 void cfe_lwe_fs_pub_key_init(cfe_mat *PK, cfe_lwe_fs *s) {
@@ -221,11 +238,8 @@ cfe_error cfe_lwe_fs_encrypt(cfe_vec *ct, cfe_lwe_fs *s, cfe_vec *x, cfe_mat *PK
 
     mpf_t one;
     mpf_init_set_ui(one, 1);
-    cfe_normal_double sampler;
-    if (cfe_normal_double_init(&sampler, s->siqma_q, s->n, one)) {
-        mpf_clear(one);
-        return CFE_ERR_PARAM_GEN_FAILED;
-    }
+    cfe_normal_double_constant sampler;
+    cfe_normal_double_constant_init(&sampler, s->k_sigma_q);
 
     // create a random vector r
     cfe_vec r, t, e0, e1, c0, c1;
@@ -233,10 +247,10 @@ cfe_error cfe_lwe_fs_encrypt(cfe_vec *ct, cfe_lwe_fs *s, cfe_vec *x, cfe_mat *PK
     cfe_uniform_sample_vec(&r, s->q);
 
     cfe_vec_init(&e0, s->m);
-    cfe_normal_double_sample_vec(&e0, &sampler);
+    cfe_normal_double_constant_sample_vec(&e0, &sampler);
 
     cfe_vec_init(&e1, s->l);
-    cfe_normal_double_sample_vec(&e1, &sampler);
+    cfe_normal_double_constant_sample_vec(&e1, &sampler);
 
     // calculate first part of the cipher
     cfe_vec_init(&c0, s->m);
@@ -263,7 +277,7 @@ cfe_error cfe_lwe_fs_encrypt(cfe_vec *ct, cfe_lwe_fs *s, cfe_vec *x, cfe_mat *PK
     mpz_clear(q_div_k);
     mpf_clear(one);
     cfe_vec_frees(&r, &t, &e0, &e1, &c0, &c1, NULL);
-    cfe_normal_double_free(&sampler);
+    cfe_normal_double_constant_free(&sampler);
     return CFE_ERR_NONE;
 }
 
@@ -317,8 +331,8 @@ cfe_error cfe_lwe_fs_decrypt(mpz_t res, cfe_lwe_fs *s, cfe_vec *ct, cfe_vec *z_y
 
 // Frees the memory allocated for configuration of the scheme.
 void cfe_lwe_fs_free(cfe_lwe_fs *s) {
-    mpz_clears(s->bound_x, s->bound_y, s->K, s->q, NULL);
-    mpf_clears(s->siqma_q, s->sigma1, s->sigma2, NULL);
+    mpz_clears(s->bound_x, s->bound_y, s->K, s->q, s->k_sigma_q, s->k_sigma1, s->k_sigma2, NULL);
+    mpf_clears(s->sigma_q, s->sigma1, s->sigma2, NULL);
 
     if (s->A.mat != NULL) {
         cfe_mat_free(&s->A);

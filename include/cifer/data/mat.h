@@ -223,7 +223,7 @@ void cfe_mat_gaussian_elimination(cfe_mat *res, cfe_mat *mat, mpz_t p);
  *
  * @param res A pointer to an initialized matrix where the result will be saved
  * @param det Determinant will be saved here; if not needed this should be NULL
- * @param mat A pointer to a matrix
+ * @param m A pointer to a matrix
  * @param p Modulus for the computations
  */
 cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p);
@@ -233,8 +233,8 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
  * Z_p, using Gaussian elimination. The latter is faster than the naive (analytic)
  * algorithm.
  *
- * @param res The result will be saved
- * @param mat A pointer to a matrix
+ * @param det The result will be saved
+ * @param m A pointer to a matrix
  * @param p Modulus for the computations
  */
 void cfe_mat_determinant_gauss(mpz_t det, cfe_mat *m, mpz_t p);

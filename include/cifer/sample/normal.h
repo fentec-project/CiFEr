@@ -73,6 +73,22 @@ bool cfe_normal_is_exp_greater(cfe_normal *s, mpf_t y, mpz_t x);
 void cfe_taylor_exp(mpf_t res, mpz_t x, mpf_t alpha, size_t k, size_t n);
 
 /**
+ * cfe_bernoulli returns true with probability proportional to
+ * 2^{-t/k^2}. A polynomial approximation is used to evaluate
+ * the exponential function. The implementation is based on paper:
+ * "FACCT: FAst, Compact, and Constant-Time Discrete Gaussian
+ * Sampler over Integers" by R. K. Zhao, R. Steinfeld, and A. Sakzad
+ * (https://eprint.iacr.org/2018/1234.pdf). See the above paper where
+ * it is argued that such a sampling achieves a relative error at most
+ * 2^{-45} with the chosen parameters.
+ *
+ * @param t Value t in 2^{-t/k^2} determining the probability
+ * @param k_square_inv Value 1/k^2 in 2^{-t/k^2} determining the probability
+ * @return Boolean value
+ */
+bool cfe_bernoulli(mpz_t t, mpf_t k_square_inv);
+
+/**
  * Calculates the mean of a vector of integers.
  */
 void cfe_mean(mpf_t res, cfe_vec *vec);

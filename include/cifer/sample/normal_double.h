@@ -31,7 +31,8 @@
  * centered on 0. This sampler works in a way that first samples from a
  * normal_cumulative with some small sigma and then using another sampling from
  * uniform distribution creates a candidate for the output, which is accepted
- * or rejected with certain probability.
+ * or rejected with certain probability.  Note that the sampler offers
+ * arbitrary precision but the implementation is not constant time.
  */
 typedef struct cfe_normal_double {
     cfe_normal nor;
