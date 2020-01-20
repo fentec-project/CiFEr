@@ -369,7 +369,7 @@ cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod) {
     }
 
     cfe_mat_transpose(inverse_mat, &transposed);
-    cfe_mat_frees(&min, &transposed, NULL);
+    cfe_mat_frees(&min, &transposed, (cfe_mat*) NULL);
     cleanup:
     mpz_clears(det, det_inv, sign, minus, minor, val, NULL);
 
