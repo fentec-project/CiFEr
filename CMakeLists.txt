@@ -40,6 +40,7 @@ set(library_SOURCES
         src/internal/hash.c
         src/internal/keygen.c
         src/internal/prime.c
+        src/internal/str.c
         src/innerprod/simple/ddh.c
         src/innerprod/simple/ddh_multi.c
         src/innerprod/simple/lwe.c
