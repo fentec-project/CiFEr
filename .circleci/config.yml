@@ -15,7 +15,9 @@ jobs:
 
       - run:
           name: Install CMake
-          command: pip install cmake==3.13
+          command: |
+            pip install scikit-build
+            pip install cmake==3.13
 
       - run:
           name: Install AMCL
