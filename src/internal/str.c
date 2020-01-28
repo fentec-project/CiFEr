@@ -15,6 +15,9 @@
  */
 
 #include <stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <math.h>
 
 #include "cifer/internal/common.h"
 #include "cifer/internal/str.h"
@@ -62,4 +65,53 @@ void cfe_remove_spaces(cfe_string *out, cfe_string *source) {
     }
     out->str[count] = '\0';
     out->str_len = count;
+}
+
+
+void cfe_strings_concat(cfe_string *out, cfe_string *start, ...) {
+    // find the length of all the strings
+    va_list ap;
+    cfe_string *str = start;
+    va_start(ap, start);
+    size_t j = 0;
+    while (str != NULL) {
+        j += str->str_len;
+        str = va_arg(ap, cfe_string*);
+    }
+    va_end(ap);
+
+    // allocate memory for the result
+    out->str = (char *) cfe_malloc((j + 1) * sizeof(char));
+    out->str_len = j;
+
+    // set the string
+    str = start;
+    va_start(ap, start);
+    j = 0;
+    while (str != NULL) {
+        for (size_t i = 0; i < str->str_len; i++) {
+            out->str[j] = str->str[i];
+            j++;
+        }
+        str = va_arg(ap, cfe_string*);
+    }
+    va_end(ap);
+
+    // end the string
+    out->str[j] = '\0';
+}
+
+// cfe_int_to_str changes a non-negative int into a string of its
+// decimal representation
+void cfe_int_to_str(cfe_string *out, int i) {
+    int len;
+    if (i == 0) {
+        len = 1;
+    } else {
+        len = (int) log10(i) + 1;
+    }
+    out->str = (char *) cfe_malloc((len + 1) * sizeof(char));
+    out->str_len = (size_t) len;
+
+    sprintf(out->str, "%d", i);
 }

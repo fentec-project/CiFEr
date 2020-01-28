@@ -85,7 +85,7 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
 
     cfe_vec av;
     char gid[9];
-
+// TODO: make nicer
     for (size_t i = 0; i < (sizeof(aps) / sizeof(size_t *)); i++) {
         sprintf(gid, "TESTGID%zu", i);
 
@@ -95,12 +95,12 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
 
         // User secret keys
         for (size_t j = 0; j < vlen; j++) {
-            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk[(j & 1)], &av, gid);
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk[(j & 1)], &av, gid, 8);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid, 8);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption
@@ -218,12 +218,12 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 
         // User secret keys from Auth0
         for (size_t j = 0; j < vlen; j++) {
-            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk0, &av, gid);
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk0, &av, gid, 8);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid, 8);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption

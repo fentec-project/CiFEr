@@ -225,9 +225,12 @@ cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dipp
  * @param sk Secret key
  * @param av A pointer to a cfe_vec struct; Represents the attribute vector
  * @param gid String that represents a unique user; Required for collusion prevention
+ * @param gid_len Length of gid to prevent non NULL terminated strings
  * @return Error code
  */
-cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t usk_id, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_dippe_sec_key *sk, cfe_vec *av, char gid[]);
+cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t usk_id,
+                           cfe_dippe_pub_key *pks[], size_t pks_len, cfe_dippe_sec_key *sk,
+                           cfe_vec *av, char *gid, size_t gid_len);
 
 /**
  * Restores the underlying message of a given ciphertext
@@ -239,7 +242,10 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
  * @param cipher A pointer to a cfe_dippe_cipher struct; Represents the ciphertext that is about to be decrypted
  * @param av A pointer to a cfe_vec struct; Represents the attribute vector
  * @param gid String that represents a unique user; Required for collusion prevention
+ * @param gid_len Length of gid to prevent non NULL terminated strings
  */
-cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user_sec_key *usks, size_t usks_len, cfe_dippe_cipher *cipher, cfe_vec *av, char gid[]);
+cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user_sec_key *usks,
+                            size_t usks_len, cfe_dippe_cipher *cipher, cfe_vec *av,
+                            char gid[], size_t gid_len);
 
 #endif

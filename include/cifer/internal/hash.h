@@ -21,6 +21,7 @@
 #include <amcl/ecp2_BN254.h>
 
 #include "cifer/data/vec.h"
+#include "cifer/internal/str.h"
 
 /**
  * \file
@@ -35,7 +36,7 @@
  * @param g Hash will be saved here
  * @param str A string to be hashed
  */
-void cfe_hash_G1(ECP_BN254 *g, char *str);
+void cfe_hash_G1(ECP_BN254 *g, cfe_string *str);
 
 /**
  * This function hashes a string into an element of the elliptic
@@ -44,33 +45,15 @@ void cfe_hash_G1(ECP_BN254 *g, char *str);
  * @param g Hash will be saved here
  * @param str A string to be hashed
  */
-void cfe_hash_G2(ECP2_BN254 *g, char *str);
+void cfe_hash_G2(ECP2_BN254 *g, cfe_string *str);
 
 /**
  * The function converts a vector represented by cfe_vec
  * into a string. This is needed for hashing a vector.
  *
+ * @param out Result will be saved here
  * @param v A vector to be converted
- * @return String representation
  */
-char *cfe_vec_to_string(cfe_vec *v);
-
-/**
- * The function concatenates given strings. This is needed
- * to build a string to be hashed.
- *
- * @param start Strings to bo joined
- * @return Concatenation of strings
- */
-char *cfe_strings_concat(char *start, ...);
-
-/**
- * The function converts a non-negative int into a string of its
- * decimal representation that can be used for hashing.
- *
- * @param i Non-negative integer
- * @return String representation of the integer
- */
-char *cfe_int_to_str(int i);
+void cfe_vec_to_string(cfe_string *out, cfe_vec *v);
 
 #endif

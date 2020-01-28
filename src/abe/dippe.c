@@ -15,7 +15,7 @@
 void cfe_dippe_init(cfe_dippe *dippe, size_t assump_size) {
     dippe->assump_size = assump_size;
     mpz_init(dippe->p);
-    mpz_from_BIG_256_56(dippe->p, (int64_t *)CURVE_Order_BN254);
+    mpz_from_BIG_256_56(dippe->p, (int64_t *) CURVE_Order_BN254);
 
     // A (k+1 x k)
     cfe_mat A;
@@ -142,7 +142,9 @@ void cfe_dippe_generate_master_keys(cfe_dippe_pub_key *pk, cfe_dippe_sec_key *sk
     cfe_mat_GT_free(&tmp_mat_gt);
 }
 
-cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_vec *pv, FP12_BN254 *msg) {
+cfe_error
+cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_vec *pv,
+                  FP12_BN254 *msg) {
     // check whether there is the same number of keys as policy vector components
     if (pks_len != pv->size) {
         return CFE_ERR_INSUFFICIENT_KEYS;
@@ -211,7 +213,9 @@ cfe_error cfe_dippe_encrypt(cfe_dippe_cipher *cipher, cfe_dippe *dippe, cfe_dipp
     return CFE_ERR_NONE;
 }
 
-cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t usk_id, cfe_dippe_pub_key *pks[], size_t pks_len, cfe_dippe_sec_key *sk, cfe_vec *av, char gid[]) {
+cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t usk_id,
+                           cfe_dippe_pub_key *pks[], size_t pks_len, cfe_dippe_sec_key *sk,
+                           cfe_vec *av, char *gid, size_t gid_len) {
     // check whether there is the same number of keys as attribute vector components
     if ((av->size != pks_len) || (pks_len <= usk_id)) {
         return CFE_ERR_INSUFFICIENT_KEYS;
@@ -220,14 +224,17 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
     // temp vars
     BIG_256_56 tmp_big;
     ECP2_BN254 tmp_g2, hashed;
-    char *hash_str, *str_vec, *ys_hex, *str_i;
+    cfe_string hash_str, str_vec, ys_hex, str_i;
+    cfe_string gid_str = {gid, gid_len};
+    cfe_string mid_str = {(char *) "|", 1};
 
     // attribute vector as string
-    str_vec = cfe_vec_to_string(av);
+    cfe_vec_to_string(&str_vec, av);
     // y^σ
     octet ys;
-    ys.val = (char *)cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
-    ys_hex = (char *)cfe_malloc(((8 * MODBYTES_256_56) + 1) * sizeof(char));
+    ys.val = (char *) cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
+    ys_hex.str = (char *) cfe_malloc(((8 * MODBYTES_256_56) + 1) * sizeof(char));
+    ys_hex.str_len = 8 * MODBYTES_256_56;
 
     // mue
     cfe_vec_G2 mue;
@@ -239,20 +246,20 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
         BIG_256_56_from_mpz(tmp_big, sk->sigma);
         ECP2_BN254_mul(&tmp_g2, tmp_big);
         ECP2_BN254_toOctet(&ys, &tmp_g2);
-        OCT_toHex(&ys, ys_hex);
+        OCT_toHex(&ys, ys_hex.str);
 
         for (size_t i = 0; i < (dippe->assump_size + 1); i++) {
-            str_i = cfe_int_to_str((int)i);
-            hash_str = cfe_strings_concat(str_i, "|", ys_hex, "|", gid, "|", str_vec, NULL);
-            cfe_hash_G2(&hashed, hash_str);
+            cfe_int_to_str(&str_i, (int) i);
+            cfe_strings_concat(&hash_str, &str_i, &mid_str, &ys_hex, &mid_str, &gid_str, &mid_str, &str_vec, NULL);
+            cfe_hash_G2(&hashed, &hash_str);
 
             if (j < usk_id) {
                 ECP2_BN254_add(&(mue.vec[i]), &hashed);
             } else if (j > usk_id) {
                 ECP2_BN254_sub(&(mue.vec[i]), &hashed);
             }
-            free(str_i);
-            free(hash_str);
+            cfe_string_free(&str_i);
+            cfe_string_free(&hash_str);
         }
     }
 
@@ -260,11 +267,12 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
     cfe_vec_G2 g2_h;
     cfe_vec_G2_init(&g2_h, (dippe->assump_size + 1));
     for (size_t i = 0; i < (dippe->assump_size + 1); i++) {
-        str_i = cfe_int_to_str((int)i);
-        hash_str = cfe_strings_concat(str_i, "|", gid, "|", str_vec, NULL);
-        cfe_hash_G2(&(g2_h.vec[i]), hash_str);
-        free(str_i);
-        free(hash_str);
+        cfe_int_to_str(&str_i, (int) i);
+        cfe_strings_concat(&hash_str, &str_i, &mid_str, &gid_str, &mid_str, &str_vec, NULL);
+
+        cfe_hash_G2(&(g2_h.vec[i]), &hash_str);
+        cfe_string_free(&str_i);
+        cfe_string_free(&hash_str);
     }
 
     // Ki = g2^(α−vWh+μ) (k+1 x 1)
@@ -291,16 +299,18 @@ cfe_error cfe_dippe_keygen(cfe_dippe_user_sec_key *usk, cfe_dippe *dippe, size_t
     }
 
     // cleanup
-    free(str_vec);
+    cfe_string_free(&str_vec);
     free(ys.val);
-    free(ys_hex);
+    cfe_string_free(&ys_hex);
     cfe_vec_G2_free(&mue);
     cfe_vec_G2_free(&g2_h);
 
     return CFE_ERR_NONE;
 }
 
-cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user_sec_key *usks, size_t usks_len, cfe_dippe_cipher *cipher, cfe_vec *av, char gid[]) {
+cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user_sec_key *usks,
+                            size_t usks_len, cfe_dippe_cipher *cipher, cfe_vec *av,
+                            char *gid, size_t gid_len) {
     // check whether there is the same number of keys as attribute vector components
     if (av->size != usks_len) {
         return CFE_ERR_INSUFFICIENT_KEYS;
@@ -311,10 +321,12 @@ cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user
     ECP_BN254 tmp1_g1, tmp2_g1;
     ECP2_BN254 tmp_g2;
     FP12_BN254 tmp_gt;
-    char *hash_str, *str_i;
+    cfe_string hash_str, str_i, str_vec;
+    cfe_string gid_str = {gid, gid_len};
+    cfe_string mid_str = {(char *) "|", 1};
 
     // attribute vector as string
-    char *str_vec = cfe_vec_to_string(av);
+    cfe_vec_to_string(&str_vec, av);
 
     // C0_K
     FP12_BN254 C0_K;
@@ -340,16 +352,17 @@ cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user
             ECP_BN254_mul(&tmp2_g1, tmp_big);
             ECP_BN254_add(&tmp1_g1, &tmp2_g1);
         }
-        str_i = cfe_int_to_str((int)i);
-        hash_str = cfe_strings_concat(str_i, "|", gid, "|", str_vec, NULL);
-        cfe_hash_G2(&tmp_g2, hash_str);
+        cfe_int_to_str(&str_i, (int) i);
+        cfe_strings_concat(&hash_str, &str_i, &mid_str, &gid_str, &mid_str, &str_vec, NULL);
+
+        cfe_hash_G2(&tmp_g2, &hash_str);
 
         PAIR_BN254_ate(&tmp_gt, &tmp_g2, &tmp1_g1);
         PAIR_BN254_fexp(&tmp_gt);
         FP12_BN254_mul(&Ci_H, &tmp_gt);
 
-        free(str_i);
-        free(hash_str);
+        cfe_string_free(&str_i);
+        cfe_string_free(&hash_str);
     }
 
     // C0_K * Ci_H
@@ -362,7 +375,7 @@ cfe_error cfe_dippe_decrypt(FP12_BN254 *result, cfe_dippe *dippe, cfe_dippe_user
     FP12_BN254_mul(result, &tmp_gt);
 
     // cleanup
-    free(str_vec);
+    cfe_string_free(&str_vec);
 
     return CFE_ERR_NONE;
 }
@@ -388,7 +401,9 @@ cfe_error cfe_dippe_attribute_vector_init(cfe_vec *av, size_t num_attrib, size_t
     return CFE_ERR_NONE;
 }
 
-cfe_error cfe_dippe_exact_threshold_policy_vector_init(cfe_vec *pv, cfe_dippe *dippe, size_t num_attrib, size_t pattern[], size_t pat_len, size_t threshold) {
+cfe_error
+cfe_dippe_exact_threshold_policy_vector_init(cfe_vec *pv, cfe_dippe *dippe, size_t num_attrib, size_t pattern[],
+                                             size_t pat_len, size_t threshold) {
     mpz_t zero;
     mpz_init(zero);
     mpz_set_ui(zero, 0);
@@ -411,7 +426,8 @@ cfe_error cfe_dippe_exact_threshold_policy_vector_init(cfe_vec *pv, cfe_dippe *d
     return CFE_ERR_NONE;
 }
 
-cfe_error cfe_dippe_conjunction_policy_vector_init(cfe_vec *pv, cfe_dippe *dippe, size_t num_attrib, size_t pattern[], size_t pat_len) {
+cfe_error cfe_dippe_conjunction_policy_vector_init(cfe_vec *pv, cfe_dippe *dippe, size_t num_attrib, size_t pattern[],
+                                                   size_t pat_len) {
     mpz_t zero;
     mpz_init(zero);
     mpz_set_ui(zero, 0);

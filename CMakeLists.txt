@@ -84,6 +84,7 @@ set(binary_SOURCES
         test/internal/dlog.c
         test/internal/keygen.c
         test/internal/prime.c
+        test/internal/str.c
         test/internal/big.c
         test/innerprod/simple/ddh.c
         test/innerprod/simple/ddh_multi.c

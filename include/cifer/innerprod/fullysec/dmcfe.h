@@ -80,9 +80,10 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
  * @param c A pointer to an instance of the scheme (*initialized* cfe_dmcfe_client
  * @param x The input value
  * @param label A string label of the encrypted vector
+ * @param label_len The length of the label to prevent non NULL terminated strings
  * struct)
  */
-void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label);
+void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label, size_t label_len);
 
 /**
  * Configures a new functional encryption key share for the dmcfe scheme.
@@ -113,12 +114,13 @@ void cfe_dmcfe_derive_fe_key_part(cfe_vec_G2 *fe_key_part, cfe_dmcfe_client *c, 
  * @param ciphers An array of the encrypted coordinates of the vector
  * @param key_shares An array of the decryption key shares
  * @param label A string label of the encrypted value
+ * @param label_len The length of the label to prevent non NULL terminated strings
  * @param y A pointer to the inner-product vector
  * @param bound A bound on all the values of the encrypted vector and inner-product
  * vector
  * @return Error code
  */
 cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_shares,
-                            char *label, cfe_vec *y, mpz_t bound);
+                            char *label, size_t label_len, cfe_vec *y, mpz_t bound);
 
 #endif
