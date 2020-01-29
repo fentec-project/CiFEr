@@ -57,8 +57,12 @@ void cfe_vec_to_string(cfe_string *out, cfe_vec *v) {
     // set the string
     size_t j = 0;
     for (size_t i = 0; i < v->size; i++) {
+        alloc_len = mpz_sizeinbase(v->vec[i], 32) + 1;
+        if (mpz_sgn(v->vec[i]) < 0) {
+            alloc_len++;
+        }
         tmp_string = mpz_get_str(NULL, 32, v->vec[i]);
-        for (size_t k = 0; k < strlen(tmp_string); k++) {
+        for (size_t k = 0; k < alloc_len - 1; k++) {
             out->str[j] = tmp_string[k];
             j++;
         }
@@ -67,5 +71,5 @@ void cfe_vec_to_string(cfe_string *out, cfe_vec *v) {
         j++;
     }
 
-    out->str[alloc_len - 1] = '\0';
+    out->str[j - 1] = '\0';
 }

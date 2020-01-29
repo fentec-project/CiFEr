@@ -514,7 +514,7 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
     }
 
     cleanup:
-    cfe_mat_frees(&m_ext, &triang, NULL);
+    cfe_mat_frees(&m_ext, &triang, (cfe_mat *) NULL);
     mpz_clears(tmp, tmp_sum, one, zero, determinant, NULL);
 
     return err;

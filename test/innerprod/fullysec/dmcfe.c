@@ -47,7 +47,7 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     cfe_uniform_sample_vec(&x, bound);
     cfe_uniform_sample_range_vec(&y, bound_neg, bound);
     char label[] = "some label";
-    size_t label_len = 10;
+    size_t label_len = 10; // length of the label string
     ECP_BN254 ciphers[num_clients];
     cfe_vec_G2 fe_key[num_clients];
 
