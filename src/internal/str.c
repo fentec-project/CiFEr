@@ -67,7 +67,6 @@ void cfe_remove_spaces(cfe_string *out, cfe_string *source) {
     out->str_len = count;
 }
 
-
 void cfe_strings_concat(cfe_string *out, cfe_string *start, ...) {
     // find the length of all the strings
     va_list ap;

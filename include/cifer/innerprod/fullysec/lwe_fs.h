@@ -48,7 +48,6 @@ typedef struct cfe_lwe_fs {
     mpz_t K;
     // Modulus for ciphertext and keys.
     // Must be significantly larger than K.
-    // TODO check appropriateness of this parameter in constructor!
     mpz_t q;
     // standard deviation for the noise terms in the encryption process
     mpf_t sigma_q;

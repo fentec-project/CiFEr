@@ -22,12 +22,12 @@
 /**
 * \file
 * \ingroup internal
-* \brief Internal struct for dealing with strings.
+* \brief Internal functions for dealing with strings.
 */
 
 /**
  * cfe_string is an internal struct that holds a
- * string and its length
+ * string and its length.
  */
 typedef struct cfe_string {
     char *str;
@@ -55,7 +55,6 @@ void cfe_remove_spaces(cfe_string *out, cfe_string *source);
  * a cfe_string struct.
  */
 void cfe_string_free(cfe_string *str);
-
 
 /**
  * The function concatenates given strings.
