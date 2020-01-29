@@ -30,6 +30,7 @@ MunitResult test_str_to_int(const MunitParameter params[], void *data) {
     // return an error (-1) if string is corrupted
     cfe_string test_faulty_str;
     test_faulty_str.str = (char *) "124h234";
+    test_faulty_str.str_len = 7;
     i = cfe_str_to_int(&test_faulty_str);
     munit_assert(i == -1);
 

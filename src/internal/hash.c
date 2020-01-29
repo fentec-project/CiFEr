@@ -18,7 +18,6 @@
 #include <math.h>
 #include <stdarg.h>
 #include <amcl/pbc_support.h>
-#include <assert.h>
 
 #include "cifer/internal/common.h"
 #include "cifer/internal/hash.h"

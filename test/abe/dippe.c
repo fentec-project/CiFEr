@@ -224,7 +224,7 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
         // User secret keys from Auth0
         for (size_t j = 0; j < vlen; j++) {
             err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk0, &av,
-                                   gid, 8);
+                                   gid, gid_len);
             munit_assert(err == CFE_ERR_NONE);
         }
 
