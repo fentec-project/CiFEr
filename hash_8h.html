@@ -55,22 +55,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5c2251b9ade6143f49604fb432450cc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a5c2251b9ade6143f49604fb432450cc4">cfe_hash_G1</a> (ECP_BN254 *g, char *str)</td></tr>
-<tr class="separator:a5c2251b9ade6143f49604fb432450cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e8d0d31c8f5c048a79fdeec8f5715e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a5e8d0d31c8f5c048a79fdeec8f5715e6">cfe_hash_G2</a> (ECP2_BN254 *g, char *str)</td></tr>
-<tr class="separator:a5e8d0d31c8f5c048a79fdeec8f5715e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a413184a89471f2dd2550d369d4c72f87"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a413184a89471f2dd2550d369d4c72f87">cfe_vec_to_string</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *v)</td></tr>
-<tr class="separator:a413184a89471f2dd2550d369d4c72f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acde4b8fa9d070b732c39346cf22c4d00"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#acde4b8fa9d070b732c39346cf22c4d00">cfe_strings_concat</a> (char *start,...)</td></tr>
-<tr class="separator:acde4b8fa9d070b732c39346cf22c4d00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a907c65676e69f263d8ec5a8ddb817c37"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a907c65676e69f263d8ec5a8ddb817c37">cfe_int_to_str</a> (int i)</td></tr>
-<tr class="separator:a907c65676e69f263d8ec5a8ddb817c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfa1735a7ecd324315cf99c0ab37fa7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#abfa1735a7ecd324315cf99c0ab37fa7f">cfe_hash_G1</a> (ECP_BN254 *g, <a class="el" href="structcfe__string.html">cfe_string</a> *str)</td></tr>
+<tr class="separator:abfa1735a7ecd324315cf99c0ab37fa7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aedc6e4bd6fb3d5730f8f2f6c9730b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a2aedc6e4bd6fb3d5730f8f2f6c9730b2">cfe_hash_G2</a> (ECP2_BN254 *g, <a class="el" href="structcfe__string.html">cfe_string</a> *str)</td></tr>
+<tr class="separator:a2aedc6e4bd6fb3d5730f8f2f6c9730b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f42c99f42067a269c68c376adf121a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a6f42c99f42067a269c68c376adf121a5">cfe_vec_to_string</a> (<a class="el" href="structcfe__string.html">cfe_string</a> *out, <a class="el" href="structcfe__vec.html">cfe_vec</a> *v)</td></tr>
+<tr class="separator:a6f42c99f42067a269c68c376adf121a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Definitions of functions related to hashing. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a5c2251b9ade6143f49604fb432450cc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c2251b9ade6143f49604fb432450cc4">&#9670;&nbsp;</a></span>cfe_hash_G1()</h2>
+<a id="abfa1735a7ecd324315cf99c0ab37fa7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfa1735a7ecd324315cf99c0ab37fa7f">&#9670;&nbsp;</a></span>cfe_hash_G1()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -84,7 +80,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__string.html">cfe_string</a> *&#160;</td>
           <td class="paramname"><em>str</em>&#160;</td>
         </tr>
         <tr>
@@ -105,8 +101,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5e8d0d31c8f5c048a79fdeec8f5715e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e8d0d31c8f5c048a79fdeec8f5715e6">&#9670;&nbsp;</a></span>cfe_hash_G2()</h2>
+<a id="a2aedc6e4bd6fb3d5730f8f2f6c9730b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2aedc6e4bd6fb3d5730f8f2f6c9730b2">&#9670;&nbsp;</a></span>cfe_hash_G2()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -120,7 +116,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__string.html">cfe_string</a> *&#160;</td>
           <td class="paramname"><em>str</em>&#160;</td>
         </tr>
         <tr>
@@ -141,49 +137,23 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a413184a89471f2dd2550d369d4c72f87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a413184a89471f2dd2550d369d4c72f87">&#9670;&nbsp;</a></span>cfe_vec_to_string()</h2>
+<a id="a6f42c99f42067a269c68c376adf121a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f42c99f42067a269c68c376adf121a5">&#9670;&nbsp;</a></span>cfe_vec_to_string()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* cfe_vec_to_string </td>
+          <td class="memname">void cfe_vec_to_string </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
-          <td class="paramname"><em>v</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The function converts a vector represented by <a class="el" href="structcfe__vec.html">cfe_vec</a> into a string. This is needed for hashing a vector.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">v</td><td>A vector to be converted </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>String representation </dd></dl>
-
-</div>
-</div>
-<a id="acde4b8fa9d070b732c39346cf22c4d00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acde4b8fa9d070b732c39346cf22c4d00">&#9670;&nbsp;</a></span>cfe_strings_concat()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* cfe_strings_concat </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
+          <td class="paramtype"><a class="el" href="structcfe__string.html">cfe_string</a> *&#160;</td>
+          <td class="paramname"><em>out</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -192,40 +162,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The function concatenates given strings. This is needed to build a string to be hashed.</p>
+<p>The function converts a vector represented by <a class="el" href="structcfe__vec.html">cfe_vec</a> into a string. This is needed for hashing a vector.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">start</td><td>Strings to bo joined </td></tr>
+    <tr><td class="paramname">out</td><td>Result will be saved here </td></tr>
+    <tr><td class="paramname">v</td><td>A vector to be converted </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Concatenation of strings </dd></dl>
-
-</div>
-</div>
-<a id="a907c65676e69f263d8ec5a8ddb817c37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a907c65676e69f263d8ec5a8ddb817c37">&#9670;&nbsp;</a></span>cfe_int_to_str()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* cfe_int_to_str </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The function converts a non-negative int into a string of its decimal representation that can be used for hashing.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">i</td><td>Non-negative integer </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>String representation of the integer </dd></dl>
 
 </div>
 </div>

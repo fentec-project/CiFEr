@@ -73,14 +73,14 @@ Functions</h2></td></tr>
 <tr class="separator:ad42e2677a158b876ce14ba73f687ca7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a103bc02ea3640dfb815bbd99a30247b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#a103bc02ea3640dfb815bbd99a30247b9">cfe_dmcfe_set_share</a> (<a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> *c, ECP_BN254 *pub_keys, size_t num_clients)</td></tr>
 <tr class="separator:a103bc02ea3640dfb815bbd99a30247b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae217cad96b6cac3610804429c76759b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#aae217cad96b6cac3610804429c76759b">cfe_dmcfe_encrypt</a> (ECP_BN254 *cipher, <a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> *c, mpz_t x, char *label)</td></tr>
-<tr class="separator:aae217cad96b6cac3610804429c76759b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa91477b37e400e4f84c42c23fe177077"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#aa91477b37e400e4f84c42c23fe177077">cfe_dmcfe_encrypt</a> (ECP_BN254 *cipher, <a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> *c, mpz_t x, char *label, size_t label_len)</td></tr>
+<tr class="separator:aa91477b37e400e4f84c42c23fe177077"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a1589cf9ea38adf65659eef1d852993"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#a0a1589cf9ea38adf65659eef1d852993">cfe_dmcfe_fe_key_part_init</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *fe_key_part)</td></tr>
 <tr class="separator:a0a1589cf9ea38adf65659eef1d852993"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac442fe2eeeec84528f2035d6979654c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#ac442fe2eeeec84528f2035d6979654c8">cfe_dmcfe_derive_fe_key_part</a> (<a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *fe_key_part, <a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> *c, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y)</td></tr>
 <tr class="separator:ac442fe2eeeec84528f2035d6979654c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc2789584165c1565d515dcbbdbad541"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#abc2789584165c1565d515dcbbdbad541">cfe_dmcfe_decrypt</a> (mpz_t res, ECP_BN254 *ciphers, <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *key_shares, char *label, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y, mpz_t bound)</td></tr>
-<tr class="separator:abc2789584165c1565d515dcbbdbad541"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b05c4c679fbb55d27078f55573e2775"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dmcfe_8h.html#a4b05c4c679fbb55d27078f55573e2775">cfe_dmcfe_decrypt</a> (mpz_t res, ECP_BN254 *ciphers, <a class="el" href="structcfe__vec__G2.html">cfe_vec_G2</a> *key_shares, char *label, size_t label_len, <a class="el" href="structcfe__vec.html">cfe_vec</a> *y, mpz_t bound)</td></tr>
+<tr class="separator:a4b05c4c679fbb55d27078f55573e2775"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Decentralized multi-client inner-product scheme based on the paper "Decentralized Multi-Client Functional Encryption for Inner Product" by Chotard, Dufour Sans, Gay, Phan, and Pointcheval. </p>
@@ -205,8 +205,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aae217cad96b6cac3610804429c76759b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae217cad96b6cac3610804429c76759b">&#9670;&nbsp;</a></span>cfe_dmcfe_encrypt()</h2>
+<a id="aa91477b37e400e4f84c42c23fe177077"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa91477b37e400e4f84c42c23fe177077">&#9670;&nbsp;</a></span>cfe_dmcfe_encrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -233,7 +233,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>label</em>&#160;</td>
+          <td class="paramname"><em>label</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>label_len</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -248,7 +254,8 @@ Functions</h2></td></tr>
     <tr><td class="paramname">cipher</td><td>A pointer to ECP_BN254 struct (the resulting ciphertext will be stored here) </td></tr>
     <tr><td class="paramname">c</td><td>A pointer to an instance of the scheme (<em>initialized</em> <a class="el" href="structcfe__dmcfe__client.html">cfe_dmcfe_client</a> </td></tr>
     <tr><td class="paramname">x</td><td>The input value </td></tr>
-    <tr><td class="paramname">label</td><td>A string label of the encrypted vector struct) </td></tr>
+    <tr><td class="paramname">label</td><td>A string label of the encrypted vector </td></tr>
+    <tr><td class="paramname">label_len</td><td>The length of the label to prevent non NULL terminated strings struct) </td></tr>
   </table>
   </dd>
 </dl>
@@ -323,8 +330,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abc2789584165c1565d515dcbbdbad541"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc2789584165c1565d515dcbbdbad541">&#9670;&nbsp;</a></span>cfe_dmcfe_decrypt()</h2>
+<a id="a4b05c4c679fbb55d27078f55573e2775"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b05c4c679fbb55d27078f55573e2775">&#9670;&nbsp;</a></span>cfe_dmcfe_decrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -356,6 +363,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>label_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="structcfe__vec.html">cfe_vec</a> *&#160;</td>
           <td class="paramname"><em>y</em>, </td>
         </tr>
@@ -379,6 +392,7 @@ Functions</h2></td></tr>
     <tr><td class="paramname">ciphers</td><td>An array of the encrypted coordinates of the vector </td></tr>
     <tr><td class="paramname">key_shares</td><td>An array of the decryption key shares </td></tr>
     <tr><td class="paramname">label</td><td>A string label of the encrypted value </td></tr>
+    <tr><td class="paramname">label_len</td><td>The length of the label to prevent non NULL terminated strings </td></tr>
     <tr><td class="paramname">y</td><td>A pointer to the inner-product vector </td></tr>
     <tr><td class="paramname">bound</td><td>A bound on all the values of the encrypted vector and inner-product vector </td></tr>
   </table>

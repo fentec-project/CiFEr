@@ -67,18 +67,12 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abdca1eed140a88e4d409489ecbee346d"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#abdca1eed140a88e4d409489ecbee346d">cfe_boolean_to_msp</a> (<a class="el" href="structcfe__msp.html">cfe_msp</a> *msp, char *bool_exp, bool convert_to_ones)</td></tr>
-<tr class="separator:abdca1eed140a88e4d409489ecbee346d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0594b9cbdbe7835c41abc1f84eee9737"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#a0594b9cbdbe7835c41abc1f84eee9737">cfe_boolean_to_msp_iterative</a> (<a class="el" href="structcfe__msp.html">cfe_msp</a> *msp, char *bool_exp, <a class="el" href="structcfe__vec.html">cfe_vec</a> *vec, size_t c)</td></tr>
-<tr class="separator:a0594b9cbdbe7835c41abc1f84eee9737"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedee261d024744e5362891b5e1e40f0b"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#aedee261d024744e5362891b5e1e40f0b">cfe_boolean_to_msp</a> (<a class="el" href="structcfe__msp.html">cfe_msp</a> *msp, char *bool_exp, size_t bool_exp_len, bool convert_to_ones)</td></tr>
+<tr class="separator:aedee261d024744e5362891b5e1e40f0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a038347531f3f353d44df00d1b664caa8"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#a038347531f3f353d44df00d1b664caa8">cfe_boolean_to_msp_iterative</a> (<a class="el" href="structcfe__msp.html">cfe_msp</a> *msp, <a class="el" href="structcfe__string.html">cfe_string</a> *bool_exp, <a class="el" href="structcfe__vec.html">cfe_vec</a> *vec, size_t c)</td></tr>
+<tr class="separator:a038347531f3f353d44df00d1b664caa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13756f923019878e3ae4c9563fc7a531"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#a13756f923019878e3ae4c9563fc7a531">cfe_init_set_vecs_and</a> (<a class="el" href="structcfe__vec.html">cfe_vec</a> *vec1, <a class="el" href="structcfe__vec.html">cfe_vec</a> *vec2, <a class="el" href="structcfe__vec.html">cfe_vec</a> *vec, size_t c)</td></tr>
 <tr class="separator:a13756f923019878e3ae4c9563fc7a531"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a387d762067b44cacf6140f13a0bb93b9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#a387d762067b44cacf6140f13a0bb93b9">cfe_str_to_int</a> (char *str)</td></tr>
-<tr class="separator:a387d762067b44cacf6140f13a0bb93b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e8eae6975afdc8aed9326ba02ae7894"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#a8e8eae6975afdc8aed9326ba02ae7894">cfe_substring</a> (char *s, size_t start, size_t stop)</td></tr>
-<tr class="separator:a8e8eae6975afdc8aed9326ba02ae7894"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31ab6a0a0264c0a93ec1ba1698c9a9ed"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#a31ab6a0a0264c0a93ec1ba1698c9a9ed">cfe_remove_spaces</a> (char *source)</td></tr>
-<tr class="separator:a31ab6a0a0264c0a93ec1ba1698c9a9ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c00feda3549c6b317ba03ba6a76d66e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="policy_8h.html#a1c00feda3549c6b317ba03ba6a76d66e">cfe_msp_free</a> (<a class="el" href="structcfe__msp.html">cfe_msp</a> *msp)</td></tr>
 <tr class="separator:a1c00feda3549c6b317ba03ba6a76d66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -102,8 +96,8 @@ vector [1, 1,..., 1] depending on the use case">1, 0,..., 0</a>. </p>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="abdca1eed140a88e4d409489ecbee346d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abdca1eed140a88e4d409489ecbee346d">&#9670;&nbsp;</a></span>cfe_boolean_to_msp()</h2>
+<a id="aedee261d024744e5362891b5e1e40f0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedee261d024744e5362891b5e1e40f0b">&#9670;&nbsp;</a></span>cfe_boolean_to_msp()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -119,6 +113,12 @@ vector [1, 1,..., 1] depending on the use case">1, 0,..., 0</a>. </p>
           <td></td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>bool_exp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>bool_exp_len</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -146,8 +146,8 @@ vector [1, 1,..., 1] depending on the use case">1, 0,..., 0</a>. </p>
 
 </div>
 </div>
-<a id="a0594b9cbdbe7835c41abc1f84eee9737"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0594b9cbdbe7835c41abc1f84eee9737">&#9670;&nbsp;</a></span>cfe_boolean_to_msp_iterative()</h2>
+<a id="a038347531f3f353d44df00d1b664caa8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a038347531f3f353d44df00d1b664caa8">&#9670;&nbsp;</a></span>cfe_boolean_to_msp_iterative()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -161,7 +161,7 @@ vector [1, 1,..., 1] depending on the use case">1, 0,..., 0</a>. </p>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype"><a class="el" href="structcfe__string.html">cfe_string</a> *&#160;</td>
           <td class="paramname"><em>bool_exp</em>, </td>
         </tr>
         <tr>
@@ -221,79 +221,6 @@ vector [1, 1,..., 1] depending on the use case">1, 0,..., 0</a>. </p>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>A helping function used in boolean_to_msp_iterative. </p>
-
-</div>
-</div>
-<a id="a387d762067b44cacf6140f13a0bb93b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a387d762067b44cacf6140f13a0bb93b9">&#9670;&nbsp;</a></span>cfe_str_to_int()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cfe_str_to_int </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>str</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>A helping function used in boolean_to_msp_iterative. </p>
-
-</div>
-</div>
-<a id="a8e8eae6975afdc8aed9326ba02ae7894"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e8eae6975afdc8aed9326ba02ae7894">&#9670;&nbsp;</a></span>cfe_substring()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* cfe_substring </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>stop</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>A helping function used in boolean_to_msp_iterative. </p>
-
-</div>
-</div>
-<a id="a31ab6a0a0264c0a93ec1ba1698c9a9ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31ab6a0a0264c0a93ec1ba1698c9a9ed">&#9670;&nbsp;</a></span>cfe_remove_spaces()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* cfe_remove_spaces </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>source</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">

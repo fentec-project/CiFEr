@@ -114,10 +114,10 @@ Functions</h2></td></tr>
 <tr class="separator:aa035d276fd8918fa44f403b7e56d704e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ec54f300751e51810f75eec612c0707"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dippe_8h.html#a8ec54f300751e51810f75eec612c0707">cfe_dippe_encrypt</a> (<a class="el" href="structcfe__dippe__cipher.html">cfe_dippe_cipher</a> *cipher, <a class="el" href="structcfe__dippe.html">cfe_dippe</a> *dippe, <a class="el" href="structcfe__dippe__pub__key.html">cfe_dippe_pub_key</a> *pks[], size_t pks_len, <a class="el" href="structcfe__vec.html">cfe_vec</a> *pv, FP12_BN254 *msg)</td></tr>
 <tr class="separator:a8ec54f300751e51810f75eec612c0707"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c3d20f32fd7ad680da55642e6291e03"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dippe_8h.html#a0c3d20f32fd7ad680da55642e6291e03">cfe_dippe_keygen</a> (<a class="el" href="structcfe__dippe__user__sec__key.html">cfe_dippe_user_sec_key</a> *usk, <a class="el" href="structcfe__dippe.html">cfe_dippe</a> *dippe, size_t usk_id, <a class="el" href="structcfe__dippe__pub__key.html">cfe_dippe_pub_key</a> *pks[], size_t pks_len, <a class="el" href="structcfe__dippe__sec__key.html">cfe_dippe_sec_key</a> *sk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *av, char gid[])</td></tr>
-<tr class="separator:a0c3d20f32fd7ad680da55642e6291e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2ed94853daff24e365fc9cd22b56d62"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dippe_8h.html#ae2ed94853daff24e365fc9cd22b56d62">cfe_dippe_decrypt</a> (FP12_BN254 *result, <a class="el" href="structcfe__dippe.html">cfe_dippe</a> *dippe, <a class="el" href="structcfe__dippe__user__sec__key.html">cfe_dippe_user_sec_key</a> *usks, size_t usks_len, <a class="el" href="structcfe__dippe__cipher.html">cfe_dippe_cipher</a> *cipher, <a class="el" href="structcfe__vec.html">cfe_vec</a> *av, char gid[])</td></tr>
-<tr class="separator:ae2ed94853daff24e365fc9cd22b56d62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2337b57c6b00296b7c934b7491df4ba"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dippe_8h.html#ae2337b57c6b00296b7c934b7491df4ba">cfe_dippe_keygen</a> (<a class="el" href="structcfe__dippe__user__sec__key.html">cfe_dippe_user_sec_key</a> *usk, <a class="el" href="structcfe__dippe.html">cfe_dippe</a> *dippe, size_t usk_id, <a class="el" href="structcfe__dippe__pub__key.html">cfe_dippe_pub_key</a> *pks[], size_t pks_len, <a class="el" href="structcfe__dippe__sec__key.html">cfe_dippe_sec_key</a> *sk, <a class="el" href="structcfe__vec.html">cfe_vec</a> *av, char *gid, size_t gid_len)</td></tr>
+<tr class="separator:ae2337b57c6b00296b7c934b7491df4ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bcdf657b43e6c18db2c8e55d6b0cd99"><td class="memItemLeft" align="right" valign="top">cfe_error&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dippe_8h.html#a7bcdf657b43e6c18db2c8e55d6b0cd99">cfe_dippe_decrypt</a> (FP12_BN254 *result, <a class="el" href="structcfe__dippe.html">cfe_dippe</a> *dippe, <a class="el" href="structcfe__dippe__user__sec__key.html">cfe_dippe_user_sec_key</a> *usks, size_t usks_len, <a class="el" href="structcfe__dippe__cipher.html">cfe_dippe_cipher</a> *cipher, <a class="el" href="structcfe__vec.html">cfe_vec</a> *av, char gid[], size_t gid_len)</td></tr>
+<tr class="separator:a7bcdf657b43e6c18db2c8e55d6b0cd99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is a decentralized inner-product predicate encryption scheme by Yan Michalevsky and Marc Joye: "Decentralized Policy-Hiding
@@ -793,8 +793,8 @@ Attribute-Based Encryption with Receiver Privacy". </p>
 
 </div>
 </div>
-<a id="a0c3d20f32fd7ad680da55642e6291e03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c3d20f32fd7ad680da55642e6291e03">&#9670;&nbsp;</a></span>cfe_dippe_keygen()</h2>
+<a id="ae2337b57c6b00296b7c934b7491df4ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2337b57c6b00296b7c934b7491df4ba">&#9670;&nbsp;</a></span>cfe_dippe_keygen()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -844,8 +844,14 @@ Attribute-Based Encryption with Receiver Privacy". </p>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>gid</em>[]&#160;</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>gid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>gid_len</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -865,6 +871,7 @@ Attribute-Based Encryption with Receiver Privacy". </p>
     <tr><td class="paramname">sk</td><td>Secret key </td></tr>
     <tr><td class="paramname">av</td><td>A pointer to a <a class="el" href="structcfe__vec.html">cfe_vec</a> struct; Represents the attribute vector </td></tr>
     <tr><td class="paramname">gid</td><td>String that represents a unique user; Required for collusion prevention </td></tr>
+    <tr><td class="paramname">gid_len</td><td>Length of gid to prevent non NULL terminated strings </td></tr>
   </table>
   </dd>
 </dl>
@@ -872,8 +879,8 @@ Attribute-Based Encryption with Receiver Privacy". </p>
 
 </div>
 </div>
-<a id="ae2ed94853daff24e365fc9cd22b56d62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2ed94853daff24e365fc9cd22b56d62">&#9670;&nbsp;</a></span>cfe_dippe_decrypt()</h2>
+<a id="a7bcdf657b43e6c18db2c8e55d6b0cd99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bcdf657b43e6c18db2c8e55d6b0cd99">&#9670;&nbsp;</a></span>cfe_dippe_decrypt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -918,7 +925,13 @@ Attribute-Based Encryption with Receiver Privacy". </p>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>gid</em>[]&#160;</td>
+          <td class="paramname"><em>gid</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>gid_len</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -937,6 +950,7 @@ Attribute-Based Encryption with Receiver Privacy". </p>
     <tr><td class="paramname">cipher</td><td>A pointer to a <a class="el" href="structcfe__dippe__cipher.html">cfe_dippe_cipher</a> struct; Represents the ciphertext that is about to be decrypted </td></tr>
     <tr><td class="paramname">av</td><td>A pointer to a <a class="el" href="structcfe__vec.html">cfe_vec</a> struct; Represents the attribute vector </td></tr>
     <tr><td class="paramname">gid</td><td>String that represents a unique user; Required for collusion prevention </td></tr>
+    <tr><td class="paramname">gid_len</td><td>Length of gid to prevent non NULL terminated strings </td></tr>
   </table>
   </dd>
 </dl>
