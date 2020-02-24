@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
             vector_suite,
             dlog_suite,
             big_suite,
+            string_suite,
             ddh_suite,
             ddh_multi_suite,
             lwe_suite,

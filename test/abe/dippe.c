@@ -48,7 +48,8 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
     // -> x5=(-x0-x1-x4)   1
     size_t pattern[] = {0, 1, 4};
     cfe_vec pv;
-    err = cfe_dippe_conjunction_policy_vector_init(&pv, &dippe, (vlen - 1), pattern, (sizeof(pattern) / sizeof(size_t)));
+    err = cfe_dippe_conjunction_policy_vector_init(&pv, &dippe, (vlen - 1), pattern,
+                                                   (sizeof(pattern) / sizeof(size_t)));
     munit_assert(err == CFE_ERR_NONE);
 
     // Test patterns
@@ -59,10 +60,10 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
 
     size_t *aps[] = {ap0, ap1, ap2, ap3};
     size_t aps_len[] = {
-        sizeof(ap0) / sizeof(size_t),
-        sizeof(ap1) / sizeof(size_t),
-        sizeof(ap2) / sizeof(size_t),
-        sizeof(ap3) / sizeof(size_t)};
+            sizeof(ap0) / sizeof(size_t),
+            sizeof(ap1) / sizeof(size_t),
+            sizeof(ap2) / sizeof(size_t),
+            sizeof(ap3) / sizeof(size_t)};
 
     // Test results
     int decryption_results[] = {1, 1, 0, 0};
@@ -85,9 +86,9 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
 
     cfe_vec av;
     char gid[9];
-
     for (size_t i = 0; i < (sizeof(aps) / sizeof(size_t *)); i++) {
         sprintf(gid, "TESTGID%zu", i);
+        size_t gid_len = 8; // lendth of GID string
 
         // Attribute vector
         err = cfe_dippe_attribute_vector_init(&av, (vlen - 1), aps[i], aps_len[i]);
@@ -95,12 +96,14 @@ MunitResult test_dippe_end_to_end_conjunction(const MunitParameter *params, void
 
         // User secret keys
         for (size_t j = 0; j < vlen; j++) {
-            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk[(j & 1)], &av, gid);
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)),
+                                   &sk[(j & 1)], &av, gid, gid_len);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *) &usks,
+                                (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid, gid_len);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption
@@ -167,7 +170,8 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
     // -> -t                 1
     cfe_vec pv;
     size_t pattern[] = {0, 1, 3};
-    err = cfe_dippe_exact_threshold_policy_vector_init(&pv, &dippe, (vlen - 1), pattern, (sizeof(pattern) / sizeof(size_t)), 2);
+    err = cfe_dippe_exact_threshold_policy_vector_init(&pv, &dippe, (vlen - 1), pattern,
+                                                       (sizeof(pattern) / sizeof(size_t)), 2);
     munit_assert(err == CFE_ERR_NONE);
 
     // Test patterns
@@ -180,12 +184,12 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 
     size_t *aps[] = {ap0, ap1, ap2, ap3, ap4, ap5};
     size_t aps_len[] = {
-        sizeof(ap0) / sizeof(size_t),
-        sizeof(ap1) / sizeof(size_t),
-        sizeof(ap2) / sizeof(size_t),
-        sizeof(ap3) / sizeof(size_t),
-        sizeof(ap4) / sizeof(size_t),
-        sizeof(ap5) / sizeof(size_t)};
+            sizeof(ap0) / sizeof(size_t),
+            sizeof(ap1) / sizeof(size_t),
+            sizeof(ap2) / sizeof(size_t),
+            sizeof(ap3) / sizeof(size_t),
+            sizeof(ap4) / sizeof(size_t),
+            sizeof(ap5) / sizeof(size_t)};
 
     // Test results
     int decryption_results[] = {1, 1, 1, 1, 0, 0};
@@ -211,6 +215,7 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 
     for (size_t i = 0; i < (sizeof(aps) / sizeof(size_t *)); i++) {
         sprintf(gid, "TESTGID%zu", i);
+        size_t gid_len = 8; // lendth of GID string
 
         // Attribute vector
         err = cfe_dippe_attribute_vector_init(&av, (vlen - 1), aps[i], aps_len[i]);
@@ -218,12 +223,14 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 
         // User secret keys from Auth0
         for (size_t j = 0; j < vlen; j++) {
-            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk0, &av, gid);
+            err = cfe_dippe_keygen(&(usks[j]), &dippe, j, pks, (sizeof(pks) / sizeof(cfe_dippe_pub_key *)), &sk0, &av,
+                                   gid, gid_len);
             munit_assert(err == CFE_ERR_NONE);
         }
 
         // Decrypt message
-        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *)&usks, (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid);
+        err = cfe_dippe_decrypt(&result, &dippe, (cfe_dippe_user_sec_key *) &usks,
+                                (sizeof(usks) / sizeof(cfe_dippe_user_sec_key)), &cipher, &av, gid, gid_len);
         munit_assert(err == CFE_ERR_NONE);
 
         // Check decryption
@@ -247,9 +254,9 @@ MunitResult test_dippe_end_to_end_threshold(const MunitParameter *params, void *
 }
 
 MunitTest dippe_tests[] = {
-    {(char *)"/end-to-end-conjunction", test_dippe_end_to_end_conjunction, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {(char *)"/end-to-end-threshold", test_dippe_end_to_end_threshold, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}};
+        {(char *) "/end-to-end-conjunction", test_dippe_end_to_end_conjunction, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/end-to-end-threshold",   test_dippe_end_to_end_threshold,   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {NULL, NULL,                                                            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}};
 
 MunitSuite dippe_suite = {
-    (char *)"/abe/dippe", dippe_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE};
+        (char *) "/abe/dippe", dippe_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE};

@@ -80,20 +80,22 @@ void cfe_dmcfe_set_share(cfe_dmcfe_client *c, ECP_BN254 *pub_keys, size_t num_cl
     cfe_mat_free(&add);
 }
 
-void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label) {
-    char *label_for_hash, *str_i;
+void cfe_dmcfe_encrypt(ECP_BN254 *cipher, cfe_dmcfe_client *c, mpz_t x, char *label, size_t label_len) {
     ECP_BN254 h;
     BIG_256_56 tmp_big;
     ECP_BN254_inf(cipher);
+    cfe_string label_str = {label, label_len};
+    cfe_string space_str = {(char *) " ", 1};
+    cfe_string i_str, label_for_hash;
     for (int i = 0; i < 2; i++) {
-        str_i = cfe_int_to_str(i);
-        label_for_hash = cfe_strings_concat(str_i, " ", label, NULL);
-        cfe_hash_G1(&h, label_for_hash);
+        cfe_int_to_str(&i_str, i);
+        cfe_strings_concat(&label_for_hash, &i_str, &space_str, &label_str, NULL);
+        cfe_hash_G1(&h, &label_for_hash);
         BIG_256_56_from_mpz(tmp_big, c->s.vec[i]);
         ECP_BN254_mul(&h, tmp_big);
         ECP_BN254_add(cipher, &h);
-        free(label_for_hash);
-        free(str_i);
+        cfe_string_free(&label_for_hash);
+        cfe_string_free(&i_str);
     }
 
     BIG_256_56_from_mpz(tmp_big, x);
@@ -107,17 +109,18 @@ void cfe_dmcfe_fe_key_part_init(cfe_vec_G2 *key_share) {
 }
 
 void cfe_dmcfe_derive_fe_key_part(cfe_vec_G2 *fe_key_part, cfe_dmcfe_client *c, cfe_vec *y) {
-    char *str, *str_i, *for_hash;
-    str = cfe_vec_to_string(y);
+    cfe_string str, str_i, for_hash;
+    cfe_string space_str = {(char *) " ", 1};
+    cfe_vec_to_string(&str, y);
     ECP2_BN254 hash[2];
     for (int i = 0; i < 2; i++) {
-        str_i = cfe_int_to_str(i);
-        for_hash = cfe_strings_concat(str_i, " ", str, NULL);
-        cfe_hash_G2(&(hash[i]), for_hash);
-        free(for_hash);
-        free(str_i);
+        cfe_int_to_str(&str_i, i);
+        cfe_strings_concat(&for_hash, &str_i, &space_str, &str, NULL);
+        cfe_hash_G2(&(hash[i]), &for_hash);
+        cfe_string_free(&for_hash);
+        cfe_string_free(&str_i);
     }
-    free(str);
+    cfe_string_free(&str);
 
     mpz_t tmp;
     mpz_init(tmp);
@@ -134,6 +137,7 @@ void cfe_dmcfe_derive_fe_key_part(cfe_vec_G2 *fe_key_part, cfe_dmcfe_client *c, 
         }
 
         mpz_mul(tmp, y->vec[c->idx], c->s.vec[k]);
+        mpz_mod(tmp, tmp, c->order);
         BIG_256_56_from_mpz(tmp_big, tmp);
         ECP2_BN254_generator(&h);
         ECP2_BN254_mul(&h, tmp_big);
@@ -143,7 +147,7 @@ void cfe_dmcfe_derive_fe_key_part(cfe_vec_G2 *fe_key_part, cfe_dmcfe_client *c, 
 }
 
 cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_shares,
-                            char *label, cfe_vec *y, mpz_t bound) {
+                            char *label, size_t label_len, cfe_vec *y, mpz_t bound) {
     cfe_vec_G2 keys_sum;
     cfe_vec_G2_init(&keys_sum, 2);
     for (size_t i = 0; i < 2; i++) {
@@ -161,9 +165,14 @@ cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_share
     ECP2_BN254_generator(&gen2);
     ECP_BN254_inf(&ciphers_sum);
     BIG_256_56 y_i;
+    mpz_t y_i_mod, order;
+    mpz_inits(y_i_mod, order, NULL);
+    mpz_from_BIG_256_56(order, (int64_t *) CURVE_Order_BN254);
+
     for (size_t i = 0; i < y->size; i++) {
         ECP_BN254_copy(&cipher_i, &(ciphers[i]));
-        BIG_256_56_from_mpz(y_i, y->vec[i]);
+        mpz_mod(y_i_mod, y->vec[i], order);
+        BIG_256_56_from_mpz(y_i, y_i_mod);
         ECP_BN254_mul(&cipher_i, y_i);
         ECP_BN254_add(&ciphers_sum, &cipher_i);
     }
@@ -171,17 +180,19 @@ cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_share
     PAIR_BN254_ate(&s, &gen2, &ciphers_sum);
     PAIR_BN254_fexp(&s);
 
-    char *label_for_hash, *str_i;
+    cfe_string label_for_hash, str_i;
+    cfe_string label_str = {label, label_len};
+    cfe_string space_str = {(char *) " ", 1};
     FP12_BN254_one(&t);
     for (int i = 0; i < 2; i++) {
-        str_i = cfe_int_to_str(i);
-        label_for_hash = cfe_strings_concat(str_i, " ", label, NULL);
-        cfe_hash_G1(&h, label_for_hash);
+        cfe_int_to_str(&str_i, i);
+        cfe_strings_concat(&label_for_hash, &str_i, &space_str, &label_str, NULL);
+        cfe_hash_G1(&h, &label_for_hash);
         PAIR_BN254_ate(&pair, &(keys_sum.vec[i]), &h);
         PAIR_BN254_fexp(&pair);
         FP12_BN254_mul(&t, &pair);
-        free(label_for_hash);
-        free(str_i);
+        cfe_string_free(&label_for_hash);
+        cfe_string_free(&str_i);
     }
     FP12_BN254_inv(&t, &t);
     FP12_BN254_mul(&s, &t);
@@ -197,7 +208,7 @@ cfe_error cfe_dmcfe_decrypt(mpz_t res, ECP_BN254 *ciphers, cfe_vec_G2 *key_share
     cfe_error err;
     err = cfe_baby_giant_FP12_BN256_with_neg(res, &s, &pair, res_bound);
 
-    mpz_clear(res_bound);
+    mpz_clears(res_bound, y_i_mod, order, NULL);
     cfe_vec_G2_free(&keys_sum);
 
     return err;

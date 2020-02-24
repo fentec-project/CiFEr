@@ -318,7 +318,7 @@ void cfe_vec_FFT(cfe_vec *y, cfe_vec *a, mpz_t root, mpz_t q) {
 
     cfe_vec_mod(y, y, q);
     mpz_clears(check, current_root, new_root, value, NULL);
-    cfe_vec_frees(&a0, &a1, &y0, &y1, NULL);
+    cfe_vec_frees(&a0, &a1, &y0, &y1, (cfe_vec *) NULL);
 }
 
 // multiplication of two vectors presenting two
@@ -329,7 +329,7 @@ void cfe_vec_poly_mul_FFT(cfe_vec *res, cfe_vec *v1, cfe_vec *v2, mpz_t root, mp
     assert(res->size == v1->size);
 
     cfe_vec f1, f2, fr, prod;
-    cfe_vec_inits(2 * v1->size, &f1, &f2, &fr, &prod, NULL);
+    cfe_vec_inits(2 * v1->size, &f1, &f2, &fr, &prod, (cfe_vec *) NULL);
     cfe_vec_FFT(&f1, v1, root, q);
     cfe_vec_FFT(&f2, v2, root, q);
     cfe_vec_mul(&fr, &f1, &f2);
@@ -341,5 +341,5 @@ void cfe_vec_poly_mul_FFT(cfe_vec *res, cfe_vec *v1, cfe_vec *v2, mpz_t root, mp
         mpz_sub(res->vec[i], prod.vec[i], prod.vec[i + res->size]);
     }
     cfe_vec_mod(res, res, q);
-    cfe_vec_frees(&f1, &f2, &fr, &prod, NULL);
+    cfe_vec_frees(&f1, &f2, &fr, &prod, (cfe_vec *) NULL);
 }

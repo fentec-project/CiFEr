@@ -35,8 +35,9 @@ MunitResult test_fame_end_to_end(const MunitParameter *params, void *data) {
     // create a msp structure out of a boolean expression representing the
     // policy specifying which attributes are needed to decrypt the ciphertext
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
+    size_t bool_exp_len = 36;  // length of the boolean expression string
     cfe_msp msp;
-    cfe_error err = cfe_boolean_to_msp(&msp, bool_exp, false);
+    cfe_error err = cfe_boolean_to_msp(&msp, bool_exp, bool_exp_len, false);
     munit_assert(err == CFE_ERR_NONE);
 
     // initialize a ciphertext and encrypt the message based on the msp structure

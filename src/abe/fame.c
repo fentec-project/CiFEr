@@ -118,7 +118,9 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
     mpz_t tmp;
     mpz_init(tmp);
     BIG_256_56 tmp_big;
-    char *for_hash, *str_attrib, *str_l, *str_k, *str_j;
+    cfe_string for_hash, str_attrib, str_l, str_k, str_j;
+    cfe_string space_str = {(char *) " ", 1};
+    cfe_string zero_str = {(char *) "0 ", 2};
     ECP_BN254 hs;
     ECP_BN254 hs_pow_m;
 
@@ -144,33 +146,33 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
         cfe_mat_get_row(&msp_row, &(msp->mat), i);
         cfe_mat_set_vec(&(cipher->msp.mat), &msp_row, i);
 
-        str_attrib = cfe_int_to_str(msp->row_to_attrib[i]);
+        cfe_int_to_str(&str_attrib, msp->row_to_attrib[i]);
         for (int l = 0; l < 3; l++) {
-            str_l = cfe_int_to_str(l);
+            cfe_int_to_str(&str_l, l);
             ECP_BN254_inf(&(cipher->ct[i][l]));
             for (int k = 0; k < 2; k++) {
-                str_k = cfe_int_to_str(k);
-                for_hash = cfe_strings_concat(str_attrib, " ", str_l, " ", str_k, NULL);
-                cfe_hash_G1(&hs, for_hash);
+                cfe_int_to_str(&str_k, k);
+                cfe_strings_concat(&for_hash, &str_attrib, &space_str, &str_l, &space_str, &str_k, NULL);
+                cfe_hash_G1(&hs, &for_hash);
                 ECP_BN254_mul(&hs, s_big[k]);
                 ECP_BN254_add(&(cipher->ct[i][l]), &hs);
-                free(str_k);
-                free(for_hash);
+                cfe_string_free(&str_k);
+                cfe_string_free(&for_hash);
             }
 
             for (int j = 0; j < (int) msp->mat.cols; j++) {
-                str_j = cfe_int_to_str(j);
+                cfe_int_to_str(&str_j, j);
                 ECP_BN254_inf(&hs_pow_m);
                 for (int k = 0; k < 2; k++) {
-                    str_k = cfe_int_to_str(k);
-                    for_hash = cfe_strings_concat((char *) "0 ", str_j, " ", str_l, " ", str_k, NULL);
-                    cfe_hash_G1(&(hs), for_hash);
+                    cfe_int_to_str(&str_k, k);
+                    cfe_strings_concat(&for_hash, &zero_str, &str_j, &space_str, &str_l, &space_str, &str_k, NULL);
+                    cfe_hash_G1(&(hs), &for_hash);
                     ECP_BN254_mul(&(hs), s_big[k]);
                     ECP_BN254_add(&hs_pow_m, &(hs));
-                    free(str_k);
-                    free(for_hash);
+                    cfe_string_free(&str_k);
+                    cfe_string_free(&for_hash);
                 }
-                free(str_j);
+                cfe_string_free(&str_j);
 
                 if (mpz_sgn(msp->mat.mat[i].vec[j]) == -1) {
                     mpz_neg(tmp, msp->mat.mat[i].vec[j]);
@@ -183,9 +185,9 @@ void cfe_fame_encrypt(cfe_fame_cipher *cipher, FP12_BN254 *msg, cfe_msp *msp, cf
                 }
                 ECP_BN254_add(&(cipher->ct[i][l]), &hs_pow_m);
             }
-            free(str_l);
+            cfe_string_free(&str_l);
         }
-        free(str_attrib);
+        cfe_string_free(&str_attrib);
     }
     FP12_BN254 tmp_GT;
     FP12_BN254_pow(&(cipher->ct_prime), &(pk->part_GT[0]), s_big[0]);
@@ -219,7 +221,9 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
     mpz_t pow[3], a_inv[2], sigma_prime;
     mpz_inits(pow[0], pow[1], pow[2], a_inv[0], a_inv[1], sigma_prime, NULL);
     ECP_BN254 g_sigma, hs, g_sigma_prime;
-    char *str_attrib, *str_t, *str_j, *for_hash;
+    cfe_string str_attrib, str_t, str_j, for_hash;
+    cfe_string space_str = {(char *) " ", 1};
+    cfe_string zero_str = {(char *) "0 0 ", 4};
 
     // sample randomness
     cfe_uniform_sample_vec(&r, fame->p);
@@ -247,33 +251,33 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
         BIG_256_56_from_mpz(tmp_big, sigma.vec[i]);
         ECP_BN254_mul(&g_sigma, tmp_big);
 
-        str_attrib = cfe_int_to_str(gamma[i]);
+        cfe_int_to_str(&str_attrib, gamma[i]);
         for (int t = 0; t < 2; t++) {
-            str_t = cfe_int_to_str(t);
+            cfe_int_to_str(&str_t, t);
 
             ECP_BN254_copy(&(keys->k[i][t]), &g_sigma);
             for (int j = 0; j < 3; j++) {
-                str_j = cfe_int_to_str(j);
-                for_hash = cfe_strings_concat(str_attrib, " ", str_j, " ", str_t, NULL);
-                cfe_hash_G1(&hs, for_hash);
+                cfe_int_to_str(&str_j, j);
+                cfe_strings_concat(&for_hash, &str_attrib, &space_str, &str_j, &space_str, &str_t, NULL);
+                cfe_hash_G1(&hs, &for_hash);
 
                 BIG_256_56_from_mpz(tmp_big, pow[j]);
                 ECP_BN254_mul(&hs, tmp_big);
                 ECP_BN254_add(&(keys->k[i][t]), &hs);
 
-                free(str_j);
-                free(for_hash);
+                cfe_string_free(&str_j);
+                cfe_string_free(&for_hash);
             }
             ECP_BN254_mul(&(keys->k[i][t]), a_inv_big[t]);
 
-            free(str_t);
+            cfe_string_free(&str_t);
         }
 
         ECP_BN254_copy(&(keys->k[i][2]), &g_sigma);
         ECP_BN254_neg(&(keys->k[i][2]));
         keys->row_to_attrib[i] = gamma[i];
 
-        free(str_attrib);
+        cfe_string_free(&str_attrib);
     }
 
     cfe_uniform_sample(sigma_prime, fame->p);
@@ -283,23 +287,23 @@ void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma,
 
     for (int t = 0; t < 2; t++) {
         ECP_BN254_copy(&(keys->k_prime[t]), &g_sigma_prime);
-        str_t = cfe_int_to_str(t);
+        cfe_int_to_str(&str_t, t);
         for (int j = 0; j < 3; j++) {
-            str_j = cfe_int_to_str(j);
-            for_hash = cfe_strings_concat((char *) "0 0 ", str_j, " ", str_t, NULL);
-            cfe_hash_G1(&hs, for_hash);
+            cfe_int_to_str(&str_j, j);
+            cfe_strings_concat(&for_hash, &zero_str, &str_j, &space_str, &str_t, NULL);
+            cfe_hash_G1(&hs, &for_hash);
 
             BIG_256_56_from_mpz(tmp_big, pow[j]);
             ECP_BN254_mul(&hs, tmp_big);
             ECP_BN254_add(&(keys->k_prime[t]), &hs);
 
-            free(str_j);
-            free(for_hash);
+            cfe_string_free(&str_j);
+            cfe_string_free(&for_hash);
         }
         ECP_BN254_mul(&(keys->k_prime[t]), a_inv_big[t]);
         ECP_BN254_add(&(keys->k_prime[t]), &(sk->part_G1[t]));
 
-        free(str_t);
+        cfe_string_free(&str_t);
     }
     ECP_BN254_copy(&(keys->k_prime[2]), &g_sigma_prime);
     ECP_BN254_neg(&(keys->k_prime[2]));

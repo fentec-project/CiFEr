@@ -23,8 +23,9 @@
 MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     // define a boolean expression and make a corresponding msp structure
     char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
+    size_t bool_exp_len = 36;  // length of the boolean expression string
     cfe_msp msp;
-    cfe_error check = cfe_boolean_to_msp(&msp, bool_exp, true);
+    cfe_error check = cfe_boolean_to_msp(&msp, bool_exp, bool_exp_len, true);
     munit_assert(check == CFE_ERR_NONE);
 
     // create parameters to test msp
@@ -52,7 +53,8 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
 
     // define a faulty boolean expression and check for error
     char bool_exp_faulty[] = "(5 OR a3) AND ((2 OR 4) OR (1 AND 6))";
-    check = cfe_boolean_to_msp(&msp, bool_exp_faulty, true);
+    size_t bool_exp_faulty_len = 37;  // length of the faulty boolean expression string
+    check = cfe_boolean_to_msp(&msp, bool_exp_faulty, bool_exp_faulty_len, true);
     munit_assert(check == CFE_ERR_CORRUPTED_BOOL_EXPRESSION);
 
     // cleanup
@@ -64,23 +66,8 @@ MunitResult test_boolean_to_msp(const MunitParameter params[], void *data) {
     return MUNIT_OK;
 }
 
-MunitResult test_str_to_int(const MunitParameter params[], void *data) {
-    // test conversion from string to int
-    char test_str[] = "15";
-    int i = cfe_str_to_int(test_str);
-    munit_assert(i == 15);
-
-    // return an error (-1) if string is corrupted
-    char test_faulty_str[] = "124h234";
-    i = cfe_str_to_int(test_faulty_str);
-    munit_assert(i == -1);
-
-    return MUNIT_OK;
-}
-
 MunitTest policy_tests[] = {
         {(char *) "/test-boolean_to_msp",       test_boolean_to_msp,       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/test-str-to-int",           test_str_to_int,           NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                                       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 

@@ -23,6 +23,7 @@
 #include "cifer/data/mat.h"
 #include "cifer/data/vec.h"
 #include "cifer/internal/errors.h"
+#include "cifer/internal/str.h"
 
 /**
  * \file
@@ -64,32 +65,18 @@ typedef struct cfe_msp {
  * @return Returns an error if the boolean expression is not in the proper form and
  * cannot be transformed.
  */
-cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones);
+cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp,
+                             size_t bool_exp_len, bool convert_to_ones);
 
 /**
  * A helping function used in boolean_to_msp.
  */
-cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c);
+cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, cfe_string *bool_exp, cfe_vec *vec, size_t c);
 
 /**
  * A helping function used in boolean_to_msp_iterative.
  */
 void cfe_init_set_vecs_and(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c);
-
-/**
- * A helping function used in boolean_to_msp_iterative.
- */
-int cfe_str_to_int(char *str);
-
-/**
- * A helping function used in boolean_to_msp_iterative.
- */
-char *cfe_substring(char *s, size_t start, size_t stop);
-
-/**
- * A helping function used in boolean_to_msp_iterative.
- */
-char *cfe_remove_spaces(char *source);
 
 /**
  * Frees the memory occupied by the struct members. It does not free

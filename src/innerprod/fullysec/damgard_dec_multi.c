@@ -58,10 +58,10 @@ void cfe_damgard_dec_multi_client_set_share(cfe_damgard_dec_multi_client *c,
         mpz_powm(shared_num, pub_keys[k], c->client_sec_key,
                  c->scheme.scheme.p);
 
-        int num_size = (int) mpz_sizeinbase(shared_num, 16) + 2;
-        char *num_str = (char *) cfe_malloc(num_size * sizeof(char));
-        mpz_get_str(num_str, 16, shared_num);
-        octet tmp_oct = {(int) strlen(num_str), (int) strlen(num_str), num_str};
+        int num_size = (int) mpz_sizeinbase(shared_num, 32);
+        char *num_str = (char *) cfe_malloc((num_size + 1) * sizeof(char));
+        mpz_get_str(num_str, 32, shared_num);
+        octet tmp_oct = {num_size, num_size, num_str};
         mhashit(SHA256, -1, &tmp_oct, &tmp_hash);
         free(num_str);
 

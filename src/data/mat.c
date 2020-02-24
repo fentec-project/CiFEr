@@ -369,7 +369,7 @@ cfe_error cfe_mat_inverse_mod(cfe_mat *inverse_mat, cfe_mat *m, mpz_t mod) {
     }
 
     cfe_mat_transpose(inverse_mat, &transposed);
-    cfe_mat_frees(&min, &transposed, NULL);
+    cfe_mat_frees(&min, &transposed, (cfe_mat*) NULL);
     cleanup:
     mpz_clears(det, det_inv, sign, minus, minor, val, NULL);
 
@@ -514,7 +514,7 @@ cfe_error cfe_mat_inverse_mod_gauss(cfe_mat *res, mpz_t det, cfe_mat *m, mpz_t p
     }
 
     cleanup:
-    cfe_mat_frees(&m_ext, &triang, NULL);
+    cfe_mat_frees(&m_ext, &triang, (cfe_mat *) NULL);
     mpz_clears(tmp, tmp_sum, one, zero, determinant, NULL);
 
     return err;

@@ -45,19 +45,21 @@ MunitResult test_dmcfe_end_to_end(const MunitParameter *params, void *data) {
     cfe_vec x, y;
     cfe_vec_inits(num_clients, &x, &y, NULL);
     cfe_uniform_sample_vec(&x, bound);
-    cfe_uniform_sample_vec(&y, bound);
+    cfe_uniform_sample_range_vec(&y, bound_neg, bound);
     char label[] = "some label";
+    size_t label_len = 10; // length of the label string
     ECP_BN254 ciphers[num_clients];
     cfe_vec_G2 fe_key[num_clients];
 
     for (size_t i = 0; i < num_clients; i++) {
-        cfe_dmcfe_encrypt(&(ciphers[i]), &(clients[i]), x.vec[i], label);
+        cfe_dmcfe_encrypt(&(ciphers[i]), &(clients[i]), x.vec[i], label, label_len);
         cfe_dmcfe_fe_key_part_init(&(fe_key[i]));
         cfe_dmcfe_derive_fe_key_part(&(fe_key[i]), &(clients[i]), &y);
     }
 
-    // decrypt the inner product
-    cfe_dmcfe_decrypt(xy, ciphers, fe_key, label, &y, bound);
+    // decrypt the inner product with the corresponding label
+    cfe_error err = cfe_dmcfe_decrypt(xy, ciphers, fe_key, label, label_len, &y, bound);
+    munit_assert(err == CFE_ERR_NONE);
 
     // check correctness
     cfe_vec_dot(xy_check, &x, &y);

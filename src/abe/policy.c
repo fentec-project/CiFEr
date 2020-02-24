@@ -21,10 +21,15 @@
 
 #include "cifer/internal/common.h"
 #include "cifer/abe/policy.h"
+#include "cifer/internal/str.h"
 
+cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp,
+        size_t bool_exp_len, bool convert_to_ones) {
+    cfe_string bool_exp_trimmed, bool_exp_basic;
+    bool_exp_basic.str = bool_exp;
+    bool_exp_basic.str_len = bool_exp_len;
 
-cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones) {
-    char *bool_exp_trimmed = cfe_remove_spaces(bool_exp);
+    cfe_remove_spaces(&bool_exp_trimmed, &bool_exp_basic);
     cfe_vec vec;
     cfe_vec_init(&vec, 1);
     mpz_t zero, one;
@@ -32,8 +37,8 @@ cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones)
     mpz_init_set_ui(one, 1);
 
     cfe_vec_set(&vec, one, 0);
-    cfe_error err = cfe_boolean_to_msp_iterative(msp, bool_exp_trimmed, &vec, 1);
-    free(bool_exp_trimmed);
+    cfe_error err = cfe_boolean_to_msp_iterative(msp, &bool_exp_trimmed, &vec, 1);
+    cfe_string_free(&bool_exp_trimmed);
     if (err) {
         goto cleanup;
     }
@@ -58,38 +63,38 @@ cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, bool convert_to_ones)
 
 }
 
-cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *vec, size_t c) {
+cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, cfe_string *bool_exp, cfe_vec *vec, size_t c) {
     size_t num_brc = 0;
-    char *bool_exp1, *bool_exp2;
+    cfe_string bool_exp1, bool_exp2;
     cfe_error err;
     cfe_msp msp1, msp2;
     cfe_vec vec1, vec2;
     bool found = false;
 
-    for (size_t i = 0; i < strlen(bool_exp); i++) {
-        if (bool_exp[i] == '(') {
+    for (size_t i = 0; i < bool_exp->str_len; i++) {
+        if (bool_exp->str[i] == '(') {
             num_brc++;
             continue;
         }
-        if (bool_exp[i] == ')') {
+        if (bool_exp->str[i] == ')') {
             num_brc--;
             continue;
         }
-        if (num_brc == 0 && i < strlen(bool_exp) - 3 && bool_exp[i] == 'A' &&
-            bool_exp[i + 1] == 'N' && bool_exp[i + 2] == 'D') {
-            bool_exp1 = cfe_substring(bool_exp, 0, i);
+        if (num_brc == 0 && i < bool_exp->str_len - 3 && bool_exp->str[i] == 'A' &&
+            bool_exp->str[i + 1] == 'N' && bool_exp->str[i + 2] == 'D') {
+            cfe_substring(&bool_exp1, bool_exp, 0, i);
             cfe_init_set_vecs_and(&vec1, &vec2, vec, c);
 
-            err = cfe_boolean_to_msp_iterative(&msp1, bool_exp1, &vec1, c + 1);
-            free(bool_exp1);
+            err = cfe_boolean_to_msp_iterative(&msp1, &bool_exp1, &vec1, c + 1);
+            cfe_string_free(&bool_exp1);
             cfe_vec_free(&vec1);
             if (err) {
                 cfe_vec_free(&vec2);
                 return err;
             }
-            bool_exp2 = cfe_substring(bool_exp, i + 3, strlen(bool_exp));
-            err = cfe_boolean_to_msp_iterative(&msp2, bool_exp2, &vec2, msp1.mat.cols);
-            free(bool_exp2);
+            cfe_substring(&bool_exp2, bool_exp, i + 3, bool_exp->str_len);
+            err = cfe_boolean_to_msp_iterative(&msp2, &bool_exp2, &vec2, msp1.mat.cols);
+            cfe_string_free(&bool_exp2);
             cfe_vec_free(&vec2);
             if (err) {
                 cfe_msp_free(&msp1);
@@ -98,17 +103,17 @@ cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *ve
             found = true;
             break;
         }
-        if (num_brc == 0 && i < strlen(bool_exp) - 2 && bool_exp[i] == 'O' &&
-            bool_exp[i + 1] == 'R') {
-            bool_exp1 = cfe_substring(bool_exp, 0, i);
-            err = cfe_boolean_to_msp_iterative(&msp1, bool_exp1, vec, c);
-            free(bool_exp1);
+        if (num_brc == 0 && i < bool_exp->str_len - 2 && bool_exp->str[i] == 'O' &&
+            bool_exp->str[i + 1] == 'R') {
+            cfe_substring(&bool_exp1, bool_exp, 0, i);
+            err = cfe_boolean_to_msp_iterative(&msp1, &bool_exp1, vec, c);
+            cfe_string_free(&bool_exp1);
             if (err) {
                 return err;
             }
-            bool_exp2 = cfe_substring(bool_exp, i + 2, strlen(bool_exp));
-            err = cfe_boolean_to_msp_iterative(&msp2, bool_exp2, vec, msp1.mat.cols);
-            free(bool_exp2);
+            cfe_substring(&bool_exp2, bool_exp, i + 2, bool_exp->str_len);
+            err = cfe_boolean_to_msp_iterative(&msp2, &bool_exp2, vec, msp1.mat.cols);
+            cfe_string_free(&bool_exp2);
             if (err) {
                 cfe_msp_free(&msp1);
                 return err;
@@ -119,10 +124,10 @@ cfe_error cfe_boolean_to_msp_iterative(cfe_msp *msp, char *bool_exp, cfe_vec *ve
 
     }
     if (found == false) {
-        if (bool_exp[0] == '(' && bool_exp[strlen(bool_exp) - 1] == ')') {
-            bool_exp1 = cfe_substring(bool_exp, 1, strlen(bool_exp) - 1);
-            err = cfe_boolean_to_msp_iterative(msp, bool_exp1, vec, c);
-            free(bool_exp1);
+        if (bool_exp->str[0] == '(' && bool_exp->str[bool_exp->str_len - 1] == ')') {
+            cfe_substring(&bool_exp1, bool_exp, 1, bool_exp->str_len - 1);
+            err = cfe_boolean_to_msp_iterative(msp, &bool_exp1, vec, c);
+            cfe_string_free(&bool_exp1);
             return err;
         }
 
@@ -191,49 +196,6 @@ void cfe_init_set_vecs_and(cfe_vec *vec1, cfe_vec *vec2, cfe_vec *vec, size_t c)
     mpz_set_si(vec1->vec[c], -1);
     mpz_set_si(vec2->vec[c], 1);
     mpz_clear(zero);
-}
-
-int cfe_str_to_int(char *str) {
-    int result = 0;
-    for (size_t i = 0; i < strlen(str); i++) {
-        if ((str[i] < '0') || (str[i] > '9')) {
-            return -1;
-        } else {
-            result = (result * 10) + ((str[i]) - '0');
-        }
-    }
-    return result;
-}
-
-char *cfe_substring(char *s, size_t start, size_t stop) {
-    char *sub = (char *) cfe_malloc(sizeof(char) * (stop - start + 1));
-    for (size_t i = start; i < stop; i++) {
-        sub[i - start] = s[i];
-    }
-    sub[stop - start] = '\0';
-
-    return sub;
-}
-
-char *cfe_remove_spaces(char *source) {
-    size_t count = 0;
-    for (size_t i = 0; i < strlen(source); i++) {
-        if (source[i] != ' ') {
-            count++;
-        }
-    }
-
-    char *res = (char *) cfe_malloc(sizeof(char) * (count + 1));
-    count = 0;
-    for (size_t i = 0; i < strlen(source); i++) {
-        if (source[i] != ' ') {
-            res[count] = source[i];
-            count++;
-        }
-    }
-    res[count] = '\0';
-
-    return res;
 }
 
 void cfe_msp_free(cfe_msp *msp) {

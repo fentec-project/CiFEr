@@ -25,6 +25,7 @@ MunitSuite matrix_suite;
 MunitSuite vector_suite;
 MunitSuite dlog_suite;
 MunitSuite big_suite;
+MunitSuite string_suite;
 MunitSuite uniform_suite;
 MunitSuite normal_suite;
 MunitSuite normal_cumulative_suite;

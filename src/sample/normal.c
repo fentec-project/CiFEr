@@ -251,7 +251,7 @@ bool cfe_bernoulli(mpz_t t, mpf_t k_square_inv) {
     uint64_t check1 = pow_of_a_mantissa | (1LL << EXP_MANTISSA_PRECISION);
     uint64_t check2 = (uint64_t) 1 << (BIT_LEN_FOR_SAMPLE + pow_of_a_exponent + 1 - MAX_EXP);
 
-    if (CMP_MASK & (r1 - check1) & (r2 - check2)) {
+    if ((CMP_MASK & (r1 - check1) & (r2 - check2)) ||  pow_of_z == 1) {
         return true;
     }
 

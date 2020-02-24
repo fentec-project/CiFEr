@@ -40,6 +40,7 @@ set(library_SOURCES
         src/internal/hash.c
         src/internal/keygen.c
         src/internal/prime.c
+        src/internal/str.c
         src/innerprod/simple/ddh.c
         src/innerprod/simple/ddh_multi.c
         src/innerprod/simple/lwe.c
@@ -83,6 +84,7 @@ set(binary_SOURCES
         test/internal/dlog.c
         test/internal/keygen.c
         test/internal/prime.c
+        test/internal/str.c
         test/internal/big.c
         test/innerprod/simple/ddh.c
         test/innerprod/simple/ddh_multi.c
