@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9a75e4fd14534a53913cde3fc39eb81d)](https://app.codacy.com/gh/fentec-project/CiFEr?utm_source=github.com&utm_medium=referral&utm_content=fentec-project/CiFEr&utm_campaign=Badge_Grade_Settings)
 # CiFEr - Functional Encryption library [![Build Status](https://circleci.com/gh/fentec-project/CiFEr.svg?style=svg)](https://circleci.com/gh/fentec-project/CiFEr)
 
 CiFEr (prounounced as _cipher_) is a cryptographic library offering different 
