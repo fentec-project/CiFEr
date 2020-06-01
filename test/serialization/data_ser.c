@@ -31,6 +31,7 @@ MunitResult test_ec_ser(const MunitParameter *params, void *data) {
     int check =ECP_BN254_equals(&gen, &out);
     munit_assert(err == CFE_ERR_NONE);
     munit_assert(check == 1);
+    cfe_ser_free(&buf);
 
 
     ECP2_BN254 gen2, out2;
@@ -40,6 +41,7 @@ MunitResult test_ec_ser(const MunitParameter *params, void *data) {
     check =ECP2_BN254_equals(&gen2, &out2);
     munit_assert(err == CFE_ERR_NONE);
     munit_assert(check == 1);
+    cfe_ser_free(&buf);
 
     FP12_BN254 gen3, out3;
     PAIR_BN254_ate(&gen3, &gen2, &gen);
@@ -49,6 +51,7 @@ MunitResult test_ec_ser(const MunitParameter *params, void *data) {
     check =FP12_BN254_equals(&gen3, &out3);
     munit_assert(err == CFE_ERR_NONE);
     munit_assert(check == 1);
+    cfe_ser_free(&buf);
 
     return MUNIT_OK;
 }
@@ -57,11 +60,13 @@ MunitResult test_mpz_ser(const MunitParameter *params, void *data) {
     cfe_ser buf;
     mpz_t a, b;
     mpz_inits(a, b, NULL);
-    mpz_set_str(a, "111111111111111111111111111111111111111111111111111111111111", 10);
+    mpz_set_str(a, "-12341234212431111111111111111111111111111", 10);
     cfe_mpz_ser(a, &buf);
     cfe_mpz_read(b, &buf);
-
     munit_assert(mpz_cmp(a, b) == 0);
+    cfe_ser_free(&buf);
+
+    mpz_clears(a, b, NULL);
 
     return MUNIT_OK;
 }
@@ -85,6 +90,11 @@ MunitResult test_mat_ser(const MunitParameter *params, void *data) {
         }
     }
 
+    cfe_ser_free(&buf);
+    cfe_mat_free(&m);
+    cfe_mat_free(&m2);
+    mpz_clear(a);
+
     return MUNIT_OK;
 }
 
@@ -98,15 +108,19 @@ MunitResult test_msp_ser(const MunitParameter *params, void *data) {
     cfe_error check = cfe_boolean_to_msp(&msp, bool_exp, bool_exp_len, true);
     munit_assert(check == CFE_ERR_NONE);
 
-    cfe_mat_print(&msp.mat);
     cfe_msp_ser(&msp, &buf);
-//    cfe_msp_read(&msp2, &buf);
+    cfe_msp_read(&msp2, &buf);
 
-//    for (size_t i =0; i<msp.mat.rows; i++) {
-//        for (size_t j =0; j < msp.mat.cols; j++) {
-//            munit_assert(mpz_cmp(msp.mat.mat[i].vec[j], msp2.mat.mat[i].vec[j]) == 0);
-//        }
-//    }
+    for (size_t i =0; i<msp.mat.rows; i++) {
+        munit_assert(msp.row_to_attrib[i] == msp2.row_to_attrib[i]);
+        for (size_t j =0; j < msp.mat.cols; j++) {
+            munit_assert(mpz_cmp(msp.mat.mat[i].vec[j], msp2.mat.mat[i].vec[j]) == 0);
+        }
+    }
+
+    cfe_ser_free(&buf);
+    cfe_msp_free(&msp);
+    cfe_msp_free(&msp2);
 
     return MUNIT_OK;
 }

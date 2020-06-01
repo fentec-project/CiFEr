@@ -17,7 +17,9 @@ PROTOBUF_C__BEGIN_DECLS
 #include "data.pb-c.h"
 
 typedef struct _CfeFamePubKeySer CfeFamePubKeySer;
+typedef struct _CfeFameSecKeySer CfeFameSecKeySer;
 typedef struct _CfeFameAttribKeysSer CfeFameAttribKeysSer;
+typedef struct _CfeFameCipherSer CfeFameCipherSer;
 
 
 /* --- enums --- */
@@ -38,6 +40,19 @@ struct  _CfeFamePubKeySer
     , NULL, NULL, NULL, NULL }
 
 
+struct  _CfeFameSecKeySer
+{
+  ProtobufCMessage base;
+  size_t n_part_int;
+  MpzSer **part_int;
+  size_t n_part_g1;
+  OctetSer **part_g1;
+};
+#define CFE_FAME_SEC_KEY_SER__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&cfe_fame_sec_key_ser__descriptor) \
+    , 0,NULL, 0,NULL }
+
+
 struct  _CfeFameAttribKeysSer
 {
   ProtobufCMessage base;
@@ -53,6 +68,21 @@ struct  _CfeFameAttribKeysSer
 #define CFE_FAME_ATTRIB_KEYS_SER__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&cfe_fame_attrib_keys_ser__descriptor) \
     , 0,NULL, 0,NULL, 0,NULL, 0,NULL }
+
+
+struct  _CfeFameCipherSer
+{
+  ProtobufCMessage base;
+  size_t n_ct0;
+  OctetSer **ct0;
+  size_t n_ct;
+  OctetSer **ct;
+  OctetSer *ct_prime;
+  MspSer *msp;
+};
+#define CFE_FAME_CIPHER_SER__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&cfe_fame_cipher_ser__descriptor) \
+    , 0,NULL, 0,NULL, NULL, NULL }
 
 
 /* CfeFamePubKeySer methods */
@@ -74,6 +104,25 @@ CfeFamePubKeySer *
 void   cfe_fame_pub_key_ser__free_unpacked
                      (CfeFamePubKeySer *message,
                       ProtobufCAllocator *allocator);
+/* CfeFameSecKeySer methods */
+void   cfe_fame_sec_key_ser__init
+                     (CfeFameSecKeySer         *message);
+size_t cfe_fame_sec_key_ser__get_packed_size
+                     (const CfeFameSecKeySer   *message);
+size_t cfe_fame_sec_key_ser__pack
+                     (const CfeFameSecKeySer   *message,
+                      uint8_t             *out);
+size_t cfe_fame_sec_key_ser__pack_to_buffer
+                     (const CfeFameSecKeySer   *message,
+                      ProtobufCBuffer     *buffer);
+CfeFameSecKeySer *
+       cfe_fame_sec_key_ser__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   cfe_fame_sec_key_ser__free_unpacked
+                     (CfeFameSecKeySer *message,
+                      ProtobufCAllocator *allocator);
 /* CfeFameAttribKeysSer methods */
 void   cfe_fame_attrib_keys_ser__init
                      (CfeFameAttribKeysSer         *message);
@@ -93,13 +142,38 @@ CfeFameAttribKeysSer *
 void   cfe_fame_attrib_keys_ser__free_unpacked
                      (CfeFameAttribKeysSer *message,
                       ProtobufCAllocator *allocator);
+/* CfeFameCipherSer methods */
+void   cfe_fame_cipher_ser__init
+                     (CfeFameCipherSer         *message);
+size_t cfe_fame_cipher_ser__get_packed_size
+                     (const CfeFameCipherSer   *message);
+size_t cfe_fame_cipher_ser__pack
+                     (const CfeFameCipherSer   *message,
+                      uint8_t             *out);
+size_t cfe_fame_cipher_ser__pack_to_buffer
+                     (const CfeFameCipherSer   *message,
+                      ProtobufCBuffer     *buffer);
+CfeFameCipherSer *
+       cfe_fame_cipher_ser__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   cfe_fame_cipher_ser__free_unpacked
+                     (CfeFameCipherSer *message,
+                      ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
 typedef void (*CfeFamePubKeySer_Closure)
                  (const CfeFamePubKeySer *message,
                   void *closure_data);
+typedef void (*CfeFameSecKeySer_Closure)
+                 (const CfeFameSecKeySer *message,
+                  void *closure_data);
 typedef void (*CfeFameAttribKeysSer_Closure)
                  (const CfeFameAttribKeysSer *message,
+                  void *closure_data);
+typedef void (*CfeFameCipherSer_Closure)
+                 (const CfeFameCipherSer *message,
                   void *closure_data);
 
 /* --- services --- */
@@ -108,7 +182,9 @@ typedef void (*CfeFameAttribKeysSer_Closure)
 /* --- descriptors --- */
 
 extern const ProtobufCMessageDescriptor cfe_fame_pub_key_ser__descriptor;
+extern const ProtobufCMessageDescriptor cfe_fame_sec_key_ser__descriptor;
 extern const ProtobufCMessageDescriptor cfe_fame_attrib_keys_ser__descriptor;
+extern const ProtobufCMessageDescriptor cfe_fame_cipher_ser__descriptor;
 
 PROTOBUF_C__END_DECLS
 

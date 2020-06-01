@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 //            fh_multi_ipe_suite,
 //            policy_suite,
 //            gpsw_suite,
-            fame_suite,
+//            fame_suite,
 //            dippe_suite,
 //            uniform_suite,
 //            normal_suite,
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 //            normal_double_constant_suite,
 //            normal_cdt_suite,
 //            sgp_suite,
-            data_ser_suite,
+//            data_ser_suite,
             fame_ser_suite,
             {NULL, NULL, NULL, 0, MUNIT_SUITE_OPTION_NONE}
     };

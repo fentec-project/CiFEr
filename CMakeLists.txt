@@ -68,9 +68,9 @@ set(library_SOURCES
         src/abe/fame.c
         src/abe/dippe.c
         src/quadratic/sgp.c
-        include/cifer/serialization/fame_ser.c
+        src/serialization/fame_ser.c
+        src/serialization/data_ser.c
         include/cifer/serialization/fame.pb-c.c
-        include/cifer/serialization/data_ser.c
         include/cifer/serialization/data.pb-c.c
         )
 

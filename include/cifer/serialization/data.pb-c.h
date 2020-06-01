@@ -31,10 +31,11 @@ struct  _MpzSer
   ProtobufCMessage base;
   size_t n_val;
   int64_t *val;
+  protobuf_c_boolean neg;
 };
 #define MPZ_SER__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&mpz_ser__descriptor) \
-    , 0,NULL }
+    , 0,NULL, 0 }
 
 
 struct  _MatSer
@@ -66,14 +67,13 @@ struct  _OctetSer
 struct  _MspSer
 {
   ProtobufCMessage base;
-  /*
-   *        repeated int64 row_to_attrib = 2;
-   */
   MatSer *mat;
+  size_t n_row_to_attrib;
+  int64_t *row_to_attrib;
 };
 #define MSP_SER__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&msp_ser__descriptor) \
-    , NULL }
+    , NULL, 0,NULL }
 
 
 /* MpzSer methods */

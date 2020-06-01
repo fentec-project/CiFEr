@@ -48,10 +48,9 @@ MunitResult test_fame_ser(const MunitParameter *params, void *data) {
     munit_assert(err == CFE_ERR_NONE);
     munit_assert(FP12_BN254_equals(&msg, &decryption) == 1);
 
-    // serialize
+    // serialize structs, i.e. change them in a sequence of bytes and back to struct
     cfe_ser buf;
-
-    // pub key
+    // serialize pub key
     cfe_fame_pub_key pk2;
     cfe_fame_pub_key_ser(&pk, &buf);
     err = cfe_fame_pub_key_read(&pk2, &buf);
@@ -65,10 +64,25 @@ MunitResult test_fame_ser(const MunitParameter *params, void *data) {
     munit_assert(check == 1);
     check = FP12_BN254_equals(&pk.part_GT[1], &pk2.part_GT[1]);
     munit_assert(check == 1);
+    cfe_ser_free(&buf);
 
-    // attrib key
+    // serialize pub key
+    cfe_fame_sec_key sk2;
+    cfe_fame_sec_key_ser(&sk, &buf);
+    err = cfe_fame_sec_key_read(&sk2, &buf);
+    munit_assert(err == CFE_ERR_NONE);
+    // check if we get the same struct after serialization and reading
+    for (int i =0; i<3; i++) {
+        check = ECP_BN254_equals(&(sk.part_G1[i]), &(sk2.part_G1[i]));
+        munit_assert(check == 1);
+    }
+    for (int i =0; i<4; i++) {
+        munit_assert(mpz_cmp(sk.part_int[i], sk2.part_int[i]) == 0);
+    }
+    cfe_ser_free(&buf);
+
+    // serialize attrib keys
     cfe_fame_attrib_keys keys2;
-    cfe_fame_attrib_keys_init(&keys2, 3);
     cfe_fame_attrib_keys_ser(&keys, &buf);
     err = cfe_fame_attrib_keys_read(&keys2, &buf);
     munit_assert(err == CFE_ERR_NONE);
@@ -77,30 +91,71 @@ MunitResult test_fame_ser(const MunitParameter *params, void *data) {
         check = ECP2_BN254_equals(&(keys.k0[i]), &(keys2.k0[i]));
         munit_assert(check == 1);
     }
-
     for (int i =0; i<3; i++) {
         for (size_t j =0; j < keys.num_attrib; j++) {
             check = ECP_BN254_equals(&(keys.k[j][i]), &(keys2.k[j][i]));
             munit_assert(check == 1);
         }
     }
-
     for (int i =0; i<3; i++) {
         check = ECP_BN254_equals(&(keys.k_prime[i]), &(keys2.k_prime[i]));
         munit_assert(check == 1);
     }
-
     for (size_t j =0; j < keys.num_attrib; j++) {
-        munit_assert(keys.row_to_attrib[j] = keys2.row_to_attrib[j]);
+        munit_assert(keys.row_to_attrib[j] == keys2.row_to_attrib[j]);
     }
+    munit_assert(keys.num_attrib == keys2.num_attrib);
+    cfe_ser_free(&buf);
 
-    munit_assert(keys.num_attrib = keys2.num_attrib);
+    // serialize ciphertext
+    cfe_fame_cipher cipher2;
+    cfe_fame_cipher_ser(&cipher, &buf);
+    err = cfe_fame_cipher_read(&cipher2, &buf);
+    munit_assert(err == CFE_ERR_NONE);
+    // check if we get the same struct after serialization and reading
+    for (int i =0; i<3; i++) {
+        check = ECP2_BN254_equals(&(cipher.ct0[i]), &(cipher2.ct0[i]));
+        munit_assert(check == 1);
+    }
+    for (int i =0; i<3; i++) {
+        for (size_t j =0; j < keys.num_attrib; j++) {
+            check = ECP_BN254_equals(&(cipher.ct[j][i]), &(cipher2.ct[j][i]));
+            munit_assert(check == 1);
+        }
+    }
+    check = FP12_BN254_equals(&(cipher.ct_prime), &(cipher2.ct_prime));
+    munit_assert(check == 1);
+    cfe_ser_free(&buf);
 
-    //clear up
+    // use new structs in FAME scheme to make further tests
+    cfe_fame_cipher cipher3;
+    cfe_fame_encrypt(&cipher, &msg, &msp, &pk2, &fame);
+    cfe_fame_cipher_ser(&cipher, &buf);
+    err = cfe_fame_cipher_read(&cipher3, &buf);
+    munit_assert(err == CFE_ERR_NONE);
+    cfe_ser_free(&buf);
+
+    cfe_fame_generate_attrib_keys(&keys, owned_attrib, 3, &sk2, &fame);
+    cfe_fame_attrib_keys keys3;
+    cfe_fame_attrib_keys_ser(&keys, &buf);
+    err = cfe_fame_attrib_keys_read(&keys3, &buf);
+    munit_assert(err == CFE_ERR_NONE);
+    cfe_ser_free(&buf);
+
+    err = cfe_fame_decrypt(&decryption, &cipher3, &keys3, &fame);
+    munit_assert(err == CFE_ERR_NONE);
+    munit_assert(FP12_BN254_equals(&msg, &decryption) == 1);
+
+    // clear up
     cfe_fame_free(&fame);
     cfe_fame_sec_key_free(&sk);
+    cfe_fame_sec_key_free(&sk2);
     cfe_fame_cipher_free(&cipher);
+    cfe_fame_cipher_free(&cipher2);
+    cfe_fame_cipher_free(&cipher3);
     cfe_fame_attrib_keys_free(&keys);
+    cfe_fame_attrib_keys_free(&keys2);
+    cfe_fame_attrib_keys_free(&keys3);
     cfe_msp_free(&msp);
     return MUNIT_OK;
 }

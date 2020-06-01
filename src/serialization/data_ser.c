@@ -22,22 +22,30 @@
 #include <cifer/internal/common.h>
 #include <cifer/abe/policy.h>
 
+void cfe_ser_free(cfe_ser *s) {
+    free(s->ser);
+}
+
 void cfe_mpz_ser_init(MpzSer *o) {
     o->base.descriptor = &mpz_ser__descriptor;
     o->base.n_unknown_fields = 0;
     o->base.unknown_fields = NULL;
     o->val = NULL;
     o->n_val = 0;
+    o->neg = false;
 }
 
 void cfe_mpz_pack(mpz_t a, MpzSer *msg) {
     size_t numb = 8 * sizeof(int64_t);
-    size_t count = (mpz_sizeinbase(a, 2) + numb-1) / numb;
+    size_t count = (mpz_sizeinbase(a, 2) + numb-1) / numb + 1;
     int64_t *out = cfe_malloc(count * sizeof(int64_t));
     mpz_export(out, &count, 1, sizeof(int64_t), 0, 0, a);
 
     msg->n_val = count;
     msg->val = out;
+    if (mpz_cmp_ui(a, 0) < 0) {
+        msg->neg = true;
+    }
 }
 
 void cfe_mpz_ser(mpz_t a, cfe_ser *buf) {
@@ -48,10 +56,15 @@ void cfe_mpz_ser(mpz_t a, cfe_ser *buf) {
     buf->ser = cfe_malloc(buf->len);
 
     mpz_ser__pack(&msg, buf->ser);
+
+    free(msg.val);
 }
 
 void cfe_mpz_unpack(mpz_t a, MpzSer *msg) {
     mpz_import(a, msg->n_val, 1, sizeof(int64_t), 0, 0, msg->val);
+    if (msg->neg) {
+        mpz_neg(a, a);
+    }
 }
 
 cfe_error cfe_mpz_read(mpz_t a, cfe_ser *buf) {
@@ -69,10 +82,9 @@ cfe_error cfe_mpz_read(mpz_t a, cfe_ser *buf) {
     return 0;
 }
 
-void cfe_mat_pack(cfe_mat *a, MatSer *msg) {
+void cfe_mat_pack(cfe_mat *a, MatSer *msg, MpzSer *val) {
     msg->n_val = a->cols * a->rows;
     msg->val = cfe_malloc(sizeof(MpzSer *) * a->cols * a->rows);
-    MpzSer *val = cfe_malloc(sizeof(MpzSer) * a->cols * a->rows);
     for (size_t i =0; i<a->rows; i++) {
         for (size_t j =0; j < a->cols; j++) {
             cfe_mpz_ser_init(&val[i * a->cols + j]);
@@ -87,11 +99,21 @@ void cfe_mat_pack(cfe_mat *a, MatSer *msg) {
 
 void cfe_mat_ser(cfe_mat *a, cfe_ser *buf) {
     MatSer msg = MAT_SER__INIT;
-    cfe_mat_pack(a, &msg);
+    MpzSer *val = cfe_malloc(sizeof(MpzSer) * a->cols * a->rows);
+    cfe_mat_pack(a, &msg, val);
     buf->len = mat_ser__get_packed_size(&msg);
     buf->ser = cfe_malloc(buf->len);
 
     mat_ser__pack(&msg, buf->ser);
+
+    for (size_t i =0; i<a->rows; i++) {
+        for (size_t j =0; j < a->cols; j++) {
+            free(msg.val[i * a->cols + j]->val);
+        }
+    }
+
+    free(val);
+    free(msg.val);
 }
 
 void cfe_mat_unpack(cfe_mat *a, MatSer *msg) {
@@ -145,6 +167,7 @@ void cfe_octet_buf(OctetSer *msg, cfe_ser *buf) {
 
     octet_ser__pack(msg, buf->ser);
     buf->len = msg_len;
+    free(msg->val);
 }
 
 void cfe_octet_unpack(octet *oct, OctetSer *msg) {
@@ -174,6 +197,7 @@ void cfe_ECP_BN254_unpack(ECP_BN254 *a, OctetSer *msg) {
     octet oct;
     cfe_octet_unpack(&oct, msg);
     ECP_BN254_fromOctet(a, &oct);
+    free(oct.val);
 }
 
 cfe_error cfe_ECP_BN254_read(ECP_BN254 *a, cfe_ser *buf) {
@@ -197,6 +221,7 @@ void cfe_ECP2_BN254_pack(ECP2_BN254 *a, OctetSer *msg) {
     ECP2_BN254_toOctet(&oct, a);
 
     cfe_octet_pack(&oct, msg);
+    free(oct.val);
 }
 
 void cfe_ECP2_BN254_ser(ECP2_BN254 *a, cfe_ser *buf) {
@@ -211,6 +236,7 @@ void cfe_ECP2_BN254_unpack(ECP2_BN254 *a, OctetSer *msg) {
     octet oct;
     cfe_octet_unpack(&oct, msg);
     ECP2_BN254_fromOctet(a, &oct);
+    free(oct.val);
 }
 
 cfe_error cfe_ECP2_BN254_read(ECP2_BN254 *a, cfe_ser *buf) {
@@ -234,6 +260,7 @@ void cfe_FP12_BN254_pack(FP12_BN254 *a, OctetSer *msg) {
     FP12_BN254_toOctet(&oct, a);
 
     cfe_octet_pack(&oct, msg);
+    free(oct.val);
 }
 
 void cfe_FP12_BN254_ser(FP12_BN254 *a, cfe_ser *buf) {
@@ -247,6 +274,7 @@ void cfe_FP12_BN254_unpack(FP12_BN254 *a, OctetSer *msg) {
     octet oct;
     cfe_octet_unpack(&oct, msg);
     FP12_BN254_fromOctet(a, &oct);
+    free(oct.val);
 }
 
 cfe_error cfe_FP12_BN254_read(FP12_BN254 *a, cfe_ser *buf) {
@@ -264,48 +292,47 @@ cfe_error cfe_FP12_BN254_read(FP12_BN254 *a, cfe_ser *buf) {
     return 0;
 }
 
-void cfe_msp_pack(cfe_msp *a, MspSer *msg) {
-    MatSer mat = MAT_SER__INIT;
-    cfe_mat_pack(&(a->mat), &mat);
-    msg->mat = &mat;
-    cfe_mat_print(&(a->mat));
-    cfe_mat b;
-    cfe_mat_unpack(&b, msg->mat);
-    cfe_mat_print(&b);
+void cfe_msp_pack(cfe_msp *a, MspSer *msg, MpzSer *val) {
+    cfe_mat_pack(&(a->mat), msg->mat, val);
 
-    printf("here\n");
-//    msg->n_row_to_attrib = 0;
-//    msg->n_row_to_attrib = a->mat.rows;
-//    msg->row_to_attrib = cfe_malloc(sizeof(int64_t) * a->mat.rows);
-//    printf("here\n");
-//
-//    for (size_t j =0; j < a->mat.rows; j++) {
-//        msg->row_to_attrib[j] = (int64_t)a->row_to_attrib[j];
-//    }
-//    printf("here\n");
+    msg->n_row_to_attrib = a->mat.rows;
+    msg->row_to_attrib = cfe_malloc(sizeof(int64_t) * a->mat.rows);
 
+    for (size_t j =0; j < a->mat.rows; j++) {
+        msg->row_to_attrib[j] = (int64_t)a->row_to_attrib[j];
+    }
 }
 
 void cfe_msp_ser(cfe_msp *a, cfe_ser *buf) {
     MspSer msg = MSP_SER__INIT;
-    cfe_msp_pack(a, &msg);
-    printf("here3\n");
+    MatSer mat = MAT_SER__INIT;
+    msg.mat = &mat;
+    MpzSer *val = cfe_malloc(sizeof(MpzSer) * a->mat.cols * a->mat.rows);
+
+    cfe_msp_pack(a, &msg, val);
 
     buf->len = msp_ser__get_packed_size(&msg);
-//    printf("here3\n");
-//
-//    buf->ser = cfe_malloc(buf->len);
-//
-//    msp_ser__pack(&msg, buf->ser);
+    buf->ser = cfe_malloc(buf->len);
+
+    msp_ser__pack(&msg, buf->ser);
+
+    for (size_t i =0; i<a->mat.rows; i++) {
+        for (size_t j =0; j < a->mat.cols; j++) {
+            free(msg.mat->val[i * a->mat.cols + j]->val);
+        }
+    }
+    free(msg.mat->val);
+    free(msg.row_to_attrib);
+    free(val);
 }
 
 void cfe_msp_unpack(cfe_msp *a, MspSer *msg) {
     cfe_mat_unpack(&a->mat, msg->mat);
 
     a->row_to_attrib = cfe_malloc(sizeof(int) * a->mat.rows);
-//    for (size_t j =0; j < msg->n_row_to_attrib; j++) {
-//        a->row_to_attrib[j] = (int)msg->row_to_attrib[j];
-//    }
+    for (size_t j =0; j < msg->n_row_to_attrib; j++) {
+        a->row_to_attrib[j] = (int)msg->row_to_attrib[j];
+    }
 
 }
 

@@ -1,5 +1,6 @@
 message mpz_ser {
         repeated int64 val = 1;
+        required bool neg = 2;
 }
 
 message mat_ser {
@@ -16,5 +17,5 @@ message octet_ser {
 
 message msp_ser {
         required mat_ser mat = 1;
-//        repeated int64 row_to_attrib = 2;
+        repeated int64 row_to_attrib = 2;
 }

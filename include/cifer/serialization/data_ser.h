@@ -27,6 +27,10 @@ typedef struct cfe_ser {
     size_t len;
 } cfe_ser;
 
+void cfe_ser_free(cfe_ser *s);
+
+void cfe_mpz_ser_init(MpzSer *o);
+
 void cfe_mpz_pack(mpz_t a, MpzSer *msg);
 
 void cfe_mpz_ser(mpz_t aa, cfe_ser *buf);
@@ -35,7 +39,7 @@ void cfe_mpz_unpack(mpz_t a, MpzSer *msg);
 
 cfe_error cfe_mpz_read(mpz_t a, cfe_ser *buf);
 
-void cfe_mat_pack(cfe_mat *a, MatSer *msg);
+void cfe_mat_pack(cfe_mat *a, MatSer *msg, MpzSer *val);
 
 void cfe_mat_ser(cfe_mat *a, cfe_ser *buf);
 
@@ -69,7 +73,7 @@ void cfe_FP12_BN254_unpack(FP12_BN254 *a, OctetSer *msg);
 
 cfe_error cfe_FP12_BN254_read(FP12_BN254 *a, cfe_ser *buf);
 
-void cfe_msp_pack(cfe_msp *a, MspSer *msg);
+void cfe_msp_pack(cfe_msp *a, MspSer *msg, MpzSer *val);
 
 void cfe_msp_ser(cfe_msp *a, cfe_ser *buf);
 

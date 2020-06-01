@@ -20,20 +20,20 @@
 #include <cifer/abe/fame.h>
 #include "data_ser.h"
 
-//size_t cfe_fame_sec_key_ser(cfe_fame_sec_key *sec_key, void *buf);
-//
-//int cfe_fame_sec_key_read(cfe_fame_sec_key *sec_key, void *buf, size_t len);
-//
-//size_t cfe_fame_bla_ser(cfe_fame_sec_key *sec_key, uint8_t *buf);
-//
-//int cfe_fame_bla_read(cfe_fame_sec_key *sec_key, uint8_t *buf, size_t len);
-
 void cfe_fame_pub_key_ser(cfe_fame_pub_key *pub_key, cfe_ser *buf);
 
 cfe_error cfe_fame_pub_key_read(cfe_fame_pub_key *pub_key, cfe_ser *buf);
 
+void cfe_fame_sec_key_ser(cfe_fame_sec_key *key, cfe_ser *buf);
+
+cfe_error cfe_fame_sec_key_read(cfe_fame_sec_key *key, cfe_ser *buf);
+
 void cfe_fame_attrib_keys_ser(cfe_fame_attrib_keys *keys, cfe_ser *buf);
 
 cfe_error cfe_fame_attrib_keys_read(cfe_fame_attrib_keys *keys, cfe_ser *buf);
+
+void cfe_fame_cipher_ser(cfe_fame_cipher *c, cfe_ser *buf);
+
+cfe_error cfe_fame_cipher_read(cfe_fame_cipher *c, cfe_ser *buf);
 
 #endif

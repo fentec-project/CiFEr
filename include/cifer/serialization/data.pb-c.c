@@ -187,7 +187,7 @@ void   msp_ser__free_unpacked
   assert(message->base.descriptor == &msp_ser__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor mpz_ser__field_descriptors[1] =
+static const ProtobufCFieldDescriptor mpz_ser__field_descriptors[2] =
 {
   {
     "val",
@@ -201,14 +201,27 @@ static const ProtobufCFieldDescriptor mpz_ser__field_descriptors[1] =
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "neg",
+    2,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(MpzSer, neg),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned mpz_ser__field_indices_by_name[] = {
+  1,   /* field[1] = neg */
   0,   /* field[0] = val */
 };
 static const ProtobufCIntRange mpz_ser__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 1 }
+  { 0, 2 }
 };
 const ProtobufCMessageDescriptor mpz_ser__descriptor =
 {
@@ -218,7 +231,7 @@ const ProtobufCMessageDescriptor mpz_ser__descriptor =
   "MpzSer",
   "",
   sizeof(MpzSer),
-  1,
+  2,
   mpz_ser__field_descriptors,
   mpz_ser__field_indices_by_name,
   1,  mpz_ser__number_ranges,
@@ -353,7 +366,7 @@ const ProtobufCMessageDescriptor octet_ser__descriptor =
   (ProtobufCMessageInit) octet_ser__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor msp_ser__field_descriptors[1] =
+static const ProtobufCFieldDescriptor msp_ser__field_descriptors[2] =
 {
   {
     "mat",
@@ -367,14 +380,27 @@ static const ProtobufCFieldDescriptor msp_ser__field_descriptors[1] =
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "row_to_attrib",
+    2,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_INT64,
+    offsetof(MspSer, n_row_to_attrib),
+    offsetof(MspSer, row_to_attrib),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned msp_ser__field_indices_by_name[] = {
   0,   /* field[0] = mat */
+  1,   /* field[1] = row_to_attrib */
 };
 static const ProtobufCIntRange msp_ser__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 1 }
+  { 0, 2 }
 };
 const ProtobufCMessageDescriptor msp_ser__descriptor =
 {
@@ -384,7 +410,7 @@ const ProtobufCMessageDescriptor msp_ser__descriptor =
   "MspSer",
   "",
   sizeof(MspSer),
-  1,
+  2,
   msp_ser__field_descriptors,
   msp_ser__field_indices_by_name,
   1,  msp_ser__number_ranges,
