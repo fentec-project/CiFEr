@@ -1,0 +1,20 @@
+message mpz_ser {
+        repeated int64 val = 1;
+}
+
+message mat_ser {
+        repeated mpz_ser val = 1;
+        required int64 rows = 2;
+        required int64 cols = 3;
+}
+
+message octet_ser {
+        repeated int32 val = 1;
+        required int64 len = 2;
+        required int64 max = 3;
+}
+
+message msp_ser {
+        required mat_ser mat = 1;
+//        repeated int64 row_to_attrib = 2;
+}

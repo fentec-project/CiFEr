@@ -50,5 +50,7 @@ MunitSuite gpsw_suite;
 MunitSuite fame_suite;
 MunitSuite dippe_suite;
 MunitSuite sgp_suite;
+MunitSuite data_ser_suite;
+MunitSuite fame_ser_suite;
 
 #endif

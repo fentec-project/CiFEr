@@ -1,0 +1,15 @@
+import "data.proto";
+
+message cfe_fame_pub_key_ser {
+        required octet_ser part_G2_1 = 1;
+        required octet_ser part_G2_2 = 2;
+        required octet_ser part_GT_1 = 3;
+        required octet_ser part_GT_2 = 4;
+}
+
+message cfe_fame_attrib_keys_ser {
+        repeated octet_ser k0 = 1;
+        repeated octet_ser k = 2;
+        repeated octet_ser k_prime = 3;
+        repeated int64 row_to_attrib = 4;
+}
