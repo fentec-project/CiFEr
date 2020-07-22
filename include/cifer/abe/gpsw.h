@@ -72,9 +72,8 @@ typedef struct cfe_gpsw_cipher {
  * owned attributes and is needed for the decryption in the GPSW scheme.
  */
 typedef struct cfe_gpsw_keys {
-    cfe_mat mat;
     cfe_vec_G1 d;
-    int *row_to_attrib;
+    cfe_msp *msp;
 } cfe_gpsw_keys;
 
 /**
@@ -129,14 +128,25 @@ void cfe_gpsw_cipher_init(cfe_gpsw_cipher *cipher, size_t num_attrib);
 void cfe_gpsw_encrypt(cfe_gpsw_cipher *cipher, cfe_gpsw *gpsw, FP12_BN254 *msg,
                       int *gamma, size_t num_attrib, cfe_gpsw_pub_key *pk);
 
+///**
+// * Initializes the vector of elements on the elliptic curve which represents the
+// * policy keys.
+// *
+// * @param policy_keys A pointer to an uninitialized cfe_vec_G1 struct
+// * @param msp A pointer to an initialized struct representing the MSP policy
+// */
+//void cfe_gpsw_policy_keys_init(cfe_vec_G1 *policy_keys, cfe_msp *msp);
 /**
- * Initializes the vector of elements on the elliptic curve which represents the
- * policy keys.
+ * Initializes the cfe_gpsw_keys struct which represents the keys for the
+ * decryption.
  *
- * @param policy_keys A pointer to an uninitialized cfe_vec_G1 struct
+ * @param keys A pointer to an uninitialized cfe_gpsw_keys struct
  * @param msp A pointer to an initialized struct representing the MSP policy
+ * @param attrib A pointer to an array of integers defining which attributes are
+ * owned to join corresponding keys to the final key for the decryption
+ * @param num_attrib The length of attrib
  */
-void cfe_gpsw_policy_keys_init(cfe_vec_G1 *policy_keys, cfe_msp *msp);
+void cfe_gpsw_keys_init(cfe_vec_G1 *policy_keys, cfe_msp *msp);
 
 /**
  * The function given a monotone span program (MSP) and the vector of secret
@@ -151,24 +161,12 @@ void cfe_gpsw_policy_keys_init(cfe_vec_G1 *policy_keys, cfe_msp *msp);
  * @param msp A pointer to an initialized struct representing the MSP policy
  * @param sk A pointer to an initialized struct representing the secret key
  */
-void cfe_gpsw_generate_policy_keys(cfe_vec_G1 *key, cfe_gpsw *gpsw, cfe_msp *msp, cfe_vec *sk);
+void cfe_gpsw_generate_policy_keys(cfe_gpsw_keys *key, cfe_gpsw *gpsw, cfe_msp *msp, cfe_vec *sk);
 
 /**
  * A helping function used in generate_policy_keys.
  */
 void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p);
-
-/**
- * Initializes the cfe_gpsw_keys struct which represents the keys for the
- * decryption.
- *
- * @param keys A pointer to an uninitialized cfe_gpsw_keys struct
- * @param msp A pointer to an initialized struct representing the MSP policy
- * @param attrib A pointer to an array of integers defining which attributes are
- * owned to join corresponding keys to the final key for the decryption
- * @param num_attrib The length of attrib
- */
-void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, int *attrib, size_t num_attrib);
 
 /**
  * The function given the set of all keys produced from the MSP struct takes

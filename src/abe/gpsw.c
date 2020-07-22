@@ -94,11 +94,14 @@ void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p) {
     mpz_clear(sum);
 }
 
-void cfe_gpsw_policy_keys_init(cfe_vec_G1 *policy_keys, cfe_msp *msp) {
-    cfe_vec_G1_init(policy_keys, msp->mat.rows);
+void cfe_gpsw_keys_init(cfe_gpsw_keys *policy_keys, cfe_msp *msp) {
+    cfe_vec_G1_init(&(policy_keys->d), msp->mat.rows);
+    cfe_msp new_msp;
+    cfe_mat_init(&(new_msp.mat), msp->mat.rows, msp->mat.cols);
+    new_msp.row_to_attrib = (int *) cfe_malloc(msp->mat.rows * sizeof(int));
 }
 
-void cfe_gpsw_generate_policy_keys(cfe_vec_G1 *policy_keys, cfe_gpsw *gpsw,
+void cfe_gpsw_generate_policy_keys(cfe_gpsw_keys *policy_keys, cfe_gpsw *gpsw,
                                    cfe_msp *msp, cfe_vec *sk) {
     cfe_vec u;
     cfe_vec_init(&u, msp->mat.cols);
@@ -120,24 +123,6 @@ void cfe_gpsw_generate_policy_keys(cfe_vec_G1 *policy_keys, cfe_gpsw *gpsw,
 
     cfe_vec_free(&u);
     mpz_clears(t_map_i_inv, mat_times_u, pow, NULL);
-}
-
-void cfe_gpsw_keys_init(cfe_gpsw_keys *keys, cfe_msp *msp, int *attrib, size_t num_attrib) {
-    size_t count_attrib = 0;
-
-    for (size_t i = 0; i < msp->mat.rows; i++) {
-        for (size_t j = 0; j < num_attrib; j++) {
-            if (msp->row_to_attrib[i] == attrib[j]) {
-                count_attrib++;
-                break;
-            }
-        }
-    }
-
-    cfe_mat_init(&keys->mat, count_attrib, msp->mat.cols);
-    cfe_vec_G1_init(&keys->d, count_attrib);
-    keys->row_to_attrib = (int *) cfe_malloc(sizeof(int) * count_attrib);
-
 }
 
 void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
