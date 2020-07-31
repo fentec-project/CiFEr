@@ -71,10 +71,10 @@ typedef struct cfe_gpsw_cipher {
  * cfe_gpsw_cipher represents the key structure with all the keys corresponding
  * owned attributes and is needed for the decryption in the GPSW scheme.
  */
-typedef struct cfe_gpsw_keys {
+typedef struct cfe_gpsw_key {
     cfe_vec_G1 d;
     cfe_msp *msp;
-} cfe_gpsw_keys;
+} cfe_gpsw_key;
 
 /**
  * Configures a new instance of the scheme.
@@ -146,7 +146,7 @@ void cfe_gpsw_encrypt(cfe_gpsw_cipher *cipher, cfe_gpsw *gpsw, FP12_BN254 *msg,
  * owned to join corresponding keys to the final key for the decryption
  * @param num_attrib The length of attrib
  */
-void cfe_gpsw_keys_init(cfe_vec_G1 *policy_keys, cfe_msp *msp);
+void cfe_gpsw_key_init(cfe_gpsw_key *policy_key, cfe_msp *msp);
 
 /**
  * The function given a monotone span program (MSP) and the vector of secret
@@ -161,26 +161,31 @@ void cfe_gpsw_keys_init(cfe_vec_G1 *policy_keys, cfe_msp *msp);
  * @param msp A pointer to an initialized struct representing the MSP policy
  * @param sk A pointer to an initialized struct representing the secret key
  */
-void cfe_gpsw_generate_policy_keys(cfe_gpsw_keys *key, cfe_gpsw *gpsw, cfe_msp *msp, cfe_vec *sk);
+void cfe_gpsw_generate_policy_key(cfe_gpsw_key *key, cfe_gpsw *gpsw, cfe_msp *msp, cfe_vec *sk);
 
 /**
  * A helping function used in generate_policy_keys.
  */
 void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p);
+typedef struct cfe_gpsw_keys {
+    cfe_mat mat;
+    cfe_vec_G1 d;
+    int *row_to_attrib;
+} cfe_gpsw_keys;
 
-/**
- * The function given the set of all keys produced from the MSP struct takes
- * those that are specified and creates keys for the decryption.
- *
- * @param keys A pointer to a cfe_gpsw_keys struct, the keys for the decryption
- * will be saved here
- * @param policy_keys A pointer to an initialized struct representing the keys of
- * all the attributes
- * @param msp A pointer to an initialized struct representing the MSP policy
- * @param attrib A pointer to an array of integers defining which attributes are
- * owned to join corresponding keys to the final key for the decryption
- * @param num_attrib The length of attrib
- */
+///**
+// * The function given the set of all keys produced from the MSP struct takes
+// * those that are specified and creates keys for the decryption.
+// *
+// * @param keys A pointer to a cfe_gpsw_keys struct, the keys for the decryption
+// * will be saved here
+// * @param policy_keys A pointer to an initialized struct representing the keys of
+// * all the attributes
+// * @param msp A pointer to an initialized struct representing the MSP policy
+// * @param attrib A pointer to an array of integers defining which attributes are
+// * owned to join corresponding keys to the final key for the decryption
+// * @param num_attrib The length of attrib
+// */
 void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
                             cfe_msp *msp, int *attrib, size_t num_attrib);
 
@@ -198,7 +203,7 @@ void cfe_gpsw_delegate_keys(cfe_gpsw_keys *keys, cfe_vec_G1 *policy_keys,
  * @param gpsw A pointer to an initialized struct representing the scheme
  * @return Error code
  */
-cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_keys *keys, cfe_gpsw *gpsw);
+cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_key *key, cfe_gpsw *gpsw);
 
 /**
  * Frees the memory occupied by the struct members. It does not free
@@ -227,13 +232,13 @@ void cfe_gpsw_pub_key_free(cfe_gpsw_pub_key *pk);
  */
 void cfe_gpsw_cipher_free(cfe_gpsw_cipher *cipher);
 
-/**
- * Frees the memory occupied by the struct members. It does not free
- * memory occupied by the struct itself.
- *
- * @param keys A pointer to an instance of the decryption keys (*initialized*
- * cfe_gpsw_keys struct)
- */
-void cfe_gpsw_keys_free(cfe_gpsw_keys *keys);
+///**
+// * Frees the memory occupied by the struct members. It does not free
+// * memory occupied by the struct itself.
+// *
+// * @param keys A pointer to an instance of the decryption keys (*initialized*
+// * cfe_gpsw_keys struct)
+// */
+//void cfe_gpsw_keys_free(cfe_gpsw_keys *keys);
 
 #endif
