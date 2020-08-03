@@ -34,12 +34,11 @@
  * on Goyal, Pandey, Sahai, Waters: "Attribute-Based Encryption for
  * Fine-Grained Access Control of Encrypted Data"
  * We abbreviated it GPSW scheme to honor the authors. This scheme
- * enables distribution of keys based on a boolean expression determining
- * which attributes are needed for an entity to be able to decrypt. Each
- * key is connected to some attribute, such that only a set of keys
- * whose attributes are sufficient can decrypt the massage. This scheme
- * is a PUBLIC-KEY scheme - no master secret key is needed to encrypt
- * the messages.
+ * enables distribution of keys with associated boolean expression (policy)
+ * and encrypting ciphertext with associated set of attributes. A key
+ * can decrypt a ciphertext if the associated attributes satisfy the
+ * policy. This scheme is a PUBLIC-KEY scheme - no master secret key is
+ * needed to encrypt the messages.
  */
 
 /**
@@ -139,10 +138,10 @@ void cfe_gpsw_key_init(cfe_gpsw_key *policy_key, cfe_msp *msp);
 
 /**
  * The function given a monotone span program (MSP) and the vector of secret
- * keys produces a vector of keys needed for the decryption. In particular,
- * for each row of the MSP matrix it creates a corresponding key. Since
- * each row of the matrix has a corresponding key, this keys can be latter delegated
- * to entities with corresponding attributes.
+ * keys produces a keys needed for the decryption. In particular,
+ * the key can be used to decrypt a ciphertext if and only if the
+ * set of attributes attached to the ciphertext satisfy the policy
+ * associated to the key.
  *
  * @param key A pointer to a vector of elements of the elliptic curve,
  * the keys will be saved here
@@ -160,8 +159,8 @@ void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p);
 // TODO: change decryption to be a string when mapping is defined
 /**
  * The function takes as an input a cipher and keys and tries to decrypt
- * the cipher. If the keys were properly generated, this is possible if and only
- * if the rows of the matrix in the key span the vector [1, 1,..., 1]. If this
+ * the cipher. If the keys were properly generated, set of attributes attached
+ * to the ciphertext satisfy the policy associated to the key. If this
  * is not possible, i.e. keys are insufficient, the function returns the
  * corresponding error.
  *
