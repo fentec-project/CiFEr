@@ -181,7 +181,6 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_ke
     FP12_BN254 pair;
     FP12_BN254 pair_pow;
     FP12_BN254 pair_pow_inv;
-
     BIG_256_56 alpha_i;
     for (size_t i = 0; i < mat.rows; i++) {
         if (mpz_cmp_ui(alpha.vec[i], 0) == 0) {
