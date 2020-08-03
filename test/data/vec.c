@@ -160,7 +160,7 @@ MunitResult test_vector_check_bound(const MunitParameter params[], void *data) {
         cfe_vec_set(&v, x, i);
     }
 
-    mpz_set_si(x, 4);
+    mpz_set_si(x, 3);
     munit_assert_false(cfe_vec_check_bound(&v, x));
 
     mpz_set_si(x, 5);

@@ -159,10 +159,10 @@ void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p);
 // TODO: change decryption to be a string when mapping is defined
 /**
  * The function takes as an input a cipher and keys and tries to decrypt
- * the cipher. If the keys were properly generated, set of attributes attached
- * to the ciphertext satisfy the policy associated to the key. If this
- * is not possible, i.e. keys are insufficient, the function returns the
- * corresponding error.
+ * the cipher. If the keys were properly generated, the set of attributes
+ * attached to the ciphertext satisfy the policy associated to the key. If
+ * this is not possible, i.e. keys are insufficient, the function returns
+ * the corresponding error.
  *
  * @param res An element of FP12_BN254, the decryption will be saved here
  * @param cipher A pointer to an initialized struct representing the ciphertext

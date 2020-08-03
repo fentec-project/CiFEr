@@ -254,6 +254,8 @@ void cfe_mat_GT_mul_vec(cfe_vec_GT *res, cfe_mat_GT *m, cfe_vec *u) {
             }
         }
     }
+
+    mpz_clear(x_neg);
 }
 
 void cfe_mat_GT_pair_mat_G1(cfe_mat_GT *res, cfe_mat_G1 *m) {
