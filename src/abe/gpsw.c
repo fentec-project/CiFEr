@@ -96,10 +96,8 @@ void cfe_gpsw_rand_vec_const_sum(cfe_vec *v, mpz_t y, mpz_t p) {
 
 void cfe_gpsw_key_init(cfe_gpsw_key *policy_key, cfe_msp *msp) {
     cfe_vec_G1_init(&(policy_key->d), msp->mat.rows);
-    cfe_msp new_msp;
-    cfe_mat_init(&(new_msp.mat), msp->mat.rows, msp->mat.cols);
-    new_msp.row_to_attrib = (int *) cfe_malloc(msp->mat.rows * sizeof(int));
-    policy_key->msp = &new_msp;
+    cfe_mat_init(&(policy_key->msp.mat), msp->mat.rows, msp->mat.cols);
+    policy_key->msp.row_to_attrib = (int *) cfe_malloc(msp->mat.rows * sizeof(int));
 }
 
 void cfe_gpsw_generate_policy_key(cfe_gpsw_key *policy_key, cfe_gpsw *gpsw,
@@ -111,6 +109,7 @@ void cfe_gpsw_generate_policy_key(cfe_gpsw_key *policy_key, cfe_gpsw *gpsw,
     mpz_t t_map_i_inv, mat_times_u, pow;
     mpz_inits(t_map_i_inv, mat_times_u, pow, NULL);
     BIG_256_56 pow_big;
+    cfe_mat_copy(&policy_key->msp.mat, &msp->mat);
     for (size_t i = 0; i < msp->mat.rows; i++) {
         mpz_invert(t_map_i_inv, sk->vec[msp->row_to_attrib[i]], gpsw->p);
         cfe_vec_dot(mat_times_u, &(msp->mat.mat[i]), &u);
@@ -120,9 +119,9 @@ void cfe_gpsw_generate_policy_key(cfe_gpsw_key *policy_key, cfe_gpsw *gpsw,
 
         ECP_BN254_generator(&(policy_key->d.vec[i]));
         ECP_BN254_mul(&(policy_key->d.vec[i]), pow_big);
+
+        policy_key->msp.row_to_attrib[i] = msp->row_to_attrib[i];
     }
-    // todo
-    policy_key->msp = msp;
 
     cfe_vec_free(&u);
     mpz_clears(t_map_i_inv, mat_times_u, pow, NULL);
@@ -130,10 +129,11 @@ void cfe_gpsw_generate_policy_key(cfe_gpsw_key *policy_key, cfe_gpsw *gpsw,
 
 cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_key *key, cfe_gpsw *gpsw) {
     size_t count_attrib = 0;
+    cfe_error err = CFE_ERR_NONE;
 
-    for (size_t i = 0; i < key->msp->mat.rows; i++) {
+    for (size_t i = 0; i < key->msp.mat.rows; i++) {
         for (size_t j = 0; j < cipher->e.size; j++) {
-            if (key->msp->row_to_attrib[i] == cipher->gamma[j]) {
+            if (key->msp.row_to_attrib[i] == cipher->gamma[j]) {
                 count_attrib++;
                 break;
             }
@@ -141,17 +141,17 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_ke
     }
 
     cfe_mat mat;
-    cfe_mat_init(&mat, count_attrib, key->msp->mat.cols);
+    cfe_mat_init(&mat, count_attrib, key->msp.mat.cols);
     cfe_vec_G1 d;
     cfe_vec_G1_init(&d, count_attrib);
 
     size_t counter = 0;
     size_t *positions = (size_t *) cfe_malloc(sizeof(size_t) * count_attrib);
 
-    for (size_t i = 0; i < key->msp->mat.rows; i++) {
+    for (size_t i = 0; i < key->msp.mat.rows; i++) {
         for (size_t j = 0; j < cipher->e.size; j++) {
-            if (key->msp->row_to_attrib[i] == cipher->gamma[j]) {
-                cfe_mat_set_vec(&mat, &(key->msp->mat.mat[i]), counter);
+            if (key->msp.row_to_attrib[i] == cipher->gamma[j]) {
+                cfe_mat_set_vec(&mat, &(key->msp.mat.mat[i]), counter);
                 ECP_BN254_copy(&d.vec[counter], &(key->d.vec[i]));
                 positions[counter] = j;
                 counter++;
@@ -173,7 +173,8 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_ke
     cfe_vec_free(&one_vec);
     mpz_clear(one);
     if (check) {
-        return CFE_ERR_INSUFFICIENT_KEYS;
+        err = CFE_ERR_INSUFFICIENT_KEYS;
+        goto cleanup;
     }
 
     FP12_BN254_copy(res, &(cipher->e0));
@@ -196,9 +197,13 @@ cfe_error cfe_gpsw_decrypt(FP12_BN254 *res, cfe_gpsw_cipher *cipher, cfe_gpsw_ke
     }
 
     cfe_vec_free(&alpha);
+
+    cleanup:
+    cfe_mat_free(&mat);
+    cfe_vec_G1_free(&d);
     free(positions);
 
-    return CFE_ERR_NONE;
+    return err;
 }
 
 void cfe_gpsw_free(cfe_gpsw *gpsw) {
@@ -212,4 +217,9 @@ void cfe_gpsw_pub_key_free(cfe_gpsw_pub_key *pk) {
 void cfe_gpsw_cipher_free(cfe_gpsw_cipher *cipher) {
     cfe_vec_G2_free(&(cipher->e));
     free(cipher->gamma);
+}
+
+void cfe_gpsw_key_free(cfe_gpsw_key *policy_key) {
+    cfe_vec_G1_free(&policy_key->d);
+    cfe_msp_free(&policy_key->msp);
 }

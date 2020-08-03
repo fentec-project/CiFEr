@@ -37,10 +37,9 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     // create a message to be encrypted
     FP12_BN254 msg;
     FP12_BN254_one(&msg);
-//    FP12_BN254_output(&msg);
 
     // define a set of attributes (a subset of the universe of attributes)
-    // that will later be used in the decryption policy of the message
+    // that will be associated to the ciphertext
     int gamma[] = {3, 1, 6, 2};
 
     // encrypt the message
@@ -62,34 +61,39 @@ MunitResult test_gpsw_end_to_end(const MunitParameter *params, void *data) {
     cfe_gpsw_key_init(&key, &msp);
     cfe_gpsw_generate_policy_key(&key, &gpsw, &msp, &sk);
 
-    // decrypt the message with policy key
+    // decrypt the message with policy key, which is only possible if the
+    // attributes associated to the ciphertext satisfy the policy associated
+    // to the key
     FP12_BN254 decrypted;
     cfe_error check = cfe_gpsw_decrypt(&decrypted, &cipher, &key, &gpsw);
     munit_assert(check == CFE_ERR_NONE);
 
     // check if the decrypted message equals the starting message
     munit_assert(FP12_BN254_equals(&msg, &decrypted) == 1);
-//
-////    // produce a insufficient set of keys that are given to an entity with
-////    // a set of attributes in insuff_attrib
-////    int insuff_attrib[] = {1, 2, 6};
-////    cfe_gpsw_keys insuff_keys;
-////    cfe_gpsw_keys_init(&insuff_keys, &msp, insuff_attrib, 3);
-////    cfe_gpsw_delegate_keys(&insuff_keys, &policy_keys, &msp, insuff_attrib, 3);
-////
-////    // check if the decryption is denied
-////    check = cfe_gpsw_decrypt(&decrypted, &cipher, &insuff_keys, &gpsw);
-////    munit_assert(check == CFE_ERR_INSUFFICIENT_KEYS);
-//
-//    // cleanup
-//    cfe_gpsw_free(&gpsw);
-//    cfe_vec_free(&sk);
-//    cfe_gpsw_pub_key_free(&pk);
-//    cfe_gpsw_cipher_free(&cipher);
-////    cfe_vec_G1_free(&policy_keys);
-////    cfe_gpsw_keys_free(&keys);
-////    cfe_gpsw_keys_free(&insuff_keys);
-//    cfe_msp_free(&msp);
+
+    // produce a policy that is the attributes of the ciphertext do not
+    // satisfy
+    char insuff_bool_exp[] = "(5 AND 3) AND ((2 OR 4) OR (1 AND 6))";
+    cfe_msp insuff_msp;
+    err = cfe_boolean_to_msp(&insuff_msp, insuff_bool_exp, 37, true);
+    munit_assert(err == CFE_ERR_NONE);
+    cfe_gpsw_key insuff_key;
+    cfe_gpsw_key_init(&insuff_key, &insuff_msp);
+    cfe_gpsw_generate_policy_key(&insuff_key, &gpsw, &insuff_msp, &sk);
+
+    // check if the decryption is denied
+    check = cfe_gpsw_decrypt(&decrypted, &cipher, &insuff_key, &gpsw);
+    munit_assert(check == CFE_ERR_INSUFFICIENT_KEYS);
+
+    // cleanup
+    cfe_gpsw_free(&gpsw);
+    cfe_vec_free(&sk);
+    cfe_gpsw_pub_key_free(&pk);
+    cfe_gpsw_cipher_free(&cipher);
+    cfe_gpsw_key_free(&key);
+    cfe_gpsw_key_free(&insuff_key);
+    cfe_msp_free(&msp);
+    cfe_msp_free(&insuff_msp);
 
     return MUNIT_OK;
 }

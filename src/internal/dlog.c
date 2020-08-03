@@ -220,6 +220,14 @@ typedef struct BN254_hash {
 } BN254_hash;
 
 cfe_error cfe_baby_giant_FP12_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN254 *g, mpz_t bound) {
+    // zero check
+    FP12_BN254 pow_zero;
+    FP12_BN254_one(&pow_zero);
+    if (FP12_BN254_equals(h, &pow_zero) == 1) {
+        mpz_set_si(res, 0);
+        return CFE_ERR_NONE;
+    }
+
     mpz_t m, i;
     mpz_inits(m, i, NULL);
     FP12_BN254 x, x_neg, z;
@@ -239,7 +247,7 @@ cfe_error cfe_baby_giant_FP12_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN25
 
     FP12_BN254_one(&x);
     FP12_BN254_reduce(&x);
-    for (mpz_set_ui(i, 0); mpz_cmp(i, m) < 0; mpz_add_ui(i, i, 1)) {
+    for (mpz_set_ui(i, 0); mpz_cmp(i, m) <= 0; mpz_add_ui(i, i, 1)) {
         // store T[x] = i
         // create a struct t and store the key and value
         // the key is a string obtained from the the element of the
@@ -264,7 +272,7 @@ cfe_error cfe_baby_giant_FP12_BN256_with_neg(mpz_t res, FP12_BN254 *h, FP12_BN25
     FP12_BN254_copy(&x, h);
     FP12_BN254_inv(&x_neg, h);
 
-    for (mpz_set_ui(i, 0); mpz_cmp(i, m) < 0; mpz_add_ui(i, i, 1)) {
+    for (mpz_set_ui(i, 0); mpz_cmp(i, m) <= 0; mpz_add_ui(i, i, 1)) {
         // get T[x]
         // the value in x needs to be assigned to a temporary variable
         FP12_BN254_toOctet(&oct, &x);

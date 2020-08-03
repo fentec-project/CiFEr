@@ -65,8 +65,8 @@ void cfe_sgp_sec_key_free(cfe_sgp_sec_key *msk) {
 }
 
 void cfe_sgp_generate_sec_key(cfe_sgp_sec_key *msk, cfe_sgp *sgp) {
-    cfe_uniform_sample_vec(&(msk->s), sgp->bound);
-    cfe_uniform_sample_vec(&(msk->t), sgp->bound);
+    cfe_uniform_sample_vec(&(msk->s), sgp->mod);
+    cfe_uniform_sample_vec(&(msk->t), sgp->mod);
 }
 
 cfe_error cfe_sgp_derive_fe_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f) {
@@ -81,12 +81,7 @@ cfe_error cfe_sgp_derive_fe_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *
 
     cfe_mat_mul_x_mat_y(res, f, &(msk->s), &(msk->t));
     ECP2_BN254_generator(key);
-
-    if (mpz_cmp_ui(res, 0) == -1) {
-        mpz_neg(res, res);
-        ECP2_BN254_neg(key);
-    }
-
+    mpz_mod(res, res, sgp->mod);
     BIG_256_56 res_b;
     BIG_256_56_from_mpz(res_b, res);
     ECP2_BN254_mul(key, res_b);
@@ -136,7 +131,6 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
     mpz_t gamma, x_i, y_i, s_i, t_i, tmp, minus;
     mpz_inits(gamma, x_i, y_i, s_i, t_i, tmp, minus, NULL);
     cfe_uniform_sample(gamma, s->mod);
-    mpz_set_si(minus, -1);
     cfe_vec v, v_i;
     cfe_vec_inits(2, &v, &v_i, NULL);
 
@@ -152,7 +146,6 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
         cfe_mat_mul_vec(&v_i, &W_inv_tr, &v);
         cfe_vec_mod(&v_i, &v_i, s->mod);
         cfe_vec_mul_G1(&(cipher->a[i]), &v_i);
-
         cfe_vec_get(y_i, y, i);
         cfe_vec_get(t_i, &(msk->t), i);
         mpz_neg(t_i, t_i);
@@ -164,13 +157,17 @@ cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_ve
         cfe_vec_mul_G2(&(cipher->b[i]), &v_i);
     }
 
-    BIG_256_56 gamma_b;
-    BIG_256_56_from_mpz(gamma_b, gamma);
-    ECP_BN254_mul(&(cipher->g1MulGamma), gamma_b);
+    if (mpz_cmp_si(gamma, 0) != 0){
+        BIG_256_56 gamma_b;
+        BIG_256_56_from_mpz(gamma_b, gamma);
+        ECP_BN254_mul(&(cipher->g1MulGamma), gamma_b);
+    } else {
+        ECP_BN254_inf(&(cipher->g1MulGamma));
+    }
 
     cfe_mat_frees(&W, &W_inv, &W_inv_tr, NULL);
     cfe_vec_frees(&v, &v_i, NULL);
-    mpz_clears(gamma, x_i, y_i, s_i, t_i, tmp, minus, NULL);
+    mpz_clears(gamma, x_i, y_i, s_i, t_i, tmp, NULL);
 
     return CFE_ERR_NONE;
 }
@@ -185,6 +182,14 @@ cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp *s, cfe_sgp_cipher *cipher, ECP2_BN
     FP12_BN254 p1, p2, r;
     BIG_256_56 el_b;
 
+    FP12_BN254 gt_zero;
+    FP12_BN254_one(&gt_zero);
+    ECP_BN254 g1_zero;
+    ECP_BN254_inf(&g1_zero);
+    ECP2_BN254 g2_zero;
+    ECP2_BN254_inf(&g2_zero);
+
+
     for (size_t i = 0; i < f->rows; i++) {
         for (size_t j = 0; j < f->cols; j++) {
             cfe_mat_get(el, f, i, j);
@@ -197,14 +202,23 @@ cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp *s, cfe_sgp_cipher *cipher, ECP2_BN
                 t2 = cipher->b[j].vec[0];
                 t4 = cipher->b[j].vec[1];
 
-                PAIR_BN254_ate(&p1, &t2, &t1);
-                PAIR_BN254_fexp(&p1);
-                PAIR_BN254_ate(&p2, &t4, &t3);
-                PAIR_BN254_fexp(&p2);
+                if (ECP_BN254_equals(&t1, &g1_zero) == 1 || ECP2_BN254_equals(&t2, &g2_zero)) {
+                    FP12_BN254_copy(&p1, &gt_zero);
+                } else {
+                    PAIR_BN254_ate(&p1, &t2, &t1);
+                    PAIR_BN254_fexp(&p1);
+                }
+
+                if (ECP_BN254_equals(&t3, &g1_zero) == 1 || ECP2_BN254_equals(&t4, &g2_zero)) {
+                    FP12_BN254_copy(&p2, &gt_zero);
+                } else {
+                    PAIR_BN254_ate(&p2, &t4, &t3);
+                    PAIR_BN254_fexp(&p2);
+                }
 
                 FP12_BN254_mul(&p1, &p2); // p1 stores the multiplied value
 
-                if (mpz_cmp_ui(el, 0) == -1) {
+                if (mpz_cmp_ui(el, 0) < 0) {
                     mpz_neg(el, el);
                     FP12_BN254_inv(&p1, &p1);
                 }
