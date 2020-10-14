@@ -74,7 +74,9 @@ MunitResult test_sgp_end_to_end(const MunitParameter *params, void *data) {
     munit_assert(err == 0);
     mpz_t dec, xy;
     mpz_inits(dec, xy , NULL);
-    cfe_sgp_decrypt(dec, &s, &cipher, &key, &m);
+    err = cfe_sgp_decrypt(dec, &s, &cipher, &key, &m);
+    munit_assert(err == 0);
+
     cfe_mat_mul_x_mat_y(xy, &m, &x, &y);
     munit_assert(mpz_cmp(dec, xy) == 0);
 

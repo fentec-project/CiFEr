@@ -113,7 +113,7 @@ void cfe_vec_mod(cfe_vec *res, cfe_vec *v, mpz_t modulo) {
 // Checks if all coordinates are < bound.
 bool cfe_vec_check_bound(cfe_vec *v, mpz_t bound) {
     for (size_t i = 0; i < v->size; i++) {
-        if (mpz_cmp(v->vec[i], bound) >= 0) {
+        if (mpz_cmp(v->vec[i], bound) > 0) {
             return false;
         }
     }

@@ -36,13 +36,30 @@ void cfe_vec_G1_inf(cfe_vec_G1 *v) {
 
 void cfe_vec_mul_G1(cfe_vec_G1 *v, cfe_vec *u) {
     assert(v->size == u->size);
+    mpz_t neg_x;
+    mpz_init(neg_x);
 
     BIG_256_56 x;
     for (size_t i = 0; i < u->size; i++) {
-        ECP_BN254_generator(&(v->vec[i]));
-        BIG_256_56_from_mpz(x, u->vec[i]);
-        ECP_BN254_mul(&(v->vec[i]), x);
+        if (mpz_cmp_si(u->vec[i], 0) > 0) {
+            ECP_BN254_generator(&(v->vec[i]));
+            BIG_256_56_from_mpz(x, u->vec[i]);
+            ECP_BN254_mul(&(v->vec[i]), x);
+        }
+        if (mpz_cmp_si(u->vec[i], 0) < 0) {
+            ECP_BN254_generator(&(v->vec[i]));
+            ECP_BN254_neg(&(v->vec[i]));
+            mpz_neg(neg_x, u->vec[i]);
+            BIG_256_56_from_mpz(x, neg_x);
+            ECP_BN254_mul(&(v->vec[i]), x);
+        }
+
+        if (mpz_cmp_si(u->vec[i], 0) == 0) {
+            ECP_BN254_inf(&(v->vec[i]));
+        }
     }
+
+    mpz_clear(neg_x);
 }
 
 void cfe_vec_mul_vec_G1(cfe_vec_G1 *res, cfe_vec *u, cfe_vec_G1 *v) {
@@ -71,12 +88,29 @@ void cfe_vec_G2_inf(cfe_vec_G2 *v) {
 void cfe_vec_mul_G2(cfe_vec_G2 *v, cfe_vec *u) {
     assert(v->size == u->size);
     BIG_256_56 x;
+    mpz_t neg_x;
+    mpz_init(neg_x);
 
     for (size_t i = 0; i < u->size; i++) {
-        ECP2_BN254_generator(&(v->vec[i]));
-        BIG_256_56_from_mpz(x, u->vec[i]);
-        ECP2_BN254_mul(&(v->vec[i]), x);
+        if (mpz_cmp_si(u->vec[i], 0) > 0) {
+            ECP2_BN254_generator(&(v->vec[i]));
+            BIG_256_56_from_mpz(x, u->vec[i]);
+            ECP2_BN254_mul(&(v->vec[i]), x);
+        }
+        if (mpz_cmp_si(u->vec[i], 0) < 0) {
+            ECP2_BN254_generator(&(v->vec[i]));
+            ECP2_BN254_neg(&(v->vec[i]));
+            mpz_neg(neg_x, u->vec[i]);
+            BIG_256_56_from_mpz(x, neg_x);
+            ECP2_BN254_mul(&(v->vec[i]), x);
+        }
+
+        if (mpz_cmp_si(u->vec[i], 0) == 0) {
+            ECP2_BN254_inf(&(v->vec[i]));
+        }
     }
+
+    mpz_clear(neg_x);
 }
 
 void cfe_vec_mul_vec_G2(cfe_vec_G2 *res, cfe_vec *u, cfe_vec_G2 *v) {

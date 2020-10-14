@@ -231,16 +231,31 @@ void cfe_mat_GT_mul_vec(cfe_vec_GT *res, cfe_mat_GT *m, cfe_vec *u) {
     assert(m->cols == u->size);
 
     FP12_BN254 g;
+    FP12_BN254 m_inv;
     BIG_256_56 x;
+    mpz_t x_neg;
+    mpz_init(x_neg);
 
     for (size_t i = 0; i < m->rows; i++) {
         FP12_BN254_one(&(res->vec[i]));
         for (size_t k = 0; k < m->cols; k++) {
-            BIG_256_56_from_mpz(x, u->vec[k]);
-            FP12_BN254_pow(&g, &(m->mat[i].vec[k]), x);
-            FP12_BN254_mul(&(res->vec[i]), &g);
+            if (mpz_cmp_si(u->vec[k], 0) != 0) {
+                if (mpz_cmp_si(u->vec[k], 0) < 0) {
+                    mpz_neg(x_neg, u->vec[k]);
+                    BIG_256_56_from_mpz(x, x_neg);
+                    FP12_BN254_inv(&m_inv, &(m->mat[i].vec[k]));
+                    FP12_BN254_pow(&g, &m_inv, x);
+                    FP12_BN254_mul(&(res->vec[i]), &g);
+                } else {
+                    BIG_256_56_from_mpz(x, u->vec[k]);
+                    FP12_BN254_pow(&g, &(m->mat[i].vec[k]), x);
+                    FP12_BN254_mul(&(res->vec[i]), &g);
+                }
+            }
         }
     }
+
+    mpz_clear(x_neg);
 }
 
 void cfe_mat_GT_pair_mat_G1(cfe_mat_GT *res, cfe_mat_G1 *m) {

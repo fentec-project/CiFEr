@@ -60,6 +60,7 @@ typedef struct cfe_msp {
  * @param msp A pointer to an uninitialized cfe_msp struct representing the
  * MSP structure; the result will be saved here
  * @param bool_exp A string with the boolean expression
+ * @param bool_exp_len Length of the string with the boolean expression
  * @param convert_to_ones A boolean value defining which vector must the MSP matrix
  * span, a vector [1, 1,..., 1] if set to true or vector [1, 0,..., 0] if set to false
  * @return Returns an error if the boolean expression is not in the proper form and
