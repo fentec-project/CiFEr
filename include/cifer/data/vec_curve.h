@@ -53,6 +53,14 @@ typedef struct cfe_vec_GT {
 } cfe_vec_GT;
 
 /**
+ * Vector of octets elements.
+ */
+typedef struct cfe_vec_octet {
+    octet *vec; /** A pointer to the first element */
+    size_t size; /** The size of the vector */
+} cfe_vec_octet;
+
+/**
  * Initializes a vector of ECP_BN254 elements of given size.
  *
  * @param v A pointer to an uninitialized cfe_vec_G1 vector
@@ -177,5 +185,22 @@ void cfe_vec_G2_free(cfe_vec_G2 *v);
  * cfe_vec_GT struct)
  */
 void cfe_vec_GT_free(cfe_vec_GT *v);
+
+/**
+ * Initializes a vector of octet elements of given size.
+ *
+ * @param v A pointer to an uninitialized cfe_vec_G1 vector
+ * @param size Size of the vector
+ */
+void cfe_vec_octet_init(cfe_vec_octet *v, size_t size);
+
+/**
+ * Frees the memory occupied by the struct members. It does not free
+ * memory occupied by the struct itself.
+ *
+ * @param v A pointer to a vector (*initialized*
+ * cfe_vec_octet struct)
+ */
+void cfe_vec_octet_free(cfe_vec_octet *v);
 
 #endif

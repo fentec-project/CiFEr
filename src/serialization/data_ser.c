@@ -349,3 +349,90 @@ cfe_error cfe_msp_read(cfe_msp *a, cfe_ser *buf) {
 
     return 0;
 }
+
+void cfe_vec_octet_pack(cfe_vec_octet *a, VecOctetSer *msg, OctetSer *val) {
+    msg->n_vec = a->size;
+    msg->vec = cfe_malloc(sizeof(OctetSer *) * a->size);
+    for (size_t i =0; i<a->size; i++) {
+        cfe_octet_ser_init(&val[i]);
+        cfe_octet_pack(&(a->vec[i]), &val[i]);
+        msg->vec[i] = &val[i];
+    }
+
+    msg->size = a->size;
+}
+
+void cfe_vec_octet_ser(cfe_vec_octet *a, cfe_ser *buf) {
+    VecOctetSer msg = VEC_OCTET_SER__INIT;
+    OctetSer *val = cfe_malloc(sizeof(OctetSer) * a->size);
+    cfe_vec_octet_pack(a, &msg, val);
+    buf->len = vec_octet_ser__get_packed_size(&msg);
+    buf->ser = cfe_malloc(buf->len);
+
+    vec_octet_ser__pack(&msg, buf->ser);
+
+    for (size_t i =0; i<a->size; i++) {
+            free(msg.vec[i]->val);
+    }
+
+    free(val);
+    free(msg.vec);
+}
+
+void cfe_vec_octet_unpack(cfe_vec_octet *a, VecOctetSer *msg) {
+    cfe_vec_octet_init(a, msg->size);
+
+    for (size_t i=0; i < (size_t)msg->size; i++) {
+        cfe_octet_unpack(&(a->vec[i]), msg->vec[i]);
+    }
+}
+
+cfe_error cfe_vec_octet_read(cfe_vec_octet *a, cfe_ser *buf) {
+    VecOctetSer *msg;
+    msg = vec_octet_ser__unpack(NULL, buf->len, buf->ser);
+    if (msg == NULL)
+    {
+        return 1;
+    }
+
+    cfe_vec_octet_unpack(a, msg);
+    // Free the unpacked message
+    vec_octet_ser__free_unpacked(msg, NULL);
+
+    return 0;
+}
+
+void cfe_vec_ECP2_BN254_ser(cfe_vec_G2 *a, cfe_ser *buf) {
+    cfe_vec_octet octets;
+    cfe_vec_octet_init(&octets, a->size);
+
+    for (size_t i =0; i<a->size; i++) {
+        char *h1 = (char *) cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
+        octet oct = {0, (4 * MODBYTES_256_56) * sizeof(char), h1};
+        ECP2_BN254_toOctet(&oct, &(a->vec[i]));
+        octets.vec[i] = oct;
+    }
+
+    cfe_vec_octet_ser(&octets, buf);
+
+    for (size_t i =0; i<a->size; i++) {
+        free(octets.vec[i].val);
+    }
+    cfe_vec_octet_free(&octets);
+}
+
+cfe_error cfe_vec_ECP2_BN254_read(cfe_vec_G2 *a, cfe_ser *buf) {
+    cfe_vec_octet vec;
+    cfe_vec_octet_read(&vec, buf);
+
+    cfe_vec_G2_init(a, vec.size);
+
+    for (size_t i =0; i< vec.size; i++) {
+        ECP2_BN254_fromOctet(&(a->vec[i]), &(vec.vec[i]));
+        free(vec.vec[i].val);
+    }
+
+    cfe_vec_octet_free(&vec);
+
+    return 0;
+}

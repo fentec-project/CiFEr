@@ -19,3 +19,8 @@ message msp_ser {
         required mat_ser mat = 1;
         repeated int64 row_to_attrib = 2;
 }
+
+message vec_octet_ser {
+        repeated octet_ser vec = 1;
+        required int64 size = 2;
+}

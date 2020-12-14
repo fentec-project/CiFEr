@@ -187,6 +187,51 @@ void   msp_ser__free_unpacked
   assert(message->base.descriptor == &msp_ser__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   vec_octet_ser__init
+                     (VecOctetSer         *message)
+{
+  static const VecOctetSer init_value = VEC_OCTET_SER__INIT;
+  *message = init_value;
+}
+size_t vec_octet_ser__get_packed_size
+                     (const VecOctetSer *message)
+{
+  assert(message->base.descriptor == &vec_octet_ser__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t vec_octet_ser__pack
+                     (const VecOctetSer *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &vec_octet_ser__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t vec_octet_ser__pack_to_buffer
+                     (const VecOctetSer *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &vec_octet_ser__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+VecOctetSer *
+       vec_octet_ser__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (VecOctetSer *)
+     protobuf_c_message_unpack (&vec_octet_ser__descriptor,
+                                allocator, len, data);
+}
+void   vec_octet_ser__free_unpacked
+                     (VecOctetSer *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &vec_octet_ser__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 static const ProtobufCFieldDescriptor mpz_ser__field_descriptors[2] =
 {
   {
@@ -415,5 +460,56 @@ const ProtobufCMessageDescriptor msp_ser__descriptor =
   msp_ser__field_indices_by_name,
   1,  msp_ser__number_ranges,
   (ProtobufCMessageInit) msp_ser__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor vec_octet_ser__field_descriptors[2] =
+{
+  {
+    "vec",
+    1,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(VecOctetSer, n_vec),
+    offsetof(VecOctetSer, vec),
+    &octet_ser__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "size",
+    2,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_INT64,
+    0,   /* quantifier_offset */
+    offsetof(VecOctetSer, size),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned vec_octet_ser__field_indices_by_name[] = {
+  1,   /* field[1] = size */
+  0,   /* field[0] = vec */
+};
+static const ProtobufCIntRange vec_octet_ser__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor vec_octet_ser__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "vec_octet_ser",
+  "VecOctetSer",
+  "VecOctetSer",
+  "",
+  sizeof(VecOctetSer),
+  2,
+  vec_octet_ser__field_descriptors,
+  vec_octet_ser__field_indices_by_name,
+  1,  vec_octet_ser__number_ranges,
+  (ProtobufCMessageInit) vec_octet_ser__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

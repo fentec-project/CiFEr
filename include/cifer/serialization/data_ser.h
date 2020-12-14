@@ -81,4 +81,16 @@ void cfe_msp_unpack(cfe_msp *a, MspSer *msg);
 
 cfe_error cfe_msp_read(cfe_msp *a, cfe_ser *buf);
 
+void cfe_vec_octet_pack(cfe_vec_octet *a, VecOctetSer *msg, OctetSer *val);
+
+void cfe_vec_octet_ser(cfe_vec_octet *a, cfe_ser *buf);
+
+void cfe_vec_octet_unpack(cfe_vec_octet *a, VecOctetSer *msg);
+
+cfe_error cfe_vec_octet_read(cfe_vec_octet *a, cfe_ser *buf);
+
+void cfe_vec_ECP2_BN254_ser(cfe_vec_G2 *a, cfe_ser *buf);
+
+cfe_error cfe_vec_ECP2_BN254_read(cfe_vec_G2 *a, cfe_ser *buf);
+
 #endif

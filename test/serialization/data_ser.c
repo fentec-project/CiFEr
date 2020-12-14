@@ -125,11 +125,44 @@ MunitResult test_msp_ser(const MunitParameter *params, void *data) {
     return MUNIT_OK;
 }
 
+MunitResult test_vec_octet_ser(const MunitParameter *params, void *data) {
+    cfe_ser buf;
+    mpz_t a;
+    mpz_init(a);
+    mpz_set_str(a, "1100", 10);
+
+    cfe_vec exponents;
+    cfe_vec_init(&exponents, 5);
+    cfe_uniform_sample_vec(&exponents, a);
+
+    cfe_vec_G2 vec, vec2;
+    cfe_vec_G2_init(&vec, 5);
+
+    cfe_vec_mul_G2(&vec, &exponents);
+
+    cfe_vec_ECP2_BN254_ser(&vec, &buf);
+    cfe_vec_ECP2_BN254_read(&vec2, &buf);
+
+    for (size_t i =0; i<vec.size; i++) {
+        munit_assert(ECP2_BN254_equals(&vec.vec[i], &vec2.vec[i]) == 1);
+    }
+
+    cfe_ser_free(&buf);
+    cfe_vec_G2_free(&vec);
+    cfe_vec_G2_free(&vec2);
+    cfe_vec_free(&exponents);
+    mpz_clear(a);
+
+
+    return MUNIT_OK;
+}
+
 MunitTest data_ser_tests[] = {
         {(char *) "/ec", test_ec_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/mpz", test_mpz_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/mat", test_mat_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/msp", test_msp_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/ec_vec", test_vec_octet_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 

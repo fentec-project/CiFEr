@@ -19,6 +19,7 @@ typedef struct _MpzSer MpzSer;
 typedef struct _MatSer MatSer;
 typedef struct _OctetSer OctetSer;
 typedef struct _MspSer MspSer;
+typedef struct _VecOctetSer VecOctetSer;
 
 
 /* --- enums --- */
@@ -74,6 +75,18 @@ struct  _MspSer
 #define MSP_SER__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&msp_ser__descriptor) \
     , NULL, 0,NULL }
+
+
+struct  _VecOctetSer
+{
+  ProtobufCMessage base;
+  size_t n_vec;
+  OctetSer **vec;
+  int64_t size;
+};
+#define VEC_OCTET_SER__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&vec_octet_ser__descriptor) \
+    , 0,NULL, 0 }
 
 
 /* MpzSer methods */
@@ -152,6 +165,25 @@ MspSer *
 void   msp_ser__free_unpacked
                      (MspSer *message,
                       ProtobufCAllocator *allocator);
+/* VecOctetSer methods */
+void   vec_octet_ser__init
+                     (VecOctetSer         *message);
+size_t vec_octet_ser__get_packed_size
+                     (const VecOctetSer   *message);
+size_t vec_octet_ser__pack
+                     (const VecOctetSer   *message,
+                      uint8_t             *out);
+size_t vec_octet_ser__pack_to_buffer
+                     (const VecOctetSer   *message,
+                      ProtobufCBuffer     *buffer);
+VecOctetSer *
+       vec_octet_ser__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   vec_octet_ser__free_unpacked
+                     (VecOctetSer *message,
+                      ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
 typedef void (*MpzSer_Closure)
@@ -166,6 +198,9 @@ typedef void (*OctetSer_Closure)
 typedef void (*MspSer_Closure)
                  (const MspSer *message,
                   void *closure_data);
+typedef void (*VecOctetSer_Closure)
+                 (const VecOctetSer *message,
+                  void *closure_data);
 
 /* --- services --- */
 
@@ -176,6 +211,7 @@ extern const ProtobufCMessageDescriptor mpz_ser__descriptor;
 extern const ProtobufCMessageDescriptor mat_ser__descriptor;
 extern const ProtobufCMessageDescriptor octet_ser__descriptor;
 extern const ProtobufCMessageDescriptor msp_ser__descriptor;
+extern const ProtobufCMessageDescriptor vec_octet_ser__descriptor;
 
 PROTOBUF_C__END_DECLS
 
