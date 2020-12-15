@@ -19,6 +19,7 @@
 #include <cifer/sample/uniform.h>
 #include "cifer/test.h"
 #include "cifer/abe/fame.h"
+#include "cifer/abe/gpsw.h"
 #include "cifer/serialization/fame_ser.h"
 #include "cifer/serialization/data_ser.h"
 
@@ -157,12 +158,39 @@ MunitResult test_vec_octet_ser(const MunitParameter *params, void *data) {
     return MUNIT_OK;
 }
 
+MunitResult test_gpsw_pub_key_ser(const MunitParameter *params, void *data) {
+    cfe_ser buf;
+    cfe_gpsw gpsw;
+    cfe_gpsw_pub_key pk, pk2;
+    cfe_vec sk;
+
+    cfe_gpsw_init(&gpsw, 10);
+    cfe_gpsw_master_keys_init(&pk, &sk, &gpsw);
+    cfe_gpsw_generate_master_keys(&pk, &sk, &gpsw);
+
+    cfe_gpsw_pub_key_ser(&pk, &buf);
+    cfe_gpsw_pub_key_read(&pk2, &buf);
+
+    munit_assert(pk.t.size == pk2.t.size);
+    for (size_t i = 0; i < pk.t.size; i++) {
+        int check = ECP2_BN254_equals(&pk.t.vec[i], &pk2.t.vec[i]);
+        munit_assert(check == 1);
+    }
+
+    cfe_gpsw_free(&gpsw);
+    cfe_vec_free(&sk);
+    cfe_gpsw_pub_key_free(&pk);
+
+    return MUNIT_OK;
+}
+
 MunitTest data_ser_tests[] = {
         {(char *) "/ec", test_ec_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/mpz", test_mpz_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/mat", test_mat_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/msp", test_msp_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/ec_vec", test_vec_octet_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/gpsw", test_gpsw_pub_key_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 

@@ -24,3 +24,8 @@ message vec_octet_ser {
         repeated octet_ser vec = 1;
         required int64 size = 2;
 }
+
+message cfe_gpsw_pub_key_ser {
+        required vec_octet_ser t = 1;
+        required octet_ser y = 2;
+}

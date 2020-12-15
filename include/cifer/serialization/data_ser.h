@@ -20,6 +20,7 @@
 #include <cifer/data/mat.h>
 #include <cifer/data/vec_curve.h>
 #include <cifer/abe/policy.h>
+#include <cifer/abe/gpsw.h>
 #include "data.pb-c.h"
 
 typedef struct cfe_ser {
@@ -92,5 +93,9 @@ cfe_error cfe_vec_octet_read(cfe_vec_octet *a, cfe_ser *buf);
 void cfe_vec_ECP2_BN254_ser(cfe_vec_G2 *a, cfe_ser *buf);
 
 cfe_error cfe_vec_ECP2_BN254_read(cfe_vec_G2 *a, cfe_ser *buf);
+
+void cfe_gpsw_pub_key_ser(cfe_gpsw_pub_key *a, cfe_ser *buf);
+
+cfe_error cfe_gpsw_pub_key_read(cfe_gpsw_pub_key *a, cfe_ser *buf);
 
 #endif
