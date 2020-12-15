@@ -438,10 +438,9 @@ cfe_error cfe_vec_ECP2_BN254_read(cfe_vec_G2 *a, cfe_ser *buf) {
     return 0;
 }
 
-void cfe_gpsw_pub_key_ser(cfe_gpsw_pub_key *a, cfe_ser *buf) {
-    CfeGpswPubKeySer msg = CFE_GPSW_PUB_KEY_SER__INIT;
+void cfe_gpsw_pub_key_pack(cfe_gpsw_pub_key *a, CfeGpswPubKeySer *msg, OctetSer *octets_val) {
+    cfe_FP12_BN254_pack(&(a->y), msg->y);
 
-    // t
     cfe_vec_octet octets;
     cfe_vec_octet_init(&octets, a->t.size);
     for (size_t i =0; i<a->t.size; i++) {
@@ -450,24 +449,44 @@ void cfe_gpsw_pub_key_ser(cfe_gpsw_pub_key *a, cfe_ser *buf) {
         ECP2_BN254_toOctet(&oct, &(a->t.vec[i]));
         octets.vec[i] = oct;
     }
+    cfe_vec_octet_pack(&octets, msg->t, octets_val);
 
+    for (size_t i =0; i<a->t.size; i++) {
+        free(octets.vec[i].val);
+    }
+    free(octets.vec);
+}
+
+void cfe_gpsw_pub_key_ser(cfe_gpsw_pub_key *a, cfe_ser *buf) {
+    CfeGpswPubKeySer msg = CFE_GPSW_PUB_KEY_SER__INIT;
     VecOctetSer t = VEC_OCTET_SER__INIT;
-    OctetSer *val = cfe_malloc(sizeof(OctetSer) * a->t.size);
-    cfe_vec_octet_pack(&octets, &t, val);
     msg.t = &t;
-
-    // y
     OctetSer y = OCTET_SER__INIT;
-    cfe_FP12_BN254_pack(&(a->y), &y);
     msg.y = &y;
+    OctetSer *octets_val = cfe_malloc(sizeof(OctetSer) * a->t.size);
+
+    cfe_gpsw_pub_key_pack(a, &msg, octets_val);
 
     buf->len = cfe_gpsw_pub_key_ser__get_packed_size(&msg);
     buf->ser = cfe_malloc(buf->len);
 
     cfe_gpsw_pub_key_ser__pack(&msg, buf->ser);
 
-    free(val);
     for (size_t i =0; i<a->t.size; i++) {
+        free(msg.t->vec[i]->val);
+    }
+    free(msg.t->vec);
+    free(octets_val);
+}
+
+void cfe_gpsw_pub_key_unpack(cfe_gpsw_pub_key *a, CfeGpswPubKeySer *msg) {
+    cfe_FP12_BN254_unpack(&(a->y), msg->y);
+
+    cfe_vec_octet octets;
+    cfe_vec_octet_unpack(&octets, msg->t);
+    cfe_vec_G2_init(&(a->t), octets.size);
+    for (size_t i =0; i< octets.size; i++) {
+        ECP2_BN254_fromOctet(&(a->t.vec[i]), &(octets.vec[i]));
         free(octets.vec[i].val);
     }
     cfe_vec_octet_free(&octets);
@@ -480,23 +499,9 @@ cfe_error cfe_gpsw_pub_key_read(cfe_gpsw_pub_key *a, cfe_ser *buf) {
         return 1;
     }
 
-    // t
-    cfe_vec_octet octets;
-    cfe_vec_octet_unpack(&octets, msg->t);
-
-    cfe_vec_G2_init(&(a->t), octets.size);
-
-    for (size_t i =0; i< octets.size; i++) {
-        ECP2_BN254_fromOctet(&(a->t.vec[i]), &(octets.vec[i]));
-        free(octets.vec[i].val);
-    }
-
-    // y
-    cfe_FP12_BN254_unpack(&(a->y), msg->y);
-
+    cfe_gpsw_pub_key_unpack(a, msg);
+    // Free the unpacked message
     cfe_gpsw_pub_key_ser__free_unpacked(msg, NULL);
-
-    cfe_vec_octet_free(&octets);
     return 0;
 }
 
