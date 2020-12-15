@@ -29,3 +29,9 @@ message cfe_gpsw_pub_key_ser {
         required vec_octet_ser t = 1;
         required octet_ser y = 2;
 }
+
+message cfe_gpsw_keys_ser {
+        required mat_ser mat = 1;
+        required vec_octet_ser d = 2;
+        repeated int64 row_to_attrib = 3;
+}

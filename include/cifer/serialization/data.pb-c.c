@@ -277,6 +277,51 @@ void   cfe_gpsw_pub_key_ser__free_unpacked
   assert(message->base.descriptor == &cfe_gpsw_pub_key_ser__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   cfe_gpsw_keys_ser__init
+                     (CfeGpswKeysSer         *message)
+{
+  static const CfeGpswKeysSer init_value = CFE_GPSW_KEYS_SER__INIT;
+  *message = init_value;
+}
+size_t cfe_gpsw_keys_ser__get_packed_size
+                     (const CfeGpswKeysSer *message)
+{
+  assert(message->base.descriptor == &cfe_gpsw_keys_ser__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t cfe_gpsw_keys_ser__pack
+                     (const CfeGpswKeysSer *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &cfe_gpsw_keys_ser__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t cfe_gpsw_keys_ser__pack_to_buffer
+                     (const CfeGpswKeysSer *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &cfe_gpsw_keys_ser__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+CfeGpswKeysSer *
+       cfe_gpsw_keys_ser__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (CfeGpswKeysSer *)
+     protobuf_c_message_unpack (&cfe_gpsw_keys_ser__descriptor,
+                                allocator, len, data);
+}
+void   cfe_gpsw_keys_ser__free_unpacked
+                     (CfeGpswKeysSer *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &cfe_gpsw_keys_ser__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 static const ProtobufCFieldDescriptor mpz_ser__field_descriptors[2] =
 {
   {
@@ -607,5 +652,69 @@ const ProtobufCMessageDescriptor cfe_gpsw_pub_key_ser__descriptor =
   cfe_gpsw_pub_key_ser__field_indices_by_name,
   1,  cfe_gpsw_pub_key_ser__number_ranges,
   (ProtobufCMessageInit) cfe_gpsw_pub_key_ser__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor cfe_gpsw_keys_ser__field_descriptors[3] =
+{
+  {
+    "mat",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(CfeGpswKeysSer, mat),
+    &mat_ser__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "d",
+    2,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(CfeGpswKeysSer, d),
+    &vec_octet_ser__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "row_to_attrib",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_INT64,
+    offsetof(CfeGpswKeysSer, n_row_to_attrib),
+    offsetof(CfeGpswKeysSer, row_to_attrib),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned cfe_gpsw_keys_ser__field_indices_by_name[] = {
+  1,   /* field[1] = d */
+  0,   /* field[0] = mat */
+  2,   /* field[2] = row_to_attrib */
+};
+static const ProtobufCIntRange cfe_gpsw_keys_ser__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor cfe_gpsw_keys_ser__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "cfe_gpsw_keys_ser",
+  "CfeGpswKeysSer",
+  "CfeGpswKeysSer",
+  "",
+  sizeof(CfeGpswKeysSer),
+  3,
+  cfe_gpsw_keys_ser__field_descriptors,
+  cfe_gpsw_keys_ser__field_indices_by_name,
+  1,  cfe_gpsw_keys_ser__number_ranges,
+  (ProtobufCMessageInit) cfe_gpsw_keys_ser__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

@@ -184,13 +184,63 @@ MunitResult test_gpsw_pub_key_ser(const MunitParameter *params, void *data) {
     return MUNIT_OK;
 }
 
+MunitResult test_gpsw_keys_ser(const MunitParameter *params, void *data) {
+    cfe_ser buf;
+    cfe_gpsw gpsw;
+    cfe_gpsw_pub_key pk;
+    cfe_vec sk;
+
+    cfe_gpsw_init(&gpsw, 10);
+    cfe_gpsw_master_keys_init(&pk, &sk, &gpsw);
+    cfe_gpsw_generate_master_keys(&pk, &sk, &gpsw);
+
+    // define a boolean expression and make a corresponding msp structure
+    char bool_exp[] = "(5 OR 3) AND ((2 OR 4) OR (1 AND 6))";
+    size_t bool_exp_len = 36;  // length of the boolean expression string
+    cfe_msp msp;
+    cfe_error check = cfe_boolean_to_msp(&msp, bool_exp, bool_exp_len, true);
+    munit_assert(check == CFE_ERR_NONE);
+
+    cfe_vec_G1 policy_keys;
+    cfe_gpsw_policy_keys_init(&policy_keys, &msp);
+    cfe_gpsw_generate_policy_keys(&policy_keys, &gpsw, &msp, &sk);
+
+    int owned_attrib[] = {1, 3, 6};
+    cfe_gpsw_keys keys, keys2;
+    cfe_gpsw_keys_init(&keys, &msp, owned_attrib, 3);
+    cfe_gpsw_delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
+
+    cfe_gpsw_keys_ser(&keys, &buf);
+    cfe_gpsw_keys_read(&keys2, &buf);
+
+    munit_assert(keys.mat.rows == keys2.mat.rows);
+    munit_assert(keys.mat.cols == keys2.mat.cols);
+    for (size_t i =0; i<keys.mat.rows; i++) {
+        munit_assert(keys.row_to_attrib[i] == keys2.row_to_attrib[i]);
+        for (size_t j =0; j < keys.mat.cols; j++) {
+            munit_assert(mpz_cmp(keys.mat.mat[i].vec[j], keys2.mat.mat[i].vec[j]) == 0);
+        }
+    }
+    munit_assert(keys.d.size == keys2.d.size);
+    for (size_t i = 0; i < keys.d.size; i++) {
+        munit_assert(ECP_BN254_equals(&keys.d.vec[i], &keys2.d.vec[i]) == 1);
+    }
+
+    cfe_gpsw_free(&gpsw);
+    cfe_vec_free(&sk);
+    cfe_gpsw_pub_key_free(&pk);
+
+    return MUNIT_OK;
+}
+
 MunitTest data_ser_tests[] = {
         {(char *) "/ec", test_ec_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/mpz", test_mpz_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/mat", test_mat_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/msp", test_msp_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/ec_vec", test_vec_octet_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/gpsw", test_gpsw_pub_key_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/gpsw_pub_key", test_gpsw_pub_key_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/gpsw_keys", test_gpsw_keys_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
