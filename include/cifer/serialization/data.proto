@@ -35,3 +35,9 @@ message cfe_gpsw_keys_ser {
         required vec_octet_ser d = 2;
         repeated int64 row_to_attrib = 3;
 }
+
+message cfe_gpsw_cipher_ser {
+        repeated int64 gamma = 1;
+        required octet_ser e0 = 2;
+        required vec_octet_ser e = 3;
+}

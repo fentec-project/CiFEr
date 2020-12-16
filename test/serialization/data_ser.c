@@ -171,6 +171,7 @@ MunitResult test_gpsw_pub_key_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_pub_key_ser(&pk, &buf);
     cfe_gpsw_pub_key_read(&pk2, &buf);
 
+    munit_assert(FP12_BN254_equals(&pk.y, &pk2.y) == 1);
     munit_assert(pk.t.size == pk2.t.size);
     for (size_t i = 0; i < pk.t.size; i++) {
         int check = ECP2_BN254_equals(&pk.t.vec[i], &pk2.t.vec[i]);
@@ -180,6 +181,7 @@ MunitResult test_gpsw_pub_key_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_free(&gpsw);
     cfe_vec_free(&sk);
     cfe_gpsw_pub_key_free(&pk);
+    cfe_ser_free(&buf);
 
     return MUNIT_OK;
 }
@@ -229,6 +231,49 @@ MunitResult test_gpsw_keys_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_free(&gpsw);
     cfe_vec_free(&sk);
     cfe_gpsw_pub_key_free(&pk);
+    cfe_ser_free(&buf);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_gpsw_cipher_ser(const MunitParameter *params, void *data) {
+    cfe_ser buf;
+    cfe_gpsw gpsw;
+    cfe_gpsw_pub_key pk;
+    cfe_vec sk;
+
+    cfe_gpsw_init(&gpsw, 10);
+    cfe_gpsw_master_keys_init(&pk, &sk, &gpsw);
+    cfe_gpsw_generate_master_keys(&pk, &sk, &gpsw);
+
+    FP12_BN254 msg;
+    FP12_BN254_one(&msg);
+
+    // define a set of attributes (a subset of the universe of attributes)
+    // that will later be used in the decryption policy of the message
+    int gamma[] = {2, 1, 3, 4, 5, 6, 7};
+
+    // encrypt the message
+    cfe_gpsw_cipher cipher, cipher2;
+    cfe_gpsw_cipher_init(&cipher, 7);
+    cfe_gpsw_encrypt(&cipher, &gpsw, &msg, gamma, 7, &pk);
+
+    cfe_gpsw_cipher_ser(&cipher, &buf);
+    cfe_gpsw_cipher_read(&cipher2, &buf);
+
+    munit_assert(FP12_BN254_equals(&cipher.e0, &cipher2.e0) == 1);
+    munit_assert(cipher.e.size == cipher2.e.size);
+    for (size_t i = 0; i < cipher.e.size; i++) {
+        munit_assert(cipher.gamma[i] == cipher2.gamma[i]);
+        int check = ECP2_BN254_equals(&cipher.e.vec[i], &cipher2.e.vec[i]);
+        munit_assert(check == 1);
+    }
+
+    cfe_gpsw_free(&gpsw);
+    cfe_vec_free(&sk);
+    cfe_gpsw_cipher_free(&cipher);
+    cfe_gpsw_cipher_free(&cipher2);
+    cfe_ser_free(&buf);
 
     return MUNIT_OK;
 }
@@ -241,6 +286,7 @@ MunitTest data_ser_tests[] = {
         {(char *) "/ec_vec", test_vec_octet_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/gpsw_pub_key", test_gpsw_pub_key_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/gpsw_keys", test_gpsw_keys_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/gpsw_cipher", test_gpsw_cipher_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 

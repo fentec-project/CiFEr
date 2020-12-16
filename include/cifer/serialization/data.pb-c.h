@@ -22,6 +22,7 @@ typedef struct _MspSer MspSer;
 typedef struct _VecOctetSer VecOctetSer;
 typedef struct _CfeGpswPubKeySer CfeGpswPubKeySer;
 typedef struct _CfeGpswKeysSer CfeGpswKeysSer;
+typedef struct _CfeGpswCipherSer CfeGpswCipherSer;
 
 
 /* --- enums --- */
@@ -113,6 +114,19 @@ struct  _CfeGpswKeysSer
 #define CFE_GPSW_KEYS_SER__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&cfe_gpsw_keys_ser__descriptor) \
     , NULL, NULL, 0,NULL }
+
+
+struct  _CfeGpswCipherSer
+{
+  ProtobufCMessage base;
+  size_t n_gamma;
+  int64_t *gamma;
+  OctetSer *e0;
+  VecOctetSer *e;
+};
+#define CFE_GPSW_CIPHER_SER__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&cfe_gpsw_cipher_ser__descriptor) \
+    , 0,NULL, NULL, NULL }
 
 
 /* MpzSer methods */
@@ -248,6 +262,25 @@ CfeGpswKeysSer *
 void   cfe_gpsw_keys_ser__free_unpacked
                      (CfeGpswKeysSer *message,
                       ProtobufCAllocator *allocator);
+/* CfeGpswCipherSer methods */
+void   cfe_gpsw_cipher_ser__init
+                     (CfeGpswCipherSer         *message);
+size_t cfe_gpsw_cipher_ser__get_packed_size
+                     (const CfeGpswCipherSer   *message);
+size_t cfe_gpsw_cipher_ser__pack
+                     (const CfeGpswCipherSer   *message,
+                      uint8_t             *out);
+size_t cfe_gpsw_cipher_ser__pack_to_buffer
+                     (const CfeGpswCipherSer   *message,
+                      ProtobufCBuffer     *buffer);
+CfeGpswCipherSer *
+       cfe_gpsw_cipher_ser__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   cfe_gpsw_cipher_ser__free_unpacked
+                     (CfeGpswCipherSer *message,
+                      ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
 typedef void (*MpzSer_Closure)
@@ -271,6 +304,9 @@ typedef void (*CfeGpswPubKeySer_Closure)
 typedef void (*CfeGpswKeysSer_Closure)
                  (const CfeGpswKeysSer *message,
                   void *closure_data);
+typedef void (*CfeGpswCipherSer_Closure)
+                 (const CfeGpswCipherSer *message,
+                  void *closure_data);
 
 /* --- services --- */
 
@@ -284,6 +320,7 @@ extern const ProtobufCMessageDescriptor msp_ser__descriptor;
 extern const ProtobufCMessageDescriptor vec_octet_ser__descriptor;
 extern const ProtobufCMessageDescriptor cfe_gpsw_pub_key_ser__descriptor;
 extern const ProtobufCMessageDescriptor cfe_gpsw_keys_ser__descriptor;
+extern const ProtobufCMessageDescriptor cfe_gpsw_cipher_ser__descriptor;
 
 PROTOBUF_C__END_DECLS
 

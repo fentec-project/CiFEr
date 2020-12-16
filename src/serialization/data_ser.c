@@ -593,3 +593,82 @@ cfe_error cfe_gpsw_keys_read(cfe_gpsw_keys *a, cfe_ser *buf) {
 
     return 0;
 }
+
+void cfe_gpsw_cipher_pack(cfe_gpsw_cipher *a, CfeGpswCipherSer *msg, OctetSer *octets_val) {
+    cfe_FP12_BN254_pack(&(a->e0), msg->e0);
+
+    msg->n_gamma = a->e.size;
+    msg->gamma = cfe_malloc(sizeof(int64_t) * a->e.size);
+    for (size_t j =0; j < a->e.size; j++) {
+        msg->gamma[j] = (int64_t)a->gamma[j];
+    }
+
+    cfe_vec_octet octets;
+    cfe_vec_octet_init(&octets, a->e.size);
+    for (size_t i =0; i<a->e.size; i++) {
+        char *h1 = (char *) cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
+        octet oct = {0, (4 * MODBYTES_256_56) * sizeof(char), h1};
+        ECP2_BN254_toOctet(&oct, &(a->e.vec[i]));
+        octets.vec[i] = oct;
+    }
+    cfe_vec_octet_pack(&octets, msg->e, octets_val);
+
+    for (size_t i =0; i<a->e.size; i++) {
+        free(octets.vec[i].val);
+    }
+    free(octets.vec);
+}
+
+void cfe_gpsw_cipher_ser(cfe_gpsw_cipher *a, cfe_ser *buf) {
+    CfeGpswCipherSer msg = CFE_GPSW_CIPHER_SER__INIT;
+    VecOctetSer e = VEC_OCTET_SER__INIT;
+    msg.e = &e;
+    OctetSer e0 = OCTET_SER__INIT;
+    msg.e0 = &e0;
+    OctetSer *octets_val = cfe_malloc(sizeof(OctetSer) * a->e.size);
+
+    cfe_gpsw_cipher_pack(a, &msg, octets_val);
+
+    buf->len = cfe_gpsw_cipher_ser__get_packed_size(&msg);
+    buf->ser = cfe_malloc(buf->len);
+
+    cfe_gpsw_cipher_ser__pack(&msg, buf->ser);
+
+    for (size_t i =0; i<a->e.size; i++) {
+        free(msg.e->vec[i]->val);
+    }
+    free(msg.e->vec);
+    free(octets_val);
+}
+
+void cfe_gpsw_cipher_unpack(cfe_gpsw_cipher *a, CfeGpswCipherSer *msg) {
+    cfe_FP12_BN254_unpack(&(a->e0), msg->e0);
+
+    cfe_vec_octet octets;
+    cfe_vec_octet_unpack(&octets, msg->e);
+    cfe_vec_G2_init(&(a->e), octets.size);
+    for (size_t i =0; i< octets.size; i++) {
+        ECP2_BN254_fromOctet(&(a->e.vec[i]), &(octets.vec[i]));
+        free(octets.vec[i].val);
+    }
+    cfe_vec_octet_free(&octets);
+
+    a->gamma = cfe_malloc(sizeof(int) * a->e.size);
+    for (size_t j =0; j < msg->n_gamma; j++) {
+        a->gamma[j] = (int)msg->gamma[j];
+    }
+}
+
+cfe_error cfe_gpsw_cipher_read(cfe_gpsw_cipher *a, cfe_ser *buf) {
+    CfeGpswCipherSer *msg;
+    msg = cfe_gpsw_cipher_ser__unpack(NULL, buf->len, buf->ser);
+    if (msg == NULL) {
+        return 1;
+    }
+
+    cfe_gpsw_cipher_unpack(a, msg);
+    // Free the unpacked message
+    cfe_gpsw_cipher_ser__free_unpacked(msg, NULL);
+
+    return 0;
+}
