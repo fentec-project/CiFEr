@@ -92,6 +92,27 @@ make test
 Note that this command also builds the library and test executable if they 
 have not been built yet.
 
+### Try it out with Docker
+We provide a simple Docker build for trying out the library without worrying 
+about the installation and the dependencies. You can build a Docker image
+yourself by running (possibly with sudo)
+```
+docker build . -t fentec/cifer
+```
+or downloading it from Docker Hub
+```
+docker pull fentec/cifer
+```
+In the file `example/example.c` you will find a dummy code using CiFEr library.
+Modify it as you wish and then run
+```
+docker run -v $PATHTOCIFER/example:/CiFEr/example cifer
+```
+where `$PATHTOCIFER` is your absolute path to CiFEr library (something like `/home/username/CiFEr`).
+This will link the `example` folder in your repository with the one in the Docker image.
+Then it will compile `example.c` code and execute it. See the instructions bellow
+on how to use schemes implemented in CiFEr or check out any of the tests implemented
+in `test` folder.
 
 ## Using CiFEr in your project
 After you have successfuly built and installed the library, you can use it in 
@@ -158,7 +179,7 @@ which is based on bilinear pairings, and offers adaptive security
 under chosen-plaintext attacks (IND-CPA security).
 
 #### Attribute based encryption (ABE) schemes
-You will need to include headers from `abe` directory. There are two implemented
+You will need to include headers from `abe` directory. There are three implemented
 schemes:
 * A ciphertext policy (CP) ABE scheme named FAME by _Agrawal and Chase_
 ([paper](https://eprint.iacr.org/2017/807.pdf)) allowing encrypting a
@@ -284,7 +305,11 @@ You can quickly construct random vectors and matrices by:
     ```
     
 ## Use the scheme (examples)
-Please note that all the examples below omit error handling. All functions
+In the following we give some examples how to use the schemes. Note that every
+scheme has an implemented test in the folder `test`, in which you can see how
+to use the scheme and modify it to your needs.
+
+Please remember that all the examples below omit error handling. All functions
 which can fail return a `cfe_error` (its definition is in `errors.h` header, 
 located in the `internal` directory) which is non-zero if the function 
 encountered an error.
