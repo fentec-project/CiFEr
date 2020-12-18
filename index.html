@@ -91,17 +91,23 @@ Build and install</h2>
 Test</h2>
 <p>The build commands also create an executable which runs all unit tests. To make sure the library works as expected, run </p><div class="fragment"><div class="line">make test</div>
 </div><!-- fragment --><p>Note that this command also builds the library and test executable if they have not been built yet.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
+Try it out with Docker</h2>
+<p>We provide a simple Docker build for trying out the library without worrying about the installation and the dependencies. You can build a Docker image yourself by running (possibly with sudo) </p><div class="fragment"><div class="line">docker build . -t fentec/cifer</div>
+</div><!-- fragment --><p>or downloading it from Docker Hub </p><div class="fragment"><div class="line">docker pull fentec/cifer</div>
+</div><!-- fragment --><p>In the file <code>example/example.c</code> you will find a dummy code using CiFEr library. Modify it as you wish and then run </p><div class="fragment"><div class="line">docker run -v $PATHTOCIFER/example:/CiFEr/example cifer</div>
+</div><!-- fragment --><p>where <code>$PATHTOCIFER</code> is your absolute path to CiFEr library (something like <code>/home/username/CiFEr</code>). This will link the <code>example</code> folder in your repository with the one in the Docker image. Then it will compile <code>example.c</code> code and execute it. See the instructions bellow on how to use schemes implemented in CiFEr or check out any of the tests implemented in <code>test</code> folder.</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
 Using CiFEr in your project</h1>
 <p>After you have successfuly built and installed the library, you can use it in your project. Instructions below provide a brief introduction to the most important parts of the library, and guide you through a sequence of steps that will quickly get your FE example up and running. <br  />
 </p>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
 Including and linking</h2>
 <p>To use the library, you must <code>#include</code> its headers in your source code and link it with the <code>-lcifer</code> flag when building your code.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Select the FE scheme</h2>
 <p>You can choose from the following set of schemes:</p>
-<h3><a class="anchor" id="autotoc_md9"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 Inner product schemes</h3>
 <p>You will need to include headers from <code>innerprod</code> directory.</p>
 <p>We organized implementations in two categories based on their security assumptions:</p>
@@ -123,19 +129,19 @@ Inner product schemes</h3>
 </ul>
 </li>
 </ul>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md11"></a>
 Quadratic scheme</h3>
 <p>You will need to include headers from <code>quadratic</code> directory.</p>
 <p>It contains an implementation of an efficient FE scheme for quadratic multi-variate polynomials by Sans, Gay and Pointcheval (<a href="https://eprint.iacr.org/2018/206.pdf">paper</a>) which is based on bilinear pairings, and offers adaptive security under chosen-plaintext attacks (IND-CPA security).</p>
-<h3><a class="anchor" id="autotoc_md11"></a>
+<h3><a class="anchor" id="autotoc_md12"></a>
 Attribute based encryption (ABE) schemes</h3>
-<p>You will need to include headers from <code>abe</code> directory. There are two implemented schemes:</p><ul>
+<p>You will need to include headers from <code>abe</code> directory. There are three implemented schemes:</p><ul>
 <li>A ciphertext policy (CP) ABE scheme named FAME by <em>Agrawal and Chase</em> (<a href="https://eprint.iacr.org/2017/807.pdf">paper</a>) allowing encrypting a message based on a boolean expression defining a policy which attributes are needed for the decryption. The functions needed in this scheme have prefix <code><a class="el" href="structcfe__fame.html">cfe_fame</a></code>.</li>
 <li>A key policy (KP) ABE scheme by <em>Goyal, Pandey, Sahai, and Waters</em> (<a href="https://eprint.iacr.org/2006/309.pdf">paper</a>) allowing a distribution of keys following a boolean expression defining a policy which attributes are needed for the decryption. The functions needed in this scheme have prefix <code><a class="el" href="structcfe__gpsw.html">cfe_gpsw</a></code>.</li>
 <li>A decentralized inner product predicate scheme by <em>Michalevsky, Joye</em> (<a href="https://eprint.iacr.org/2018/753.pdf">paper</a>) allowing encryption with policy described as a vector, and a decentralized distribution of keys based on users' vectors so that only users with vectors orthogonal to the encryption vector posses a key that can decrypt the ciphertext. The functions needed in this scheme have prefix <code><a class="el" href="structcfe__dippe.html">cfe_dippe</a></code>.</li>
 </ul>
 <p>These schemes allow to specify a decryption policy defining which attributes are needed to be able to decrypt. For the latter we implemented a policy converter which accepts a boolean expression defining the policy and outputs a monotone span program (MSP) which can be used as an input for the ABE schemes.</p>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Configure selected scheme</h2>
 <p>All CiFEr schemes are implemented as C structs + functions which operate on them with (at least logically) similar APIs. So the first thing we need to do is to create a scheme instance by initializing the appropriate struct. For this step, we need to pass in some configuration, e.g. values of parameters for the selected scheme.</p>
 <p>Let's say we selected a <code><a class="el" href="structcfe__ddh.html">cfe_ddh</a></code> scheme. We create a new scheme instance with: </p><div class="fragment"><div class="line">mpz_t bound;</div>
@@ -150,9 +156,9 @@ Configure selected scheme</h2>
 <li>encryption, and</li>
 <li>decryption.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 Prepare input data</h2>
-<h3><a class="anchor" id="autotoc_md14"></a>
+<h3><a class="anchor" id="autotoc_md15"></a>
 Vectors and matrices</h3>
 <p>All CiFEr chemes rely on vectors (or matrices) of big integer (<code>mpz_t</code>) components.</p>
 <p>CiFEr schemes use the library's own vector (<code><a class="el" href="structcfe__vec.html">cfe_vec</a></code>) and matrix (<code><a class="el" href="structcfe__mat.html">cfe_mat</a></code>) types. They are available in the <code>data</code> directory. A <code><a class="el" href="structcfe__vec.html">cfe_vec</a></code> is basically a wrapper around an array of <code>mpz_t</code> integers, while a <code><a class="el" href="structcfe__mat.html">cfe_mat</a></code> is a wrapper around an array of <code><a class="el" href="structcfe__vec.html">cfe_vec</a></code> vectors.</p>
@@ -172,7 +178,7 @@ Vectors and matrices</h3>
 <div class="line"><a class="code" href="mat_8h.html#a625c8025ba8b0863914bd4da4dd99355">cfe_mat_set_vec</a>(&amp;A, &amp;x, 0);</div>
 <div class="line"><a class="code" href="mat_8h.html#a625c8025ba8b0863914bd4da4dd99355">cfe_mat_set_vec</a>(&amp;A, &amp;y, 1);</div>
 <div class="line"><span class="comment">// A is [[1, 2, 3], [3, 2, 1]]</span></div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md15"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md16"></a>
 Random data</h3>
 <p>To generate random <code>mpz_t</code> values from different probability distributions, you can use one of our several implementations of random samplers. The samplers are provided in the <code>sample</code> directory. Note that the uniform sampler does not require special initialization while other samplers do. Before performing any random sampling, the function <code>cfe_init</code> needs to be called to ensure that the system's random number generator has been properly seeded.</p>
 <p>You can quickly construct random vectors and matrices by:</p><ol type="1">
@@ -181,11 +187,12 @@ Random data</h3>
 <p class="startli">// Uniform sampler (does not need to be initialized) mpz_t max; mpz_init_set_ui(max, 10); cfe_uniform_sample_vec(&amp;v, max); ```</p>
 </li>
 </ol>
-<h1><a class="anchor" id="autotoc_md16"></a>
+<h1><a class="anchor" id="autotoc_md17"></a>
 Use the scheme (examples)</h1>
-<p>Please note that all the examples below omit error handling. All functions which can fail return a <code>cfe_error</code> (its definition is in <code><a class="el" href="errors_8h.html" title="Error definitions.">errors.h</a></code> header, located in the <code>internal</code> directory) which is non-zero if the function encountered an error.</p>
+<p>In the following we give some examples how to use the schemes. Note that every scheme has an implemented test in the folder <code>test</code>, in which you can see how to use the scheme and modify it to your needs.</p>
+<p>Please remember that all the examples below omit error handling. All functions which can fail return a <code>cfe_error</code> (its definition is in <code><a class="el" href="errors_8h.html" title="Error definitions.">errors.h</a></code> header, located in the <code>internal</code> directory) which is non-zero if the function encountered an error.</p>
 <p>Additionally, all examples also omit memory freeing. In CiFEr, all functions which allocate memory for their results (passed as input parameters) have the suffix <code>_init</code> and have a corresponding function with the suffix <code>_free</code>. All other functions expect their inputs to be already initialized and do not allocate any memory the user would need to free manually.</p>
-<h4><a class="anchor" id="autotoc_md17"></a>
+<h4><a class="anchor" id="autotoc_md18"></a>
 Using a single input scheme</h4>
 <p>The example below demonstrates how to use single input scheme instances. Although the example shows how to use the <code><a class="el" href="structcfe__ddh.html">cfe_ddh</a></code> scheme from directory <code>simple</code>, the usage is similar for all single input schemes, regardless of their security properties (s-IND-CPA or IND-CPA) and instantiation (DDH or LWE).</p>
 <p>You will see that three <code><a class="el" href="structcfe__ddh.html">cfe_ddh</a></code> structs are instantiated to simulate the real-world scenarios where each of the three entities involved in FE are on separate machines.</p>
@@ -230,7 +237,7 @@ Using a single input scheme</h4>
 <div class="line"><span class="comment">// decrypt to obtain the result: inner prod of x and y</span></div>
 <div class="line"><span class="comment">// we expect xy to be 11 (e.g. &lt;[1,2],[3,4]&gt;)</span></div>
 <div class="line"><a class="code" href="ddh_8h.html#a0ab09755332ddbb7bf46f0689851d58b">cfe_ddh_decrypt</a>(xy, &amp;decryptor, &amp;ciphertext, fe_key, &amp;y);</div>
-</div><!-- fragment --><h4><a class="anchor" id="autotoc_md18"></a>
+</div><!-- fragment --><h4><a class="anchor" id="autotoc_md19"></a>
 Using a multi input scheme</h4>
 <p>This example demonstrates how multi input FE schemes can be used.</p>
 <p>Here we assume that there are <code>numClients</code> encryptors (e<sub>i</sub>), each with their corresponding input vector x<sub>i</sub>. A trusted entity generates all the master keys needed for encryption and distributes appropriate keys to appropriate encryptor. Then, encryptor e<sub>i</sub> uses their keys to encrypt their data x<sub>i</sub>. The decryptor collects ciphers from all the encryptors. It then relies on the trusted entity to derive a decryption key based on its own set of vectors y<sub>i</sub>. With the derived key, the decryptor is able to compute the result - inner product over all vectors, as <em>Σ &lt;x<sub>i</sub>,y<sub>i</sub>&gt;.</em></p>
@@ -291,7 +298,7 @@ Using a multi input scheme</h4>
 <div class="line"><a class="code" href="ddh__multi_8h.html#a8a04d0a87dd726b4d755da765f075b93">cfe_ddh_multi_copy</a>(&amp;decryptor, &amp;m);</div>
 <div class="line"><a class="code" href="ddh__multi_8h.html#a4e9443b0871bcf729c8da5cba1adf515">cfe_ddh_multi_decrypt</a>(prod, &amp;decryptor, &amp;ciphertext, &amp;fe_key, &amp;Y);</div>
 </div><!-- fragment --><p>Note that above we instantiate multiple encryptors - in reality, different encryptors will be instantiated on different machines.</p>
-<h4><a class="anchor" id="autotoc_md19"></a>
+<h4><a class="anchor" id="autotoc_md20"></a>
 Using a quadratic scheme</h4>
 <p>In the example below, we omit instantiation of different entities (encryptor and decryptor). </p><div class="fragment"><div class="line"><span class="comment">// set the parameters</span></div>
 <div class="line"><span class="keywordtype">size_t</span> l = 5;</div>
@@ -328,7 +335,7 @@ Using a quadratic scheme</h4>
 <div class="line">mpz_t dec;</div>
 <div class="line">mpz_init(dec);</div>
 <div class="line"><a class="code" href="sgp_8h.html#a73b661562919e0bcf88bc2389a89ea27">cfe_sgp_decrypt</a>(dec, &amp;s, &amp;cipher, &amp;key, &amp;m);</div>
-</div><!-- fragment --><h4><a class="anchor" id="autotoc_md20"></a>
+</div><!-- fragment --><h4><a class="anchor" id="autotoc_md21"></a>
 Using ABE schemes</h4>
 <p>In the example below we demonstrate a usage of ABE scheme FAME. We omit instantiation of different entities (encryptor and decryptor). We want to encrypt the following message msg so that only those who own the attributes satisfying a boolean expression 'policy' can decrypt. </p><div class="fragment"><div class="line"><span class="comment">// create a new FAME struct</span></div>
 <div class="line"><a class="code" href="structcfe__fame.html">cfe_fame</a> fame;</div>
