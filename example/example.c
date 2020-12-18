@@ -74,7 +74,7 @@ int main() {
     if (err != 0) {
         return err;
     }
-    gmp_printf("The inner product of a random vector x and y = [1, 1,...,1] is %Zd\n", xy);
+    gmp_printf("The inner product of a random encrypted vector x and y = [1, 1,...,1] is %Zd\n", xy);
 
     mpz_clears(bound, xy, one, NULL);
     cfe_vec_frees(&x, &y, &mpk, &ciphertext, NULL);
