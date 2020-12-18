@@ -8,13 +8,15 @@
 // functions.
 int main() {
     // We will give an example of an inner product scheme
-    // choose meta-parameters for the scheme
+
+    // first choose meta-parameters for the scheme
     size_t l = 5; // dimension of encryption vector
     mpz_t bound; // bound of the input values set to 2^10
     mpz_init(bound);
     mpz_set_ui(bound, 2);
     mpz_pow_ui(bound, bound, 10);
     // modulus_len defines the security of the scheme, the higher the better
+    // for precomputed parameters it needs to be in {1024, 1536, 2048, 2560, 3072, 4096}
     size_t modulus_len = 2048;
 
     // initiate the scheme
@@ -32,12 +34,10 @@ int main() {
     cfe_damgard_generate_master_keys(&msk, &mpk, &s);
 
     // set the vector (of length l) that you want to encrypt
-    // we sample a random vector x
+    // we sample a uniformly random vector x
     cfe_vec x;
     cfe_vec_init(&x, l);
-    mpz_t one;
-    mpz_init_set_si(one, 1);
-    cfe_vec_set_const(&x, bound);
+    cfe_uniform_sample_vec(&x, bound);
 
     // encrypt the the vector x
     cfe_vec ciphertext;
@@ -49,12 +49,14 @@ int main() {
 
     // choose an inner product vector that will be multiplied with
     // the encrypted x; we set it to a vector [1, 1,...,1]
+    mpz_t one;
+    mpz_init_set_si(one, 1);
     cfe_vec y;
     cfe_vec_init(&y, l);
-    cfe_uniform_sample_vec(&y, bound);
+    cfe_vec_set_const(&y, one);
 
     // derive a functional key corresponding to y that will allow
-    // to compute and decrypt product xy from the encrypted x
+    // to compute and decrypt the inner product xy from the encrypted x
     cfe_damgard_fe_key fe_key;
     cfe_damgard_fe_key_init(&fe_key);
     err = cfe_damgard_derive_fe_key(&fe_key, &s, &msk, &y);
@@ -72,15 +74,15 @@ int main() {
     if (err != 0) {
         return err;
     }
-    gmp_printf("The inner product of x and y = [1, 1,...,1] is %Zd\n", xy);
+    gmp_printf("The inner product of a random vector x and y = [1, 1,...,1] is %Zd\n", xy);
 
-//    mpz_clears(bound, xy, NULL);
-//    cfe_vec_frees(&x, &y, &mpk, &ciphertext, NULL);
-//
-//    cfe_damgard_sec_key_free(&msk);
-//    cfe_damgard_fe_key_free(&fe_key);
-//    cfe_damgard_free(&s);
-//    cfe_damgard_free(&decryptor);
+    mpz_clears(bound, xy, one, NULL);
+    cfe_vec_frees(&x, &y, &mpk, &ciphertext, NULL);
+
+    cfe_damgard_sec_key_free(&msk);
+    cfe_damgard_fe_key_free(&fe_key);
+    cfe_damgard_free(&s);
+    cfe_damgard_free(&decryptor);
 
     return 0;
 }
