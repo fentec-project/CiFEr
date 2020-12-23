@@ -72,7 +72,7 @@ void cfe_ddh_multi_sec_key_free(cfe_ddh_multi_sec_key *key) {
 
 void cfe_ddh_multi_fe_key_init(cfe_ddh_multi_fe_key *key, cfe_ddh_multi *m) {
     mpz_init(key->otp_key);
-    cfe_vec_init(&key->keys, m->scheme.l);
+    cfe_vec_init(&key->keys, m->slots);
 }
 
 void cfe_ddh_multi_fe_key_free(cfe_ddh_multi_fe_key *key) {

@@ -338,7 +338,7 @@ size_t l = 2; // length of input vectors
 mpz_t bound, fe_key, xy, el;
 mpz_inits(bound, fe_key, xy, el, NULL);
 mpz_set_ui(bound, 10); // upper bound for input vector coordinates
-modulus_len := 128 // bit length of prime modulus p
+modulus_len = 1024; // bit length of prime modulus p
 
 cfe_ddh s, encryptor, decryptor;
 cfe_ddh_init(&s, l, modulus_len, bound);
@@ -392,6 +392,7 @@ _Σ <x<sub>i</sub>,y<sub>i</sub>>._
 size_t numClients = 2;             // number of encryptors
 size_t l = 3;                 // length of input vectors
 mpz_t bound, prod;
+mpz_init(prod);
 mpz_init_set_ui(bound, 1000); // upper bound for input vectors
 
 // Simulate collection of input data.
@@ -406,7 +407,7 @@ cfe_uniform_sample_mat(&Y, bound);
 // Trusted entity instantiates scheme instance and generates
 // master keys for all the encryptors. It also derives the FE
 // key derivedKey for the decryptor.
-size_t modulus_len = 64;
+size_t modulus_len = 1024;
 cfe_ddh_multi m, decryptor;
 cfe_ddh_multi_init(&m, numClients, l, modulus_len, bound);
 
