@@ -22,4 +22,3 @@ RUN make install
 RUN ldconfig
 WORKDIR /CiFEr/example
 CMD gcc example.c -o example.out -lgmp -lcifer && ./example.out
-
