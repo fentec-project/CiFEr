@@ -202,7 +202,7 @@ Using a single input scheme</h4>
 <div class="line">mpz_t bound, fe_key, xy, el;</div>
 <div class="line">mpz_inits(bound, fe_key, xy, el, NULL);</div>
 <div class="line">mpz_set_ui(bound, 10); <span class="comment">// upper bound for input vector coordinates</span></div>
-<div class="line">modulus_len := 128 <span class="comment">// bit length of prime modulus p</span></div>
+<div class="line">modulus_len = 1024; <span class="comment">// bit length of prime modulus p</span></div>
 <div class="line"> </div>
 <div class="line"><a class="code" href="structcfe__ddh.html">cfe_ddh</a> s, encryptor, decryptor;</div>
 <div class="line"><a class="code" href="ddh_8h.html#a6a0a1e8804d803cdbc147fbed029c7e3">cfe_ddh_init</a>(&amp;s, l, modulus_len, bound);</div>
@@ -244,6 +244,7 @@ Using a multi input scheme</h4>
 <div class="fragment"><div class="line"><span class="keywordtype">size_t</span> numClients = 2;             <span class="comment">// number of encryptors</span></div>
 <div class="line"><span class="keywordtype">size_t</span> l = 3;                 <span class="comment">// length of input vectors</span></div>
 <div class="line">mpz_t bound, prod;</div>
+<div class="line">mpz_init(prod);</div>
 <div class="line">mpz_init_set_ui(bound, 1000); <span class="comment">// upper bound for input vectors</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Simulate collection of input data.</span></div>
@@ -258,7 +259,7 @@ Using a multi input scheme</h4>
 <div class="line"><span class="comment">// Trusted entity instantiates scheme instance and generates</span></div>
 <div class="line"><span class="comment">// master keys for all the encryptors. It also derives the FE</span></div>
 <div class="line"><span class="comment">// key derivedKey for the decryptor.</span></div>
-<div class="line"><span class="keywordtype">size_t</span> modulus_len = 64;</div>
+<div class="line"><span class="keywordtype">size_t</span> modulus_len = 1024;</div>
 <div class="line"><a class="code" href="structcfe__ddh__multi.html">cfe_ddh_multi</a> m, decryptor;</div>
 <div class="line"><a class="code" href="ddh__multi_8h.html#a0fb58aa836d1356684c27ccccac1463c">cfe_ddh_multi_init</a>(&amp;m, numClients, l, modulus_len, bound);</div>
 <div class="line"> </div>
