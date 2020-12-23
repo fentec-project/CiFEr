@@ -3,10 +3,10 @@ FROM ubuntu:20.04
 # install dependencies and build tools
 RUN apt update --fix-missing
 RUN apt install -y build-essential libgmp-dev libsodium-dev git python python3-pip vim
-RUN pip3 install cmake
+RUN pip3 install cmake==3.18
 
 # copy the source code into the container
-ADD . /CiFEr/
+COPY . /CiFEr/
 
 # install amcl dependency
 WORKDIR /CiFEr/external/amcl
