@@ -95,7 +95,7 @@ Test</h2>
 Try it out with Docker</h2>
 <p>We provide a simple Docker build for trying out the library without worrying about the installation and the dependencies. You can build a Docker image yourself by running (possibly with sudo) </p><div class="fragment"><div class="line">docker build . -t fentec/cifer</div>
 </div><!-- fragment --><p>or downloading it from Docker Hub </p><div class="fragment"><div class="line">docker pull fentec/cifer</div>
-</div><!-- fragment --><p>In the file <code>example/example.c</code> you will find a dummy code using CiFEr library. Modify it as you wish and then run </p><div class="fragment"><div class="line">docker run -v $PATHTOCIFER/example:/CiFEr/example cifer</div>
+</div><!-- fragment --><p>In the file <code>example/example.c</code> you will find a dummy code using CiFEr library. Modify it as you wish and then run </p><div class="fragment"><div class="line">docker run -v $PATHTOCIFER/example:/CiFEr/example fentec/cifer</div>
 </div><!-- fragment --><p>where <code>$PATHTOCIFER</code> is your absolute path to CiFEr library (something like <code>/home/username/CiFEr</code>). This will link the <code>example</code> folder in your repository with the one in the Docker image. Then it will compile <code>example.c</code> code and execute it. See the instructions bellow on how to use schemes implemented in CiFEr or check out any of the tests implemented in <code>test</code> folder.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
 Using CiFEr in your project</h1>
