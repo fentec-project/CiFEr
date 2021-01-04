@@ -106,7 +106,7 @@ docker pull fentec/cifer
 In the file `example/example.c` you will find a dummy code using CiFEr library.
 Modify it as you wish and then run
 ```
-docker run -v $PATHTOCIFER/example:/CiFEr/example cifer
+docker run -v $PATHTOCIFER/example:/CiFEr/example fentec/cifer
 ```
 where `$PATHTOCIFER` is your absolute path to CiFEr library (something like `/home/username/CiFEr`).
 This will link the `example` folder in your repository with the one in the Docker image.
