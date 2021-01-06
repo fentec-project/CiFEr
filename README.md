@@ -63,6 +63,14 @@ sudo ./setup_amcl.sh
 cd ../..
 ```
 
+Alternatively, if you do not like to pollute `/usr/local/` with unmanaged
+files, you can use a locally compiled AMCL through a submodule:
+```
+external/amcl/setup_local_amcl.sh
+```
+The above script takes care of compiling AMCL, and places it where `cmake` can
+find it later.
+
 ### Build and install
 To build and install, first download it, then run the following commands in the 
 source code directory:
