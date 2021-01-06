@@ -1,0 +1,3 @@
+[submodule "vendor/amcl"]
+	path = vendor/amcl
+	url = https://github.com/miracl/amcl.git
