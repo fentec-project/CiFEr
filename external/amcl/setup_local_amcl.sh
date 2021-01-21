@@ -3,6 +3,7 @@
 VENDOR_PATH=vendor/amcl/version3/c
 
 # Fetch source
+git submodule init
 git submodule update
 
 # Compile
