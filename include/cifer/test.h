@@ -19,36 +19,36 @@
 
 #include <munit.h>
 
-MunitSuite prime_suite;
-MunitSuite keygen_suite;
-MunitSuite matrix_suite;
-MunitSuite vector_suite;
-MunitSuite dlog_suite;
-MunitSuite big_suite;
-MunitSuite string_suite;
-MunitSuite uniform_suite;
-MunitSuite normal_suite;
-MunitSuite normal_cumulative_suite;
-MunitSuite normal_negative_suite;
-MunitSuite normal_double_suite;
-MunitSuite normal_double_constant_suite;
-MunitSuite normal_cdt_suite;
-MunitSuite ddh_suite;
-MunitSuite damgard_suite;
-MunitSuite ddh_multi_suite;
-MunitSuite damgard_multi_suite;
-MunitSuite lwe_suite;
-MunitSuite lwe_fully_secure_suite;
-MunitSuite ring_lwe_suite;
-MunitSuite paillier_suite;
-MunitSuite dmcfe_suite;
-MunitSuite damgard_dec_multi_suite;
-MunitSuite fhipe_suite;
-MunitSuite fh_multi_ipe_suite;
-MunitSuite policy_suite;
-MunitSuite gpsw_suite;
-MunitSuite fame_suite;
-MunitSuite dippe_suite;
-MunitSuite sgp_suite;
+extern MunitSuite prime_suite;
+extern MunitSuite keygen_suite;
+extern MunitSuite matrix_suite;
+extern MunitSuite vector_suite;
+extern MunitSuite dlog_suite;
+extern MunitSuite big_suite;
+extern MunitSuite string_suite;
+extern MunitSuite uniform_suite;
+extern MunitSuite normal_suite;
+extern MunitSuite normal_cumulative_suite;
+extern MunitSuite normal_negative_suite;
+extern MunitSuite normal_double_suite;
+extern MunitSuite normal_double_constant_suite;
+extern MunitSuite normal_cdt_suite;
+extern MunitSuite ddh_suite;
+extern MunitSuite damgard_suite;
+extern MunitSuite ddh_multi_suite;
+extern MunitSuite damgard_multi_suite;
+extern MunitSuite lwe_suite;
+extern MunitSuite lwe_fully_secure_suite;
+extern MunitSuite ring_lwe_suite;
+extern MunitSuite paillier_suite;
+extern MunitSuite dmcfe_suite;
+extern MunitSuite damgard_dec_multi_suite;
+extern MunitSuite fhipe_suite;
+extern MunitSuite fh_multi_ipe_suite;
+extern MunitSuite policy_suite;
+extern MunitSuite gpsw_suite;
+extern MunitSuite fame_suite;
+extern MunitSuite dippe_suite;
+extern MunitSuite sgp_suite;
 
 #endif
