@@ -79,7 +79,9 @@ Requirements</h2>
 <p>To be able to build CiFEr as described below, AMCL must be compiled with BN254 curve. This can be done manually, but for convenience, we provide a Bash script that runs a modified AMCL setup (a Python script) and installs a minimal version of AMCL in the standard directory <code>/usr/local/lib</code> and header files in <code>/usr/local/include</code>. These default values can be changed in <code>external/amcl/setup_amcl.sh</code>. To use the script, run: </p><div class="fragment"><div class="line">cd external/amcl</div>
 <div class="line">sudo ./setup_amcl.sh</div>
 <div class="line">cd ../..</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+</div><!-- fragment --><p>Alternatively, if you do not like to pollute <code>/usr/local/</code> with unmanaged files, you can use a locally compiled AMCL through a submodule: </p><div class="fragment"><div class="line">external/amcl/setup_local_amcl.sh</div>
+</div><!-- fragment --><p>The above script takes care of compiling AMCL, and places it where <code>cmake</code> can find it later.</p>
+<h2><a class="anchor" id="autotoc_md4"></a>
 Build and install</h2>
 <p>To build and install, first download it, then run the following commands in the source code directory: </p><div class="fragment"><div class="line">mkdir build</div>
 <div class="line">cd build</div>
