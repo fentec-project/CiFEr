@@ -25,7 +25,10 @@ include_directories(
         include
         external/munit
         external/uthash
+        external/
         )
+
+link_directories(external/amcl/)
 
 # Library sources
 set(library_SOURCES
