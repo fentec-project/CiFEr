@@ -544,3 +544,25 @@ cfe_fame_generate_attrib_keys(&keys, owned_attrib, 3, &sk, &fame);
 FP12_BN254 decryption;
 cfe_fame_decrypt(&decryption, &cipher, &keys, &fame);
 ```
+
+##### Serialize ABE material
+
+In the example below we demonstrate how to serialize public key for ABE scheme GPSW.
+The serialization is done by using [Protobuf](https://github.com/protocolbuffers/protobuf)
+library, converting CiFEr structures to a single array of bytes.
+The serialization is currently available for ABE schemes FAME and GPSW.
+```c
+// create GPSW structure
+cfe_gpsw gpsw;
+cfe_gpsw_init(&gpsw, 10);
+
+// create and init GPSW master keys
+cfe_gpsw_pub_key pk;
+cfe_vec sk;
+cfe_gpsw_master_keys_init(&pk, &sk, &gpsw);
+cfe_gpsw_generate_master_keys(&pk, &sk, &gpsw);
+
+// serialize public key into a buffer of bytes
+cfe_ser buf;
+cfe_gpsw_pub_key_ser(&pk, &buf);
+```
