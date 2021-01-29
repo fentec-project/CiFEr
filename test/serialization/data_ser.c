@@ -150,7 +150,6 @@ MunitResult test_vec_octet_ser(const MunitParameter *params, void *data) {
     cfe_vec_free(&exponents);
     mpz_clear(a);
 
-
     return MUNIT_OK;
 }
 

@@ -29,7 +29,8 @@ MunitResult test_gpsw_pub_key_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_generate_master_keys(&pk, &sk, &gpsw);
 
     cfe_gpsw_pub_key_ser(&pk, &buf);
-    cfe_gpsw_pub_key_read(&pk2, &buf);
+    cfe_error err = cfe_gpsw_pub_key_read(&pk2, &buf);
+    munit_assert(err == CFE_ERR_NONE);
 
     munit_assert(FP12_BN254_equals(&pk.y, &pk2.y) == 1);
     munit_assert(pk.t.size == pk2.t.size);
@@ -71,7 +72,8 @@ MunitResult test_gpsw_key_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_key_init(&key1, &msp);
 
     cfe_gpsw_key_ser(&key1, &buf);
-    cfe_gpsw_key_read(&key2, &buf);
+    cfe_error err = cfe_gpsw_key_read(&key2, &buf);
+    munit_assert(err == CFE_ERR_NONE);
 
     munit_assert(key1.msp.mat.rows == key2.msp.mat.rows);
     munit_assert(key1.msp.mat.cols == key2.msp.mat.cols);
@@ -82,7 +84,7 @@ MunitResult test_gpsw_key_ser(const MunitParameter *params, void *data) {
         }
     }
     munit_assert(key1.d.size == key2.d.size);
-    for (size_t i = 0; i < key1.d.size; i++) {
+    for (size_t i =0; i < key1.d.size; i++) {
         munit_assert(ECP_BN254_equals(&key1.d.vec[i], &key2.d.vec[i]) == 1);
     }
 
@@ -117,11 +119,12 @@ MunitResult test_gpsw_cipher_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_encrypt(&cipher, &gpsw, &msg, gamma, 7, &pk);
 
     cfe_gpsw_cipher_ser(&cipher, &buf);
-    cfe_gpsw_cipher_read(&cipher2, &buf);
+    cfe_error err = cfe_gpsw_cipher_read(&cipher2, &buf);
+    munit_assert(err == CFE_ERR_NONE);
 
     munit_assert(FP12_BN254_equals(&cipher.e0, &cipher2.e0) == 1);
     munit_assert(cipher.e.size == cipher2.e.size);
-    for (size_t i = 0; i < cipher.e.size; i++) {
+    for (size_t i =0; i < cipher.e.size; i++) {
         munit_assert(cipher.gamma[i] == cipher2.gamma[i]);
         int check = ECP2_BN254_equals(&cipher.e.vec[i], &cipher2.e.vec[i]);
         munit_assert(check == 1);

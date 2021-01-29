@@ -289,6 +289,7 @@ cfe_error cfe_FP12_BN254_read(FP12_BN254 *a, cfe_ser *buf) {
     cfe_FP12_BN254_unpack(a, msg);
     // Free the unpacked message
     octet_ser__free_unpacked(msg, NULL);
+
     return 0;
 }
 
@@ -333,7 +334,6 @@ void cfe_msp_unpack(cfe_msp *a, MspSer *msg) {
     for (size_t j =0; j < msg->n_row_to_attrib; j++) {
         a->row_to_attrib[j] = (int)msg->row_to_attrib[j];
     }
-
 }
 
 cfe_error cfe_msp_read(cfe_msp *a, cfe_ser *buf) {
@@ -372,7 +372,7 @@ void cfe_vec_octet_ser(cfe_vec_octet *a, cfe_ser *buf) {
     vec_octet_ser__pack(&msg, buf->ser);
 
     for (size_t i =0; i<a->size; i++) {
-            free(msg.vec[i]->val);
+        free(msg.vec[i]->val);
     }
 
     free(val);

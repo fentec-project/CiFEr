@@ -95,8 +95,8 @@ void cfe_gpsw_key_pack(cfe_gpsw_key *a, CfeGpswKeySer *msg, MpzSer *val, OctetSe
     cfe_vec_octet octets;
     cfe_vec_octet_init(&octets, a->d.size);
     for (size_t i =0; i<a->d.size; i++) {
-        char *h1 = (char *) cfe_malloc(MODBYTES_256_56 * sizeof(char));
-        octet oct = {0, MODBYTES_256_56 * sizeof(char), h1};
+        char *h1 = (char *) cfe_malloc((MODBYTES_256_56 + 1) * sizeof(char));
+        octet oct = {0, (MODBYTES_256_56 + 1) * sizeof(char), h1};
         ECP_BN254_toOctet(&oct, &(a->d.vec[i]), true);
         octets.vec[i] = oct;
     }
