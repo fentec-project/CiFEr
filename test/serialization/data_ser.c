@@ -186,7 +186,7 @@ MunitResult test_gpsw_pub_key_ser(const MunitParameter *params, void *data) {
     return MUNIT_OK;
 }
 
-MunitResult test_gpsw_keys_ser(const MunitParameter *params, void *data) {
+MunitResult test_gpsw_key_ser(const MunitParameter *params, void *data) {
     cfe_ser buf;
     cfe_gpsw gpsw;
     cfe_gpsw_pub_key pk;
@@ -203,29 +203,29 @@ MunitResult test_gpsw_keys_ser(const MunitParameter *params, void *data) {
     cfe_error check = cfe_boolean_to_msp(&msp, bool_exp, bool_exp_len, true);
     munit_assert(check == CFE_ERR_NONE);
 
-    cfe_vec_G1 policy_keys;
-    cfe_gpsw_policy_keys_init(&policy_keys, &msp);
-    cfe_gpsw_generate_policy_keys(&policy_keys, &gpsw, &msp, &sk);
+    cfe_gpsw_key policy_key;
+    cfe_gpsw_key_init(&policy_key, &msp);
+    cfe_gpsw_generate_policy_key(&policy_key, &gpsw, &msp, &sk);
 
-    int owned_attrib[] = {1, 3, 6};
-    cfe_gpsw_keys keys, keys2;
-    cfe_gpsw_keys_init(&keys, &msp, owned_attrib, 3);
-    cfe_gpsw_delegate_keys(&keys, &policy_keys, &msp, owned_attrib, 3);
+    // int owned_attrib[] = {1, 3, 6};
+    cfe_gpsw_key key1, key2;
+    cfe_gpsw_key_init(&key1, &msp);
+    // cfe_gpsw_delegate_keys(&key, &policy_key, &msp, owned_attrib, 3);
 
-    cfe_gpsw_keys_ser(&keys, &buf);
-    cfe_gpsw_keys_read(&keys2, &buf);
+    cfe_gpsw_key_ser(&key1, &buf);
+    cfe_gpsw_key_read(&key2, &buf);
 
-    munit_assert(keys.mat.rows == keys2.mat.rows);
-    munit_assert(keys.mat.cols == keys2.mat.cols);
-    for (size_t i =0; i<keys.mat.rows; i++) {
-        munit_assert(keys.row_to_attrib[i] == keys2.row_to_attrib[i]);
-        for (size_t j =0; j < keys.mat.cols; j++) {
-            munit_assert(mpz_cmp(keys.mat.mat[i].vec[j], keys2.mat.mat[i].vec[j]) == 0);
+    munit_assert(key1.msp.mat.rows == key2.msp.mat.rows);
+    munit_assert(key1.msp.mat.cols == key2.msp.mat.cols);
+    for (size_t i =0; i<key1.msp.mat.rows; i++) {
+        munit_assert(key1.msp.row_to_attrib[i] == key2.msp.row_to_attrib[i]);
+        for (size_t j =0; j < key1.msp.mat.cols; j++) {
+            munit_assert(mpz_cmp(key1.msp.mat.mat[i].vec[j], key2.msp.mat.mat[i].vec[j]) == 0);
         }
     }
-    munit_assert(keys.d.size == keys2.d.size);
-    for (size_t i = 0; i < keys.d.size; i++) {
-        munit_assert(ECP_BN254_equals(&keys.d.vec[i], &keys2.d.vec[i]) == 1);
+    munit_assert(key1.d.size == key2.d.size);
+    for (size_t i = 0; i < key1.d.size; i++) {
+        munit_assert(ECP_BN254_equals(&key1.d.vec[i], &key2.d.vec[i]) == 1);
     }
 
     cfe_gpsw_free(&gpsw);
@@ -285,7 +285,7 @@ MunitTest data_ser_tests[] = {
         {(char *) "/msp", test_msp_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/ec_vec", test_vec_octet_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/gpsw_pub_key", test_gpsw_pub_key_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-        {(char *) "/gpsw_keys", test_gpsw_keys_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+        {(char *) "/gpsw_keys", test_gpsw_key_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {(char *) "/gpsw_cipher", test_gpsw_cipher_ser, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
         {NULL, NULL,                                   NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };

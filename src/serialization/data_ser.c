@@ -505,15 +505,8 @@ cfe_error cfe_gpsw_pub_key_read(cfe_gpsw_pub_key *a, cfe_ser *buf) {
     return 0;
 }
 
-void cfe_gpsw_keys_pack(cfe_gpsw_keys *a, CfeGpswKeysSer *msg, MpzSer *val, OctetSer *octets_val) {
-    cfe_mat_pack(&(a->mat), msg->mat, val);
-
-    msg->n_row_to_attrib = a->mat.rows;
-    msg->row_to_attrib = cfe_malloc(sizeof(int64_t) * a->mat.rows);
-
-    for (size_t j =0; j < a->mat.rows; j++) {
-        msg->row_to_attrib[j] = (int64_t)a->row_to_attrib[j];
-    }
+void cfe_gpsw_key_pack(cfe_gpsw_key *a, CfeGpswKeySer *msg, MpzSer *val, OctetSer *octets_val) {
+    cfe_msp_pack(&(a->msp), msg->msp, val);
 
     cfe_vec_octet octets;
     cfe_vec_octet_init(&octets, a->d.size);
@@ -531,44 +524,45 @@ void cfe_gpsw_keys_pack(cfe_gpsw_keys *a, CfeGpswKeysSer *msg, MpzSer *val, Octe
     free(octets.vec);
 }
 
-void cfe_gpsw_keys_ser(cfe_gpsw_keys *a, cfe_ser *buf) {
-    CfeGpswKeysSer msg = CFE_GPSW_KEYS_SER__INIT;
+void cfe_gpsw_key_ser(cfe_gpsw_key *a, cfe_ser *buf) {
+    CfeGpswKeySer msg = CFE_GPSW_KEY_SER__INIT;
+
+    MspSer msp = MSP_SER__INIT;
     MatSer mat = MAT_SER__INIT;
-    msg.mat = &mat;
+    msp.mat = &mat;
+
+    MpzSer *val = cfe_malloc(sizeof(MpzSer) * a->msp.mat.cols * a->msp.mat.rows);
+    cfe_msp_pack(&(a->msp), &msp, val);
+    msg.msp = &msp;
+
     VecOctetSer d = VEC_OCTET_SER__INIT;
     msg.d = &d;
-    MpzSer *val = cfe_malloc(sizeof(MpzSer) * a->mat.cols * a->mat.rows);
     OctetSer *octets_val = cfe_malloc(sizeof(OctetSer) * a->d.size);
 
-    cfe_gpsw_keys_pack(a, &msg, val, octets_val);
+    cfe_gpsw_key_pack(a, &msg, val, octets_val);
 
-    buf->len = cfe_gpsw_keys_ser__get_packed_size(&msg);
+    buf->len = cfe_gpsw_key_ser__get_packed_size(&msg);
     buf->ser = cfe_malloc(buf->len);
 
-    cfe_gpsw_keys_ser__pack(&msg, buf->ser);
+    cfe_gpsw_key_ser__pack(&msg, buf->ser);
 
-    for (size_t i =0; i<a->mat.rows; i++) {
-        for (size_t j =0; j < a->mat.cols; j++) {
-            free(msg.mat->val[i * a->mat.cols + j]->val);
+    for (size_t i =0; i<a->msp.mat.rows; i++) {
+        for (size_t j =0; j < a->msp.mat.cols; j++) {
+            free(msg.msp->mat->val[i * a->msp.mat.cols + j]->val);
         }
     }
-    free(msg.mat->val);
+    free(msg.msp->mat->val);
+    free(msg.msp->row_to_attrib);
     for (size_t i =0; i<a->d.size; i++) {
         free(msg.d->vec[i]->val);
     }
     free(msg.d->vec);
-    free(msg.row_to_attrib);
     free(val);
     free(octets_val);
 }
 
-void cfe_gpsw_keys_unpack(cfe_gpsw_keys *a, CfeGpswKeysSer *msg) {
-    cfe_mat_unpack(&a->mat, msg->mat);
-
-    a->row_to_attrib = cfe_malloc(sizeof(int) * a->mat.rows);
-    for (size_t j =0; j < msg->n_row_to_attrib; j++) {
-        a->row_to_attrib[j] = (int)msg->row_to_attrib[j];
-    }
+void cfe_gpsw_key_unpack(cfe_gpsw_key *a, CfeGpswKeySer *msg) {
+    cfe_msp_unpack(&(a->msp), msg->msp);
 
     cfe_vec_octet octets;
     cfe_vec_octet_unpack(&octets, msg->d);
@@ -580,16 +574,17 @@ void cfe_gpsw_keys_unpack(cfe_gpsw_keys *a, CfeGpswKeysSer *msg) {
     cfe_vec_octet_free(&octets);
 }
 
-cfe_error cfe_gpsw_keys_read(cfe_gpsw_keys *a, cfe_ser *buf) {
-    CfeGpswKeysSer *msg;
-    msg = cfe_gpsw_keys_ser__unpack(NULL, buf->len, buf->ser);
+cfe_error cfe_gpsw_key_read(cfe_gpsw_key *a, cfe_ser *buf) {
+    CfeGpswKeySer *msg;
+    msg = cfe_gpsw_key_ser__unpack(NULL, buf->len, buf->ser);
     if (msg == NULL) {
         return 1;
     }
 
-    cfe_gpsw_keys_unpack(a, msg);
+    cfe_gpsw_key_unpack(a, msg);
+
     // Free the unpacked message
-    cfe_gpsw_keys_ser__free_unpacked(msg, NULL);
+    cfe_gpsw_key_ser__free_unpacked(msg, NULL);
 
     return 0;
 }

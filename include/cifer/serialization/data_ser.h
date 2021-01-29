@@ -98,9 +98,9 @@ void cfe_gpsw_pub_key_ser(cfe_gpsw_pub_key *a, cfe_ser *buf);
 
 cfe_error cfe_gpsw_pub_key_read(cfe_gpsw_pub_key *a, cfe_ser *buf);
 
-void cfe_gpsw_keys_ser(cfe_gpsw_keys *a, cfe_ser *buf);
+void cfe_gpsw_key_ser(cfe_gpsw_key *a, cfe_ser *buf);
 
-cfe_error cfe_gpsw_keys_read(cfe_gpsw_keys *a, cfe_ser *buf);
+cfe_error cfe_gpsw_key_read(cfe_gpsw_key *a, cfe_ser *buf);
 
 void cfe_gpsw_cipher_ser(cfe_gpsw_cipher *a, cfe_ser *buf);
 

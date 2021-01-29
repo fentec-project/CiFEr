@@ -21,7 +21,7 @@ typedef struct _OctetSer OctetSer;
 typedef struct _MspSer MspSer;
 typedef struct _VecOctetSer VecOctetSer;
 typedef struct _CfeGpswPubKeySer CfeGpswPubKeySer;
-typedef struct _CfeGpswKeysSer CfeGpswKeysSer;
+typedef struct _CfeGpswKeySer CfeGpswKeySer;
 typedef struct _CfeGpswCipherSer CfeGpswCipherSer;
 
 
@@ -103,17 +103,15 @@ struct  _CfeGpswPubKeySer
     , NULL, NULL }
 
 
-struct  _CfeGpswKeysSer
+struct  _CfeGpswKeySer
 {
   ProtobufCMessage base;
-  MatSer *mat;
   VecOctetSer *d;
-  size_t n_row_to_attrib;
-  int64_t *row_to_attrib;
+  MspSer *msp;
 };
-#define CFE_GPSW_KEYS_SER__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&cfe_gpsw_keys_ser__descriptor) \
-    , NULL, NULL, 0,NULL }
+#define CFE_GPSW_KEY_SER__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&cfe_gpsw_key_ser__descriptor) \
+    , NULL, NULL }
 
 
 struct  _CfeGpswCipherSer
@@ -243,24 +241,24 @@ CfeGpswPubKeySer *
 void   cfe_gpsw_pub_key_ser__free_unpacked
                      (CfeGpswPubKeySer *message,
                       ProtobufCAllocator *allocator);
-/* CfeGpswKeysSer methods */
-void   cfe_gpsw_keys_ser__init
-                     (CfeGpswKeysSer         *message);
-size_t cfe_gpsw_keys_ser__get_packed_size
-                     (const CfeGpswKeysSer   *message);
-size_t cfe_gpsw_keys_ser__pack
-                     (const CfeGpswKeysSer   *message,
+/* CfeGpswKeySer methods */
+void   cfe_gpsw_key_ser__init
+                     (CfeGpswKeySer         *message);
+size_t cfe_gpsw_key_ser__get_packed_size
+                     (const CfeGpswKeySer   *message);
+size_t cfe_gpsw_key_ser__pack
+                     (const CfeGpswKeySer   *message,
                       uint8_t             *out);
-size_t cfe_gpsw_keys_ser__pack_to_buffer
-                     (const CfeGpswKeysSer   *message,
+size_t cfe_gpsw_key_ser__pack_to_buffer
+                     (const CfeGpswKeySer   *message,
                       ProtobufCBuffer     *buffer);
-CfeGpswKeysSer *
-       cfe_gpsw_keys_ser__unpack
+CfeGpswKeySer *
+       cfe_gpsw_key_ser__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   cfe_gpsw_keys_ser__free_unpacked
-                     (CfeGpswKeysSer *message,
+void   cfe_gpsw_key_ser__free_unpacked
+                     (CfeGpswKeySer *message,
                       ProtobufCAllocator *allocator);
 /* CfeGpswCipherSer methods */
 void   cfe_gpsw_cipher_ser__init
@@ -301,8 +299,8 @@ typedef void (*VecOctetSer_Closure)
 typedef void (*CfeGpswPubKeySer_Closure)
                  (const CfeGpswPubKeySer *message,
                   void *closure_data);
-typedef void (*CfeGpswKeysSer_Closure)
-                 (const CfeGpswKeysSer *message,
+typedef void (*CfeGpswKeySer_Closure)
+                 (const CfeGpswKeySer *message,
                   void *closure_data);
 typedef void (*CfeGpswCipherSer_Closure)
                  (const CfeGpswCipherSer *message,
@@ -319,7 +317,7 @@ extern const ProtobufCMessageDescriptor octet_ser__descriptor;
 extern const ProtobufCMessageDescriptor msp_ser__descriptor;
 extern const ProtobufCMessageDescriptor vec_octet_ser__descriptor;
 extern const ProtobufCMessageDescriptor cfe_gpsw_pub_key_ser__descriptor;
-extern const ProtobufCMessageDescriptor cfe_gpsw_keys_ser__descriptor;
+extern const ProtobufCMessageDescriptor cfe_gpsw_key_ser__descriptor;
 extern const ProtobufCMessageDescriptor cfe_gpsw_cipher_ser__descriptor;
 
 PROTOBUF_C__END_DECLS
