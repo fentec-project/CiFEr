@@ -24,19 +24,3 @@ message vec_octet_ser {
         repeated octet_ser vec = 1;
         required int64 size = 2;
 }
-
-message cfe_gpsw_pub_key_ser {
-        required vec_octet_ser t = 1;
-        required octet_ser y = 2;
-}
-
-message cfe_gpsw_key_ser {
-        required vec_octet_ser d = 1;
-        required msp_ser msp = 2;
-}
-
-message cfe_gpsw_cipher_ser {
-        repeated int64 gamma = 1;
-        required octet_ser e0 = 2;
-        required vec_octet_ser e = 3;
-}

@@ -70,8 +70,10 @@ set(library_SOURCES
         src/quadratic/sgp.c
         src/serialization/fame_ser.c
         src/serialization/data_ser.c
+        src/serialization/gpsw_ser.c
         include/cifer/serialization/fame.pb-c.c
         include/cifer/serialization/data.pb-c.c
+        include/cifer/serialization/gpsw.pb-c.c
         )
 
 add_library(cifer SHARED ${library_SOURCES})
@@ -130,6 +132,7 @@ set(binary_SOURCES
         test/quadratic/sgp.c
         test/serialization/data_ser.c
         test/serialization/fame_ser.c
+        test/serialization/gpsw_ser.c
         )
 
 add_executable(cifer_test ${binary_SOURCES})

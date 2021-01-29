@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <cifer/internal/common.h>
 #include <amcl/pair_BN254.h>
 #include "cifer/test.h"
 #include "cifer/abe/fame.h"
