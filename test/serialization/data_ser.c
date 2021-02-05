@@ -30,7 +30,6 @@ MunitResult test_ec_ser(const MunitParameter *params, void *data) {
     munit_assert(check == 1);
     cfe_ser_free(&buf);
 
-
     ECP2_BN254 gen2, out2;
     ECP2_BN254_generator(&gen2);
     cfe_ECP2_BN254_ser(&gen2, &buf);

@@ -119,6 +119,7 @@ cfe_error cfe_fame_sec_key_read(cfe_fame_sec_key *key, cfe_ser *buf) {
         return 1;
     }
 
+    cfe_fame_sec_key_init(key);
     for (int i =0; i<3; i++) {
         cfe_ECP_BN254_unpack(&(key->part_G1[i]), msg->part_g1[i]);
     }

@@ -31,6 +31,7 @@ void cfe_gpsw_pub_key_pack(cfe_gpsw_pub_key *a, CfeGpswPubKeySer *msg, OctetSer 
         char *h1 = (char *) cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
         octet oct = {0, (4 * MODBYTES_256_56) * sizeof(char), h1};
         ECP2_BN254_toOctet(&oct, &(a->t.vec[i]));
+        oct.max = oct.len;
         octets.vec[i] = oct;
     }
     cfe_vec_octet_pack(&octets, msg->t, octets_val);
@@ -60,6 +61,7 @@ void cfe_gpsw_pub_key_ser(cfe_gpsw_pub_key *a, cfe_ser *buf) {
         free(msg.t->vec[i]->val);
     }
     free(msg.t->vec);
+    free(msg.y->val);
     free(octets_val);
 }
 
@@ -98,6 +100,7 @@ void cfe_gpsw_key_pack(cfe_gpsw_key *a, CfeGpswKeySer *msg, MpzSer *val, OctetSe
         char *h1 = (char *) cfe_malloc((MODBYTES_256_56 + 1) * sizeof(char));
         octet oct = {0, (MODBYTES_256_56 + 1) * sizeof(char), h1};
         ECP_BN254_toOctet(&oct, &(a->d.vec[i]), true);
+        oct.max = oct.len;
         octets.vec[i] = oct;
     }
     cfe_vec_octet_pack(&octets, msg->d, octets_val);
@@ -135,11 +138,11 @@ void cfe_gpsw_key_ser(cfe_gpsw_key *a, cfe_ser *buf) {
             free(msg.msp->mat->val[i * a->msp.mat.cols + j]->val);
         }
     }
-    free(msg.msp->mat->val);
-    free(msg.msp->row_to_attrib);
     for (size_t i =0; i<a->d.size; i++) {
         free(msg.d->vec[i]->val);
     }
+    free(msg.msp->mat->val);
+    free(msg.msp->row_to_attrib);
     free(msg.d->vec);
     free(val);
     free(octets_val);
@@ -166,7 +169,6 @@ cfe_error cfe_gpsw_key_read(cfe_gpsw_key *a, cfe_ser *buf) {
     }
 
     cfe_gpsw_key_unpack(a, msg);
-
     // Free the unpacked message
     cfe_gpsw_key_ser__free_unpacked(msg, NULL);
 
@@ -188,6 +190,7 @@ void cfe_gpsw_cipher_pack(cfe_gpsw_cipher *a, CfeGpswCipherSer *msg, OctetSer *o
         char *h1 = (char *) cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
         octet oct = {0, (4 * MODBYTES_256_56) * sizeof(char), h1};
         ECP2_BN254_toOctet(&oct, &(a->e.vec[i]));
+        oct.max = oct.len;
         octets.vec[i] = oct;
     }
     cfe_vec_octet_pack(&octets, msg->e, octets_val);
@@ -217,6 +220,8 @@ void cfe_gpsw_cipher_ser(cfe_gpsw_cipher *a, cfe_ser *buf) {
         free(msg.e->vec[i]->val);
     }
     free(msg.e->vec);
+    free(msg.e0->val);
+    free(msg.gamma);
     free(octets_val);
 }
 

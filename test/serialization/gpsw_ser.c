@@ -42,6 +42,7 @@ MunitResult test_gpsw_pub_key_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_free(&gpsw);
     cfe_vec_free(&sk);
     cfe_gpsw_pub_key_free(&pk);
+    cfe_gpsw_pub_key_free(&pk2);
     cfe_ser_free(&buf);
 
     return MUNIT_OK;
@@ -91,7 +92,11 @@ MunitResult test_gpsw_key_ser(const MunitParameter *params, void *data) {
     cfe_gpsw_free(&gpsw);
     cfe_vec_free(&sk);
     cfe_gpsw_pub_key_free(&pk);
+    cfe_gpsw_key_free(&policy_key);
+    cfe_gpsw_key_free(&key1);
+    cfe_gpsw_key_free(&key2);
     cfe_ser_free(&buf);
+    cfe_msp_free(&msp);
 
     return MUNIT_OK;
 }
@@ -132,6 +137,7 @@ MunitResult test_gpsw_cipher_ser(const MunitParameter *params, void *data) {
 
     cfe_gpsw_free(&gpsw);
     cfe_vec_free(&sk);
+    cfe_gpsw_pub_key_free(&pk);
     cfe_gpsw_cipher_free(&cipher);
     cfe_gpsw_cipher_free(&cipher2);
     cfe_ser_free(&buf);

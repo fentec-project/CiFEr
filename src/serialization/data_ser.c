@@ -111,7 +111,6 @@ void cfe_mat_ser(cfe_mat *a, cfe_ser *buf) {
             free(msg.val[i * a->cols + j]->val);
         }
     }
-
     free(val);
     free(msg.val);
 }
@@ -183,6 +182,7 @@ void cfe_ECP_BN254_pack(ECP_BN254 *a, OctetSer *msg) {
     char h1[MODBYTES_256_56 + 1];
     octet oct = {0, sizeof(h1), h1};
     ECP_BN254_toOctet(&oct, a, true);
+    oct.max = oct.len;
 
     cfe_octet_pack(&oct, msg);
 }
@@ -219,6 +219,7 @@ void cfe_ECP2_BN254_pack(ECP2_BN254 *a, OctetSer *msg) {
     char *h1 = (char *) cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
     octet oct = {0, (4 * MODBYTES_256_56) * sizeof(char), h1};
     ECP2_BN254_toOctet(&oct, a);
+    oct.max = oct.len;
 
     cfe_octet_pack(&oct, msg);
     free(oct.val);
@@ -229,7 +230,6 @@ void cfe_ECP2_BN254_ser(ECP2_BN254 *a, cfe_ser *buf) {
     cfe_ECP2_BN254_pack(a, &msg);
     cfe_octet_buf(&msg, buf);
 }
-
 
 
 void cfe_ECP2_BN254_unpack(ECP2_BN254 *a, OctetSer *msg) {
@@ -258,6 +258,7 @@ void cfe_FP12_BN254_pack(FP12_BN254 *a, OctetSer *msg) {
     octet oct;
     oct.val = cfe_malloc(12 * MODBYTES_256_56 * sizeof(char));
     FP12_BN254_toOctet(&oct, a);
+    oct.max = oct.len;
 
     cfe_octet_pack(&oct, msg);
     free(oct.val);
@@ -374,7 +375,6 @@ void cfe_vec_octet_ser(cfe_vec_octet *a, cfe_ser *buf) {
     for (size_t i =0; i<a->size; i++) {
         free(msg.vec[i]->val);
     }
-
     free(val);
     free(msg.vec);
 }
@@ -410,6 +410,7 @@ void cfe_vec_ECP2_BN254_ser(cfe_vec_G2 *a, cfe_ser *buf) {
         char *h1 = (char *) cfe_malloc((4 * MODBYTES_256_56) * sizeof(char));
         octet oct = {0, (4 * MODBYTES_256_56) * sizeof(char), h1};
         ECP2_BN254_toOctet(&oct, &(a->vec[i]));
+        oct.max = oct.len;
         octets.vec[i] = oct;
     }
 
