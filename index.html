@@ -376,18 +376,36 @@ Using ABE schemes</h4>
 <div class="line"><span class="comment">// decrypt the message with owned keys</span></div>
 <div class="line">FP12_BN254 decryption;</div>
 <div class="line"><a class="code" href="fame_8h.html#a1a740d53955478a2863f1e981386b07b">cfe_fame_decrypt</a>(&amp;decryption, &amp;cipher, &amp;keys, &amp;fame);</div>
+</div><!-- fragment --><h4><a class="anchor" id="autotoc_md22"></a>
+Serialize ABE material</h4>
+<p>In the example below we demonstrate how to serialize public key for ABE scheme GPSW. The serialization is done by using <a href="https://github.com/protocolbuffers/protobuf">Protobuf</a> library, converting CiFEr structures to a single array of bytes. The serialization is currently available for ABE schemes FAME and GPSW. </p><div class="fragment"><div class="line"><span class="comment">// create GPSW structure</span></div>
+<div class="line"><a class="code" href="structcfe__gpsw.html">cfe_gpsw</a> gpsw;</div>
+<div class="line"><a class="code" href="gpsw_8h.html#a6e7804ad7be4f0f426654882453acd35">cfe_gpsw_init</a>(&amp;gpsw, 10);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// create and init GPSW master keys</span></div>
+<div class="line"><a class="code" href="structcfe__gpsw__pub__key.html">cfe_gpsw_pub_key</a> pk;</div>
+<div class="line"><a class="code" href="structcfe__vec.html">cfe_vec</a> sk;</div>
+<div class="line"><a class="code" href="gpsw_8h.html#af3b55cbe5442ff3a8f7dc89b879dfbc7">cfe_gpsw_master_keys_init</a>(&amp;pk, &amp;sk, &amp;gpsw);</div>
+<div class="line"><a class="code" href="gpsw_8h.html#a95cb32b71804da1dfadc19d1acfd46e3">cfe_gpsw_generate_master_keys</a>(&amp;pk, &amp;sk, &amp;gpsw);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// serialize public key into a buffer of bytes</span></div>
+<div class="line"><a class="code" href="structcfe__ser.html">cfe_ser</a> buf;</div>
+<div class="line">cfe_gpsw_pub_key_ser(&amp;pk, &amp;buf);</div>
 </div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <div class="ttc" id="afame_8h_html_a669d0c2f5a309c8845bc5a6f8aafe7b1"><div class="ttname"><a href="fame_8h.html#a669d0c2f5a309c8845bc5a6f8aafe7b1">cfe_fame_init</a></div><div class="ttdeci">void cfe_fame_init(cfe_fame *fame)</div></div>
 <div class="ttc" id="amat_8h_html_a7f5df26bc6065241a4df21f8b63ad023"><div class="ttname"><a href="mat_8h.html#a7f5df26bc6065241a4df21f8b63ad023">cfe_mat_inits</a></div><div class="ttdeci">void cfe_mat_inits(size_t rows, size_t cols, cfe_mat *m,...)</div></div>
 <div class="ttc" id="auniform_8h_html_a248f3b2918596fac10739f5b2b5c6c83"><div class="ttname"><a href="uniform_8h.html#a248f3b2918596fac10739f5b2b5c6c83">cfe_uniform_sample_vec</a></div><div class="ttdeci">void cfe_uniform_sample_vec(cfe_vec *res, mpz_t max)</div></div>
+<div class="ttc" id="agpsw_8h_html_a6e7804ad7be4f0f426654882453acd35"><div class="ttname"><a href="gpsw_8h.html#a6e7804ad7be4f0f426654882453acd35">cfe_gpsw_init</a></div><div class="ttdeci">void cfe_gpsw_init(cfe_gpsw *gpsw, size_t l)</div></div>
 <div class="ttc" id="asgp_8h_html_a62bdcd7e8e1e42b9308734e990e79562"><div class="ttname"><a href="sgp_8h.html#a62bdcd7e8e1e42b9308734e990e79562">cfe_sgp_sec_key_init</a></div><div class="ttdeci">void cfe_sgp_sec_key_init(cfe_sgp_sec_key *msk, cfe_sgp *sgp)</div></div>
 <div class="ttc" id="astructcfe__fame_html"><div class="ttname"><a href="structcfe__fame.html">cfe_fame</a></div><div class="ttdef"><b>Definition:</b> fame.h:46</div></div>
 <div class="ttc" id="astructcfe__fame__attrib__keys_html"><div class="ttname"><a href="structcfe__fame__attrib__keys.html">cfe_fame_attrib_keys</a></div><div class="ttdef"><b>Definition:</b> fame.h:81</div></div>
 <div class="ttc" id="asgp_8h_html_a9f5dbb24596d304feb232f50ee332d09"><div class="ttname"><a href="sgp_8h.html#a9f5dbb24596d304feb232f50ee332d09">cfe_sgp_generate_sec_key</a></div><div class="ttdeci">void cfe_sgp_generate_sec_key(cfe_sgp_sec_key *msk, cfe_sgp *s)</div></div>
 <div class="ttc" id="astructcfe__vec_html"><div class="ttname"><a href="structcfe__vec.html">cfe_vec</a></div><div class="ttdef"><b>Definition:</b> vec.h:41</div></div>
+<div class="ttc" id="agpsw_8h_html_a95cb32b71804da1dfadc19d1acfd46e3"><div class="ttname"><a href="gpsw_8h.html#a95cb32b71804da1dfadc19d1acfd46e3">cfe_gpsw_generate_master_keys</a></div><div class="ttdeci">void cfe_gpsw_generate_master_keys(cfe_gpsw_pub_key *pk, cfe_vec *sk, cfe_gpsw *gpsw)</div></div>
 <div class="ttc" id="addh_8h_html_a6a0a1e8804d803cdbc147fbed029c7e3"><div class="ttname"><a href="ddh_8h.html#a6a0a1e8804d803cdbc147fbed029c7e3">cfe_ddh_init</a></div><div class="ttdeci">cfe_error cfe_ddh_init(cfe_ddh *s, size_t l, size_t modulus_len, mpz_t bound)</div></div>
 <div class="ttc" id="asgp_8h_html_ac51db5684172a1721603bd906d9bfea7"><div class="ttname"><a href="sgp_8h.html#ac51db5684172a1721603bd906d9bfea7">cfe_sgp_encrypt</a></div><div class="ttdeci">cfe_error cfe_sgp_encrypt(cfe_sgp_cipher *cipher, cfe_sgp *s, cfe_vec *x, cfe_vec *y, cfe_sgp_sec_key *msk)</div></div>
+<div class="ttc" id="astructcfe__ser_html"><div class="ttname"><a href="structcfe__ser.html">cfe_ser</a></div><div class="ttdef"><b>Definition:</b> data_ser.h:25</div></div>
 <div class="ttc" id="addh__multi_8h_html_a373beee1b1b98f982cdc7a185bfffd41"><div class="ttname"><a href="ddh__multi_8h.html#a373beee1b1b98f982cdc7a185bfffd41">cfe_ddh_multi_master_keys_init</a></div><div class="ttdeci">void cfe_ddh_multi_master_keys_init(cfe_mat *mpk, cfe_ddh_multi_sec_key *msk, cfe_ddh_multi *m)</div></div>
 <div class="ttc" id="addh__multi_8h_html_ad85e1b112a78b15de7274a6f4cea7e69"><div class="ttname"><a href="ddh__multi_8h.html#ad85e1b112a78b15de7274a6f4cea7e69">cfe_ddh_multi_encrypt</a></div><div class="ttdeci">cfe_error cfe_ddh_multi_encrypt(cfe_vec *ciphertext, cfe_ddh_multi_enc *e, cfe_vec *x, cfe_vec *pub_key, cfe_vec *otp)</div></div>
 <div class="ttc" id="asgp_8h_html_a73b661562919e0bcf88bc2389a89ea27"><div class="ttname"><a href="sgp_8h.html#a73b661562919e0bcf88bc2389a89ea27">cfe_sgp_decrypt</a></div><div class="ttdeci">cfe_error cfe_sgp_decrypt(mpz_t res, cfe_sgp *s, cfe_sgp_cipher *cipher, ECP2_BN254 *key, cfe_mat *f)</div></div>
@@ -405,8 +423,10 @@ Using ABE schemes</h4>
 <div class="ttc" id="afame_8h_html_a8ceb339a1ed6336ee1a6cfd914207294"><div class="ttname"><a href="fame_8h.html#a8ceb339a1ed6336ee1a6cfd914207294">cfe_fame_generate_attrib_keys</a></div><div class="ttdeci">void cfe_fame_generate_attrib_keys(cfe_fame_attrib_keys *keys, int *gamma, size_t num_attrib, cfe_fame_sec_key *sk, cfe_fame *fame)</div></div>
 <div class="ttc" id="afame_8h_html_a489d46433c3ebc91033ee4cdbc6cfb9d"><div class="ttname"><a href="fame_8h.html#a489d46433c3ebc91033ee4cdbc6cfb9d">cfe_fame_generate_master_keys</a></div><div class="ttdeci">void cfe_fame_generate_master_keys(cfe_fame_pub_key *pk, cfe_fame_sec_key *sk, cfe_fame *fame)</div></div>
 <div class="ttc" id="amat_8h_html_ab4288d110d902bd7c0f4fd72e36cb35e"><div class="ttname"><a href="mat_8h.html#ab4288d110d902bd7c0f4fd72e36cb35e">cfe_mat_init</a></div><div class="ttdeci">void cfe_mat_init(cfe_mat *m, size_t rows, size_t cols)</div></div>
+<div class="ttc" id="astructcfe__gpsw_html"><div class="ttname"><a href="structcfe__gpsw.html">cfe_gpsw</a></div><div class="ttdef"><b>Definition:</b> gpsw.h:47</div></div>
 <div class="ttc" id="afame_8h_html_a8f4e468c5a1acd22f527f46ed2b3a360"><div class="ttname"><a href="fame_8h.html#a8f4e468c5a1acd22f527f46ed2b3a360">cfe_fame_cipher_init</a></div><div class="ttdeci">void cfe_fame_cipher_init(cfe_fame_cipher *cipher, cfe_msp *msp)</div></div>
 <div class="ttc" id="asgp_8h_html_acee817412f0072a18adcf41e7b03860b"><div class="ttname"><a href="sgp_8h.html#acee817412f0072a18adcf41e7b03860b">cfe_sgp_init</a></div><div class="ttdeci">cfe_error cfe_sgp_init(cfe_sgp *s, size_t l, mpz_t bound)</div></div>
+<div class="ttc" id="astructcfe__gpsw__pub__key_html"><div class="ttname"><a href="structcfe__gpsw__pub__key.html">cfe_gpsw_pub_key</a></div><div class="ttdef"><b>Definition:</b> gpsw.h:55</div></div>
 <div class="ttc" id="addh_8h_html_a9ac50b2a63c87eb0fcb422b515cbc6e3"><div class="ttname"><a href="ddh_8h.html#a9ac50b2a63c87eb0fcb422b515cbc6e3">cfe_ddh_copy</a></div><div class="ttdeci">void cfe_ddh_copy(cfe_ddh *res, cfe_ddh *s)</div></div>
 <div class="ttc" id="astructcfe__msp_html"><div class="ttname"><a href="structcfe__msp.html">cfe_msp</a></div><div class="ttdef"><b>Definition:</b> policy.h:43</div></div>
 <div class="ttc" id="asgp_8h_html_a9efaf25dc97e6a5f7146e46ad82276a1"><div class="ttname"><a href="sgp_8h.html#a9efaf25dc97e6a5f7146e46ad82276a1">cfe_sgp_derive_fe_key</a></div><div class="ttdeci">cfe_error cfe_sgp_derive_fe_key(ECP2_BN254 *key, cfe_sgp *sgp, cfe_sgp_sec_key *msk, cfe_mat *f)</div></div>
@@ -415,6 +435,7 @@ Using ABE schemes</h4>
 <div class="ttc" id="addh__multi_8h_html_af8f38603be96584ba72075d308e2464d"><div class="ttname"><a href="ddh__multi_8h.html#af8f38603be96584ba72075d308e2464d">cfe_ddh_multi_derive_fe_key</a></div><div class="ttdeci">cfe_error cfe_ddh_multi_derive_fe_key(cfe_ddh_multi_fe_key *res, cfe_ddh_multi *m, cfe_ddh_multi_sec_key *msk, cfe_mat *y)</div></div>
 <div class="ttc" id="addh__multi_8h_html_a69dab47aa023d11e414e3235dff05732"><div class="ttname"><a href="ddh__multi_8h.html#a69dab47aa023d11e414e3235dff05732">cfe_ddh_multi_enc_init</a></div><div class="ttdeci">void cfe_ddh_multi_enc_init(cfe_ddh_multi_enc *e, cfe_ddh_multi *m)</div></div>
 <div class="ttc" id="astructcfe__sgp__sec__key_html"><div class="ttname"><a href="structcfe__sgp__sec__key.html">cfe_sgp_sec_key</a></div><div class="ttdef"><b>Definition:</b> sgp.h:57</div></div>
+<div class="ttc" id="agpsw_8h_html_af3b55cbe5442ff3a8f7dc89b879dfbc7"><div class="ttname"><a href="gpsw_8h.html#af3b55cbe5442ff3a8f7dc89b879dfbc7">cfe_gpsw_master_keys_init</a></div><div class="ttdeci">void cfe_gpsw_master_keys_init(cfe_gpsw_pub_key *pk, cfe_vec *sk, cfe_gpsw *gpsw)</div></div>
 <div class="ttc" id="avec_8h_html_a8d1fa0b403a0433034453a3b0b7eae0f"><div class="ttname"><a href="vec_8h.html#a8d1fa0b403a0433034453a3b0b7eae0f">cfe_vec_init</a></div><div class="ttdeci">void cfe_vec_init(cfe_vec *v, size_t size)</div></div>
 <div class="ttc" id="astructcfe__ddh__multi_html"><div class="ttname"><a href="structcfe__ddh__multi.html">cfe_ddh_multi</a></div><div class="ttdef"><b>Definition:</b> ddh_multi.h:32</div></div>
 <div class="ttc" id="apolicy_8h_html_aedee261d024744e5362891b5e1e40f0b"><div class="ttname"><a href="policy_8h.html#aedee261d024744e5362891b5e1e40f0b">cfe_boolean_to_msp</a></div><div class="ttdeci">cfe_error cfe_boolean_to_msp(cfe_msp *msp, char *bool_exp, size_t bool_exp_len, bool convert_to_ones)</div></div>
