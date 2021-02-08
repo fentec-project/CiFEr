@@ -51,6 +51,9 @@ int main(int argc, char *argv[]) {
             normal_double_constant_suite,
             normal_cdt_suite,
             sgp_suite,
+            data_ser_suite,
+            fame_ser_suite,
+            gpsw_ser_suite,
             {NULL, NULL, NULL, 0, MUNIT_SUITE_OPTION_NONE}
     };
 

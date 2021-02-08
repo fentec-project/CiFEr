@@ -167,3 +167,12 @@ void cfe_vec_G2_free(cfe_vec_G2 *v) {
 void cfe_vec_GT_free(cfe_vec_GT *v) {
     free(v->vec);
 }
+
+void cfe_vec_octet_init(cfe_vec_octet *v, size_t size) {
+    v->size = size;
+    v->vec = (octet *) cfe_malloc(size * sizeof(octet));
+}
+
+void cfe_vec_octet_free(cfe_vec_octet *v) {
+    free(v->vec);
+}

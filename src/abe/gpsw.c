@@ -98,6 +98,10 @@ void cfe_gpsw_key_init(cfe_gpsw_key *policy_key, cfe_msp *msp) {
     cfe_vec_G1_init(&(policy_key->d), msp->mat.rows);
     cfe_mat_init(&(policy_key->msp.mat), msp->mat.rows, msp->mat.cols);
     policy_key->msp.row_to_attrib = (int *) cfe_malloc(msp->mat.rows * sizeof(int));
+    for (size_t j =0; j < msp->mat.rows; j++) {
+        ECP_BN254_generator(&policy_key->d.vec[j]);
+        policy_key->msp.row_to_attrib[j] = msp->row_to_attrib[j];
+    }
 }
 
 void cfe_gpsw_generate_policy_key(cfe_gpsw_key *policy_key, cfe_gpsw *gpsw,

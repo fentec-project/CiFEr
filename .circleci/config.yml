@@ -20,6 +20,26 @@ jobs:
             pip install cmake
 
       - run:
+          name: Install Protobuff
+          command: |
+            wget https://github.com/protocolbuffers/protobuf/releases/download/v3.12.2/protobuf-cpp-3.12.2.tar.gz
+            tar xvzf protobuf-cpp-3.12.2.tar.gz --no-same-owner
+            cd protobuf-3.12.2
+            ./configure
+            make
+            make check
+            make install
+            ldconfig
+
+      - run:
+          name: Install Protobuff-c
+          command: |
+            wget https://github.com/protobuf-c/protobuf-c/releases/download/v1.3.3/protobuf-c-1.3.3.tar.gz
+            tar xvzf protobuf-c-1.3.3.tar.gz --no-same-owner
+            cd protobuf-c-1.3.3
+            ./configure && make && make install
+
+      - run:
           name: Install AMCL
           command: |
             cd external/amcl

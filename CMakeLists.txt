@@ -68,12 +68,28 @@ set(library_SOURCES
         src/abe/fame.c
         src/abe/dippe.c
         src/quadratic/sgp.c
+        src/serialization/fame_ser.c
+        src/serialization/data_ser.c
+        src/serialization/gpsw_ser.c
+        include/cifer/serialization/fame.pb-c.c
+        include/cifer/serialization/data.pb-c.c
+        include/cifer/serialization/gpsw.pb-c.c
         )
 
 add_library(cifer SHARED ${library_SOURCES})
 
 # Link libraries that are used in our library
 target_link_libraries(cifer gmp sodium m amcl)
+# Search for protobuf-c library
+find_package(PkgConfig)
+if (PKG_CONFIG_FOUND)
+    pkg_check_modules(PBUFC "libprotobuf-c >= 1.0.0")
+    if (PBUFC_FOUND)
+        target_link_libraries(cifer ${PBUFC_LIBRARIES})
+        add_definitions(${PBUFC_CFLAGS} ${PBUFC_CFLAGS_OTHER})
+        link_directories(${PBUFC_LIBRARY_DIRS})
+    endif()
+endif()
 
 # Install library and copy header to install dir
 install(TARGETS cifer DESTINATION lib)
@@ -114,6 +130,9 @@ set(binary_SOURCES
         test/abe/dippe.c
         external/munit/munit.c
         test/quadratic/sgp.c
+        test/serialization/data_ser.c
+        test/serialization/fame_ser.c
+        test/serialization/gpsw_ser.c
         )
 
 add_executable(cifer_test ${binary_SOURCES})

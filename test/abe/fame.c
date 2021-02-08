@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+#include <cifer/internal/common.h>
+#include <amcl/pair_BN254.h>
 #include "cifer/test.h"
 #include "cifer/abe/fame.h"
+#include "cifer/serialization/fame_ser.h"
+#include "cifer/serialization/data_ser.h"
 
 MunitResult test_fame_end_to_end(const MunitParameter *params, void *data) {
     // create a new FAME struct
