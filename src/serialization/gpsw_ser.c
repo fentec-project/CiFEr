@@ -91,9 +91,7 @@ cfe_error cfe_gpsw_pub_key_read(cfe_gpsw_pub_key *a, cfe_ser *buf) {
     return 0;
 }
 
-void cfe_gpsw_key_pack(cfe_gpsw_key *a, CfeGpswKeySer *msg, MpzSer *val, OctetSer *octets_val) {
-    cfe_msp_pack(&(a->msp), msg->msp, val);
-
+void cfe_gpsw_key_pack(cfe_gpsw_key *a, CfeGpswKeySer *msg, OctetSer *octets_val) {
     cfe_vec_octet octets;
     cfe_vec_octet_init(&octets, a->d.size);
     for (size_t i =0; i<a->d.size; i++) {
@@ -126,7 +124,7 @@ void cfe_gpsw_key_ser(cfe_gpsw_key *a, cfe_ser *buf) {
     msg.d = &d;
     OctetSer *octets_val = cfe_malloc(sizeof(OctetSer) * a->d.size);
 
-    cfe_gpsw_key_pack(a, &msg, val, octets_val);
+    cfe_gpsw_key_pack(a, &msg, octets_val);
 
     buf->len = cfe_gpsw_key_ser__get_packed_size(&msg);
     buf->ser = cfe_malloc(buf->len);
