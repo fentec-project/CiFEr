@@ -47,6 +47,7 @@ the source code).
 - [GMP](https://gmplib.org/)
 - [libsodium](https://download.libsodium.org/doc/)
 - [AMCL](https://github.com/miracl/amcl)
+- [Protobuf](https://github.com/protocolbuffers/protobuf)
 
 CiFEr relies on GMP for all big integer arithmetic. We recommend familiarizing 
 yourself with it before using CiFEr.
