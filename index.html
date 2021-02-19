@@ -74,6 +74,7 @@ Requirements</h2>
 <li><a href="https://gmplib.org/">GMP</a></li>
 <li><a href="https://download.libsodium.org/doc/">libsodium</a></li>
 <li><a href="https://github.com/miracl/amcl">AMCL</a></li>
+<li><a href="https://github.com/protocolbuffers/protobuf">Protobuf</a></li>
 </ul>
 <p>CiFEr relies on GMP for all big integer arithmetic. We recommend familiarizing yourself with it before using CiFEr.</p>
 <p>To be able to build CiFEr as described below, AMCL must be compiled with BN254 curve. This can be done manually, but for convenience, we provide a Bash script that runs a modified AMCL setup (a Python script) and installs a minimal version of AMCL in the standard directory <code>/usr/local/lib</code> and header files in <code>/usr/local/include</code>. These default values can be changed in <code>external/amcl/setup_amcl.sh</code>. To use the script, run: </p><div class="fragment"><div class="line">cd external/amcl</div>
